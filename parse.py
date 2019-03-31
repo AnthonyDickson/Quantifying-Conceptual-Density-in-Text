@@ -60,6 +60,18 @@ class Text2Graph:
 
         return processed
 
+    def split_words(self, tokens):
+        res = []
+
+        for token in tokens:
+            res.append(token)
+
+            if re.match(self.hyphenated_word, token):
+                for t in re.split(r'[-/]', token):
+                    res.append(t)
+
+        return res
+
     def parse(self):
         text = self.text.lower()
         text = Text2Graph.remove_hyphenation(text)
@@ -68,14 +80,14 @@ class Text2Graph:
         for sent in sentences:
             tokens = nltk.word_tokenize(sent)
             tokens = filter(self.is_valid_token, tokens)
-            tokens = list(map(self.wnl.lemmatize, tokens))
+            tokens = self.split_words(tokens)
+            tokens = map(self.wnl.lemmatize, tokens)
+            pos = nltk.pos_tag(list(tokens))
+            tokens = filter(lambda t_pos: t_pos[1].startswith('NN'), pos)
+            tokens = list(map(lambda t_pos: t_pos[0], tokens))
 
             for token in tokens:
                 self.add_token(token, tokens)
-
-                if re.match(self.hyphenated_word, token):
-                    for t in re.split(r'[-/]', token):
-                        self.add_token(self.wnl.lemmatize(t), tokens)
 
     @property
     def density_score(self):
