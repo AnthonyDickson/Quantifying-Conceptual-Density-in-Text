@@ -21,15 +21,22 @@ class Text2Graph:
     def add_token(self, token, context):
         for other in context:
             if other != token:
-                if token not in self.edges:
-                    self.edges[token] = {}
+                try:
+                    self.edges[token][other] += 1
+                except KeyError:
+                    if token not in self.edges:
+                        self.edges[token] = {}
 
-                if other not in self.edges[token]:
-                    self.edges[token][other] = 0
+                    if other not in self.edges[token]:
+                        self.edges[token][other] = 0
 
-                self.edges[token][other] += 1
 
-    def remove_hyphenation(self, text):
+    @staticmethod
+    def remove_hyphenation(text):
+        """Some documents, in particular LaTeX documents, like to break words
+        over lines with hyphens, this method stitches these words back
+        together.
+        """
         skip_whitespace = False
         prev_char = ''
         processed = ''
@@ -55,7 +62,7 @@ class Text2Graph:
 
     def parse(self):
         text = self.text.lower()
-        text = self.remove_hyphenation(text)
+        text = Text2Graph.remove_hyphenation(text)
         sentences = nltk.sent_tokenize(text)
 
         for sent in sentences:
@@ -71,7 +78,10 @@ class Text2Graph:
                         self.add_token(self.wnl.lemmatize(t), tokens)
 
     @property
-    def mean_connectivity(self):
+    def density_score(self):
+        """A fairly arbitrary scoring metric that attempts to measure the 'density' of a given document based on it's
+        term co-occurrence graph.
+        """
         N = len(self.edges)
         res = N
 
@@ -107,10 +117,10 @@ if __name__ == '__main__':
             if file.endswith('.txt'):
                 title = file[:-4]
 
-                if len(title) > 16:
-                    title = title[:13] + '...'
+                if len(title) > 32:
+                    title = title[:29] + '...'
 
-                print('Processing file \'%s\'...' % title)
+                print('Processing \'%s\'...' % title)
 
                 with open(path + '/' + file, 'r') as f:
                     text = f.read()
@@ -119,5 +129,4 @@ if __name__ == '__main__':
                 t2g.parse()
                 t2g.save(path + '/' + file[:-4] + '.graph')
 
-                print('Mean node connectivity for \'%s\': %.4f'
-                      % (title, t2g.mean_connectivity))
+                print('Density Score: %.4f' % t2g.density_score)
