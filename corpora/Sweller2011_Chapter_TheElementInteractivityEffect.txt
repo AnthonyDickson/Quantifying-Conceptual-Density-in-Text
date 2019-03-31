@@ -1,0 +1,406 @@
+Chapter 15
+The Element Interactivity Effect
+
+
+
+
+As discussed in Chapter 5, total cognitive load, consisting of intrinsic and extrane-
+ous cognitive load, must not exceed working memory resources in order for learn-
+ing to be effective. From this perspective, applying learning strategies aimed at
+reducing extraneous cognitive load is more important when intrinsic cognitive load
+is high. If intrinsic cognitive load is low, a high extraneous cognitive load may not
+inhibit learning because the total cognitive load may be well within the available
+working memory capacity. Thus, for instructional conditions with a low intrinsic
+cognitive load, optimising instructional design may not be as important as for situ-
+ations with a high intrinsic cognitive load.
+     Intrinsic cognitive load is determined by the level of interactivity between
+essential elements of information. If this element interactivity is low, using an
+instructional design that causes a high extraneous load may not interfere with
+learning. On the other hand, if the level of interactivity between essential elements
+of information is high, adding more element interactivity associated with a high
+extraneous cognitive load due to a suboptimal instructional design (Chapter 5)
+may well result in a total load well in excess of working memory capacity. Under
+high intrinsic cognitive load conditions, optimising instructional designs may be
+­critical. Therefore, most of the cognitive load effects discussed in the previous
+ chapters dealt with instructional conditions under which both intrinsic and extra-
+ neous cognitive load were high.
+     As examples, when dealing with very few intrinsically interacting elements, it
+ may not matter whether learners must use the randomness as genesis principle via
+ a random generate and test process to solve a problem or to find relations between
+ sources of information presented separately that result in split-attention. Learners
+ may have sufficient working memory resources to deal with these situations
+ whether they are using the randomness as genesis principle or the borrowing and
+ reorganising principle if element interactivity due to intrinsic cognitive load is
+ ­sufficiently low.
+     The fact that cognitive load effects tend to be obtainable only if intrinsic
+  ­cognitive load is high is referred to as the element interactivity effect (Sweller,
+   2010; Sweller & Chandler, 1994). This effect depends on the total element
+
+
+
+J. Sweller et al., Cognitive Load Theory, Explorations in the Learning Sciences,   193
+Instructional Systems and Performance Technologies 1,
+DOI 10.1007/978-1-4419-8126-4_15, © Springer Science+Business Media, LLC 2011
+194                                                    15 The Element Interactivity Effect
+
+i­ nteractivity associated with both intrinsic and extraneous cognitive load. It is
+ treated as a separate cognitive load effect because there is substantial empirical
+ evidence that levels of element interactivity due to intrinsic cognitive load have
+ profound effects on other cognitive load effects associated with extraneous cogni-
+ tive load. This chapter consolidates this evidence by explaining in more detail
+ some of the studies previously described in Part IV and how they specifically
+ relate to element interactivity.
+
+
+
+Empirical Evidence for the Element Interactivity Effect
+
+From a theoretical perspective, element interactivity associated with intrinsic
+­cognitive load should be a relevant factor for all cognitive load effects, especially
+ effects relying on variations in extraneous cognitive load. The element interactivity
+ effect has been demonstrated for a large range of extraneous cognitive load effects,
+ but has not been tested for all. We will discuss element interactivity associated with
+ intrinsic cognitive load for those extraneous cognitive load effects for which data
+ are available.
+
+
+
+Element Interactivity and the Split-Attention
+and Redundancy Effects
+
+In a series of experiments, Sweller and Chandler (1994) and Chandler and Sweller
+(1996) tested for split-attention and redundancy effects associated with learning
+computer applications using manuals and computers. When both a computer and
+a manual are used during instruction, either split-attention or redundancy may
+occur (see Chapters 9 and 11). Alternative methods of presentation can be designed
+to reduce the extraneous load and facilitate learning in comparison with a
+­traditional use of manuals together with hardware such as computers or other
+ equipment. Sweller and Chandler suggested that if a properly designed manual
+ was used that eliminated split-attention and redundancy, the hardware itself could
+ be redundant. Eliminating the hardware during the initial instructional period and
+ replacing it by corresponding diagrams with integrated textual explanations in the
+ manual were hypothesised to reduce the extraneous cognitive load caused either
+ by split-attention between the manual and the hardware or redundancy, where the
+ hardware was redundant. For example, in the case of learning to use a computer,
+ both the monitor and keyboard can be replaced by diagrams of the computer
+ screen and keyboard with textual explanations physically integrated at their appro-
+ priate locations on the diagrams. By this procedure, split-attention or redundancy
+ that is associated with the presence of the computer itself can be eliminated, thus
+ reducing extraneous cognitive load.
+Empirical Evidence for the Element Interactivity Effect                            195
+
+   The results of experiments using both computing-based materials as well as
+electrical engineering instructions demonstrated both the split-attention and redun-
+dancy effects with the modified instructional materials. A format consisting only
+of an integrated, self-contained manual outperformed a conventional manual that
+did not include integrated diagrams and text demonstrating a split-attention effect.
+A self-contained manual format in which learners did not have access to the hard-
+ware also outperformed the same self-contained manual along with the actual
+computer, thus rendering the hardware redundant and demonstrating the redun-
+dancy effect. Furthermore and critically for the current discussion, both the split-
+attention and redundancy effects were obtained only in areas where the instructional
+material involved a high level of element interactivity.
+   In the above studies, the degree of element interactivity was estimated a priori
+by counting the number of elements that must be considered simultaneously by
+learners with a specific level of expertise in order to learn a particular procedure.
+For example, when learning how to use a computer-aided design/computer-aided
+manufacture (CAD/CAM) package, the procedure for moving the cursor in 1 mm
+steps ‘Press one of four arrow keys’ represents a low element interactivity task that
+can be learned easily without reference to other elements such as the function of
+other keys. On the other hand, the procedure for moving between any two positions
+represents a high element interactivity task for a novice learner as it involves simul-
+taneous processing of the following nine interacting elements (Chandler & Sweller,
+1996, p. 170):
+1. Read horizontal axis value for current position
+2. Read vertical axis value for current position
+3. Find position of the goal co-ordinate on the horizontal axis
+4. Find position of the goal co-ordinate on the vertical axis
+5. Find point of intersection for the goal horizontal and vertical positions
+6. Calculate the difference between the current and goal positions on the horizontal
+   axis
+7. Press keys appropriate to value calculated in 6
+8. Calculate the difference between the current and goal position on the vertical
+   axis
+9. Press keys appropriate to value calculated in 8
+   When the previously described instructional formats were tested with technical
+apprentices, Chandler and Sweller (1996) showed that for instructions that involved
+high element interactivity materials, the self-contained modified manual format
+demonstrated its superiority over the conventional manual plus computer format
+for both written and practical post-tests, demonstrating the split-attention effect.
+Similarly, the self-contained, modified manual also was superior to the modified
+manual plus computer presentation, thus demonstrating the redundancy effect. No
+differences were found between instructional formats when the learning materials
+were low in element interactivity.
+   Direct evidence that these findings were due to cognitive load rather than
+other factors came from measures of cognitive load based on a secondary task.
+196                                                     15 The Element Interactivity Effect
+
+The secondary task was presented on a separate computer and involved a tone
+that was immediately followed by a letter appearing on the screen. Learners had
+to recall the previous letter seen on the screen, while encoding the new letter.
+When instructional materials involved low or no interaction between elements of
+information and, consequently, a low intrinsic cognitive load, the added extrane-
+ous load imposed by differing instructional formats did not substantially inhibit
+learner performance on the secondary task. In this case, a sufficient working
+memory capacity was still available to perform the secondary task at a high level
+irrespective of instructional format. Accordingly, all three groups had little
+­difficulty on the secondary task when studying the low element interactivity
+ ­segments of the instructional material and performed at similar levels. However,
+  the secondary task performance of the conventional manual plus computer
+  (split-attention) and the modified manual plus computer (redundancy) groups
+  were reduced substantially when high element interactivity instructional
+  ­segments were studied.
+
+
+
+Element Interactivity and Understanding Instructions
+
+The extent to which we understand instructions depends on levels of element
+­interactivity. Increases in levels of element interactivity increase the difficulty of
+ understanding as more elements must be processed simultaneously in working
+ memory. If the number of elements exceeds the capacity of working memory, the
+ material cannot be understood until some of the elements have been incorporated
+ into schemas that can be treated as a single element. It is possible to present the
+ same information in a form that alters element interactivity by altering the extent to
+ which pre-existing schemas are used to process the required elements. If a schema
+ can be used to incorporate interacting elements, working memory load can be
+ reduced (Marcus, Cooper, & Sweller, 1996).
+        Marcus et al. (1996) presented primary school students with electrical resistor
+ ­problems. Functionally identical instructions could be presented using either diagrams
+  or text. Diagrams tended to be more familiar to learners with each incorporating
+  ­several interacting elements. Because of familiarity, those interacting elements could
+   be easily incorporated into a schema processed as a single element. The same interact-
+   ing elements, presented in textual form, had to be processed as individual elements
+   resulting in a large increase in element interactivity and cognitive load compared to
+   diagrams. Cognitive load was measured using both subjective measures of load and
+   secondary tasks. Results indicated that firstly, the greater the number of interacting
+   elements the greater the cognitive load and the harder it was to understand the
+   ­information, and secondly, the use of diagrams reduced cognitive load and enhanced
+    understanding compared to the same information presented in textual form.
+        These experiments clearly established the relations between cognitive load,
+    ­element interactivity and understanding. High levels of element interactivity are a
+     major impediment to understanding.
+Empirical Evidence for the Element Interactivity Effect                             197
+
+Element Interactivity and the Modality Effect
+
+A meta-analysis of modality effect studies by Ginns (2005b) supported element
+interactivity as a major moderator of the effect. Tindall-Ford, Chandler, and Sweller
+(1997) provided direct experimental evidence for the importance of element
+­interactivity in obtaining the modality effect. They found strong effects in favour of
+ dual-modality formats in which wiring diagrams or tables were provided with
+ ­narrated textual explanations over single-modality formats in which diagrams or
+  tables were provided with printed textual explanations. These effects were obtained
+  only for materials with high levels of element interactivity. There were no differ-
+  ences between spoken and written text for low element interactivity instructions.
+      Experiment 1 of Tindall-Ford et al. (1997) used instructional material designed to
+demonstrate how to carry out electrical tests of an electrical appliance using a volt-
+meter. These materials involved a high degree of element interactivity for a novice
+learner. For example, to understand the test of insulation resistance, the learner must
+simultaneously consider the required setting for the voltmeter and where to place the
+earth lead and the other lead on the kettle, ensure the electric kettle switch is on,
+press the test button, know what the required result should be, and then change the
+earth lead from the active pin to the neutral pin and perform the test again. The
+results of this experiment demonstrated benefits of presenting instructional material
+in either an integrated or audio-visual format.
+      The instructions used in Experiment 2 constituted table-based information
+relating to electrical installation and current-carrying capacity used for selecting
+appropriate cables for electrical installations. The instructions required learners to
+relate different elements of information and were high in element interactivity. For
+instance, the purpose of cable size on the table is only made clear if it is related to
+other table entities such as type of cable, core of cable, maximum load of cable
+and installation techniques. A modality effect also was obtained in this ­experiment,
+  and subjective ratings of cognitive load supported a cognitive load explanation of
+  the results.
+      Experiment 3 used separate and independent low and high element interactivity
+  instructional materials including electrical symbols and electrical circuits. Low
+  element interactivity instruction consisted of 30 electrical symbols and their cor-
+  responding meanings that could be learned independently of each other. For
+  instance, the electrical symbol for a fluorescent lamp could be learned
+  ­independently of the symbol for a general switch. High element interactivity
+   instructional materials included different electrical circuits and their associated
+   explanations. To understand each circuit, many elements and their relationships
+   needed to be assimilated simultaneously. The results from the test items, subjec-
+   tive rating scales and measures of instructional efficiency indicated strong modality
+   effects for materials with high levels of interactivity. On the other hand, when
+   learning electrical symbols, there were no differences between instructional pre-
+   sentation formats. Again, subjective ratings supported a cognitive load explana-
+   tion of the results.
+198                                                     15 The Element Interactivity Effect
+
+   Thus, learning materials with high levels of element interactivity (e.g. complex
+wiring diagrams) may cause a cognitive overload of the visual channel that may
+be further worsened by the extraneous cognitive load due to split-attention
+between visually presented sources of information that refer to each other (e.g.
+diagrams and printed explanations). Using a dual-modality format may effec-
+tively reduce this load and expand cognitive resources available for learning by
+engaging both processing channels of working memory. On the other hand, if
+learning materials have low levels of element interactivity as occurs, for example,
+when learning the meaning of individual electrical symbols, then even relatively
+high levels of extraneous cognitive load may still be within working memory
+limits and not interfere with learning.
+
+
+
+
+Element Interactivity and the Expertise Reversal Effect
+
+We might expect element interactivity to interact with the expertise reversal effect.
+We know that levels of element interactivity are dependent on levels of expertise.
+As expertise increases, interacting elements become incorporated within schemas
+and can be treated as single elements. As a consequence, element interactivity
+becomes less of a problem with increasing expertise. This relation between element
+interactivity and levels of expertise gives rise to the interaction between the
+element interactivity effect and the expertise reversal effect.
+    Kalyuga, Chandler, and Sweller (2001)  compared worked examples-based instruc-
+tion on how to construct switching equations for relay circuits with an exploratory
+learning environment. When the knowledge level of trainees was increased through
+specifically designed training sessions, the exploratory group achieved better results
+than the worked examples group. Subjective measures of task difficulty supported the
+cognitive load interpretation of the effect.
+    In this study, two task levels were used: structurally simple tasks with few circuit
+elements and a very limited number of possible options to explore, and structurally
+complex tasks with more interactive circuit elements and numerous options to
+explore. These two task levels corresponded to low and high levels of element inter-
+activity. Simple tasks included only three interacting input elements and allowed
+construction of nine different acceptable relay circuits with various possible connec-
+tions. Complex tasks required learners to construct and write equations for various
+relay circuits containing five interacting input elements, three of which were already
+placed into the diagram at fixed locations. This complex task environment allowed
+construction of 89 acceptable relay circuits with various possible connections.
+    As expected, the expertise reversal effect was obtained only for relatively
+­complex tasks with high levels of element interactivity. There were no differences
+ between the instructional methods for the simple tasks. For the relatively simple
+ circuits, cognitive load was much lower and within the limits of working memory
+ for either instructional format.
+Conditions of Applicability                                                        199
+
+Element Interactivity and the Imagination Effect
+
+Leahy and Sweller (2005) demonstrated that as primary school students’ experience
+in reading a bus timetable and temperature graphs increased, the advantage of
+studying worked examples declined in favour of imagining examples, in accord
+with the imagination and expertise reversal effects. In addition, the experiments
+also showed that as the intrinsic cognitive load imposed by the learning materials
+increased, the interaction between these instructional methods and levels of learner
+expertise also increased. Both the imagination and the worked example effects were
+larger for materials with higher levels of element interactivity than for materials
+with lower levels of element interactivity.
+   When investigating an imagination effect using bus timetable materials with
+primary school students, Leahy and Sweller (2008) experimentally manipulated the
+levels of element interactivity in the instructional materials and post-test questions
+by varying the complexity of tasks. For example, when students were requested to
+find the categories of route numbers for which buses did not stop at every street
+(odd numbered routes in the table), they had to simultaneously process many inter-
+acting elements in working memory, such as holding the meaning of buses not
+stopping at every street, holding the meaning of route numbers, searching for col-
+umns with blanks, looking up the route numbers, looking at odd numbers and
+checking that they were blank, etc. This task was high in element interactivity. On
+the other hand, answering a question such as: ‘What does the letter “e” stand for?’
+required only three interacting element to be processed. These elements were: hold-
+ing the letter in working memory, searching for ‘e’, and transforming the letter
+searched into its appropriate word to provide an answer.
+   As predicted, a significant interaction between the imagination effect and levels
+of element interactivity was obtained in this study. Imagining materials that were
+low in element interactivity resulted in no significant benefits, whereas for high
+element interactivity materials, learners who were asked to imagine materials out-
+performed learners who were asked only to study the same materials. Imagining
+high element interactivity materials allowed learners to combine the multiple inter-
+acting elements of information into a single schema that could be more readily
+processed in working memory. The results also indicated that greater differences
+between the two instructional groups were obtained on post-test questions tapping
+high rather than low element interactivity knowledge.
+
+
+Conditions of Applicability
+
+Similar to the expertise reversal effect (Chapter 12), the element interactivity effect
+relies on an interaction between other cognitive load effects and specific factors, in
+this case, levels of element interactivity associated with intrinsic cognitive load.
+There is also an obvious relation between these two effects as the levels of element
+interactivity that produce an intrinsic cognitive load are always relative to levels of
+200                                                       15 The Element Interactivity Effect
+
+learner expertise. The same material can reflect a high level of interactivity for a
+novice learner and at the same time a low level of interactivity for an expert because
+as expertise increases, interacting elements are incorporated into schemas, reducing
+working memory load in accord with the environmental organising and linking
+principle. Therefore, a complex task for a novice may be a relatively simple one for
+an expert. Learners’ prior knowledge allows many interacting elements to be
+­incorporated, or chunked, in a single schema acting as a single element in working
+ memory. In contrast, learners with low prior knowledge are unable to chunk
+ ­information into a single schema and must attempt to simultaneously process the
+  interacting elements in working memory.
+       Accordingly, lower levels of element interactivity associated with intrinsic
+  ­cognitive load are expected to have similar consequences to higher levels of learner
+   expertise. As learners acquire more expertise in a specific task domain, the levels
+   of element interactivity associated with particular instructional materials change.
+   Categories of learning tasks that reflected relatively high levels of element interac-
+   tivity become low in element interactivity as expertise increases. Lower levels of
+   element interactivity associated with intrinsic cognitive load due to increased
+   expertise allow higher levels of extraneous cognitive load to be handled without
+   overloading working memory.
+       The element interactivity effect defines an essential condition of applicability for
+   other cognitive load effects dealing with extraneous cognitive load. Another
+   ­condition of applicability of this effect is that intrinsic cognitive load itself should
+    not exceed the available working memory resources of learners. For example, when
+    dealing with excessively complex materials for which learners do not have ­sufficient
+    prior knowledge, very high levels of intrinsic cognitive load may be experienced.
+    In this case, cognitive load effects aimed at reducing intrinsic cognitive load need
+    to be applied (e.g. the isolated–interacting elements effect, Chapter 16).
+
+
+
+Instructional Implications
+
+If element interactivity associated with intrinsic cognitive load is low, adding more
+interacting elements associated with a high extraneous cognitive load may not
+inhibit learning provided working memory capacity is not exceeded. For example,
+if students learn a new foreign language vocabulary in which each new item can be
+learned independently from all other items, the manner in which the material is
+presented may not matter a great deal as the resulting, total working memory load
+will be within available working memory capacity. In this situation, redesigning
+instructional procedures or formats by applying cognitive load effects aimed at
+reducing extraneous load may have minimal (if any) effects on learning.
+    Alternatively, adding the interacting elements associated with a high extraneous
+cognitive load to the interacting elements associated with a high intrinsic cognitive
+load can exceed working memory capacity. In this situation, reducing the element
+interactivity associated with extraneous load by applying appropriate cognitive
+Conclusion                                                                           201
+
+load techniques may be critical for learning. For example, if split-attention or
+redundancy is incorporated into learning materials with high levels of element
+interactivity associated with intrinsic cognitive load such as complex equations or
+wiring diagrams in electronics, the total number of interacting elements and
+­corresponding total cognitive load may exceed working memory capacity.
+ Reducing the number of interacting elements associated with extraneous cognitive
+ load by integrating related sources of information or eliminating redundant infor-
+ mation can reduce working memory load to manageable levels.
+
+
+
+Conclusion
+
+By definition, cognitive load theory is concerned with the instructional implications
+of an excessive working memory load. It is not surprising that those instructional
+implications are most likely to be manifest when dealing with materials that
+­themselves impose a heavy cognitive load irrespective of how they are presented.
+ If the element interactivity that leads to an intrinsic cognitive load is low, any addi-
+ tional element interactivity due to an extraneous cognitive load may be irrelevant if
+ the total cognitive load is within working memory capacity limits. On the other
+ hand, with a high level of element interactivity associated with intrinsic cognitive
+ load, any additional element interactivity due to an extraneous cognitive load may
+ be increasingly important. As a consequence, most cognitive load effects only
+ manifest themselves under conditions of a high intrinsic cognitive load leading to
+ the element interactivity effect.
+     The majority of cognitive load effects occur due to reductions in extraneous
+ cognitive load. The element interactivity effect indicates that intrinsic cognitive
+ load inevitably is equally important in determining total cognitive load and in deter-
+ mining the effectiveness of instructional manipulations carried out in order to
+ reduce extraneous cognitive load. Fewer studies have been carried out in which
+ intrinsic cognitive load has been directly manipulated. The fact that intrinsic cogni-
+ tive load cannot be manipulated if the nature of the task and the expertise of the
+ learners remain constant contribute to this dearth of studies. Nevertheless, element
+ interactivity due to intrinsic cognitive load can be manipulated by changing the
+ nature of a task. That issue is considered in the next chapter.
+
