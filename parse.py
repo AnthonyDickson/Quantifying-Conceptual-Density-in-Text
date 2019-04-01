@@ -10,8 +10,13 @@ class Text2Graph:
     def __init__(self, text):
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.hyphenated_word = re.compile(r'^[a-z]+([/-][a-z]+)+$')
+        self.grammar = r"""
+        NBAR: 
+            {<JJ>*<NN.*>}
+        """
+        self.chunker = nltk.RegexpParser(self.grammar)
         self.wnl = nltk.stem.WordNetLemmatizer()
-        self.edges = {}
+        self.graph = {}
         self.text = text
 
     def is_valid_token(self, t):
@@ -22,13 +27,13 @@ class Text2Graph:
         for other in context:
             if other != token:
                 try:
-                    self.edges[token][other] += 1
+                    self.graph[token][other] += 1
                 except KeyError:
-                    if token not in self.edges:
-                        self.edges[token] = {}
+                    if token not in self.graph:
+                        self.graph[token] = {}
 
-                    if other not in self.edges[token]:
-                        self.edges[token][other] = 0
+                if other not in self.graph[token]:
+                    self.graph[token][other] = 1
 
 
     @staticmethod
@@ -80,31 +85,59 @@ class Text2Graph:
         for sent in sentences:
             tokens = nltk.word_tokenize(sent)
             tokens = filter(self.is_valid_token, tokens)
-            tokens = self.split_words(tokens)
             tokens = map(self.wnl.lemmatize, tokens)
             pos = nltk.pos_tag(list(tokens))
-            tokens = filter(lambda t_pos: t_pos[1].startswith('NN'), pos)
-            tokens = list(map(lambda t_pos: t_pos[0], tokens))
 
-            for token in tokens:
-                self.add_token(token, tokens)
+            if pos:
+                parse_tree = self.chunker.parse(pos)
+                nbars = parse_tree.subtrees(filter=lambda st: st.label() == 'NBAR')
+                noun_phrases = [' '.join([str(token) for token, pos in nbar]) for nbar in nbars]
 
-    @property
+                for phrase in noun_phrases:
+                    self.add_token(phrase, noun_phrases)
+
+                for nbar in nbars:
+                    # skip nouns on their own since they are already in `noun_phrases` and have been added.
+                    if len(nbar) > 1:
+                        for token, pos in nbar:
+                            if pos.startswith('NN'):
+                                self.add_token(token, noun_phrases)
+
     def density_score(self):
         """A fairly arbitrary scoring metric that attempts to measure the 'density' of a given document based on it's
         term co-occurrence graph.
         """
-        N = len(self.edges)
+        N = len(self.graph)
         res = N
 
-        for node in self.edges:
-            res += sum(self.edges[node].values()) / N
+        for node in self.graph:
+            res += sum(self.graph[node].values()) / N
 
         return res
 
+    def ranked_terms(self):
+        """Rank the terms that appear in this document by frequency."""
+        word_conn_pairs = [(k, sum(self.graph[k].values())) for k in self.graph]
+
+        ranked = sorted(word_conn_pairs, key=lambda pair: pair[1])
+
+        return list(reversed(ranked))
+
+    def top_n(self, term, n=5):
+        """Get the top n related words, ranked by term frequency.
+        :param term: The term to get the related words for.
+        :param n: How many results to show.
+        :return:
+        """
+        term_count_pairs = [(k, self.graph[term][k]) for k in self.graph[term]]
+
+        ranked = list(reversed(sorted(term_count_pairs, key=lambda pair: pair[1])))
+
+        return ranked[:min(n, len(ranked))]
+
     def save(self, filepath):
         with open(filepath, 'wb') as f:
-            pickle.dump((text, self.edges), f)
+            pickle.dump((text, self.graph), f)
 
     @staticmethod
     def load(filepath):
@@ -112,7 +145,7 @@ class Text2Graph:
             text, edges = pickle.load(f)
 
         t2g = Text2Graph(text)
-        t2g.edges = edges
+        t2g.graph = edges
 
         return t2g
 
@@ -141,4 +174,4 @@ if __name__ == '__main__':
                 t2g.parse()
                 t2g.save(path + '/' + file[:-4] + '.graph')
 
-                print('Density Score: %.4f' % t2g.density_score)
+                print('Density Score: %.4f' % t2g.density_score())
