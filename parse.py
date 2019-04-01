@@ -1,4 +1,5 @@
 import argparse
+import math
 import os
 import pickle
 import re
@@ -18,6 +19,7 @@ class Text2Graph:
         self.wnl = nltk.stem.WordNetLemmatizer()
         self.graph = {}
         self.text = text
+        self.doc_length = 0
 
     def is_valid_token(self, t):
         return (t.isalnum() or re.match(self.hyphenated_word, t)) and \
@@ -90,13 +92,15 @@ class Text2Graph:
 
             if pos:
                 parse_tree = self.chunker.parse(pos)
-                nbars = parse_tree.subtrees(filter=lambda st: st.label() == 'NBAR')
+                nbars = list(parse_tree.subtrees(filter=lambda st: st.label() == 'NBAR'))
                 noun_phrases = [' '.join([str(token) for token, pos in nbar]) for nbar in nbars]
 
                 for phrase in noun_phrases:
                     self.add_token(phrase, noun_phrases)
 
                 for nbar in nbars:
+                    self.doc_length += 1
+
                     # skip nouns on their own since they are already in `noun_phrases` and have been added.
                     if len(nbar) > 1:
                         for token, pos in nbar:
