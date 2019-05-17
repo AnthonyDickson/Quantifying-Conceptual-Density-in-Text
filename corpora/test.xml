@@ -1,0 +1,46 @@
+<document>
+    <title>
+        Top 5 Secrets for Bug-Free Code. Number 5 will shock you!
+    </title>
+
+    <section>
+        <title>Introduction</title>
+        Nobody likes <entity>bugs</entity> in their <entity>code</entity>. In this awesome document
+        I will introduce the top 5 secrets to producing bug-free code.
+    </section>
+
+    <section>
+        <title>It is a Feature</title>
+        It is not a <entity>bug</entity>, it is a <entity>feature</entity>! My code does exactly
+        what I intended it to do! This motto will keep you motivated and encouraged
+        to keep on being that programming rock star that everyone aspires to become.
+    </section>
+
+    <section>
+        <title>Unit Testing</title>
+        Sick of failing <entity>unit tests</entity>? Just change all of your tests to <verbatum>assert(True)</verbatum>
+        and voila! Now you have super fast <entity>unit tests</entity> that all pass!
+    </section>
+
+    <section>
+        <title>Use Comments</title>
+        We all know that it is common knowledge that fixing one <entity>bug</entity> will introduce
+        many more bugs. So why fix bugs if they are just going to introduce more?
+        So let's just <entity>comment</entity> out the code that causes the bug (This may or may
+        not have a cascading effect).
+    </section>
+
+    <section>
+        <title>A loop hole</title>
+        A quirky <entity>loop hole</entity> is to simply write no <entity>code</entity>. Code that does not
+        exist cannot have bugs!
+    </section>
+
+    <section>
+        <title>Write Good Code</title>
+        The best way for writing <entity>bug-free code</entity> is to simply write
+        <entity>bug-free code</entity>
+        from the get go. Why bother with debugging and
+        fixing buggy code when you can just write perfect code? Easy!
+    </section>
+</document>

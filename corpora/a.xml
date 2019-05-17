@@ -1,0 +1,23 @@
+<document>
+    <title>
+        This is a document.
+    </title>
+
+    <section>
+        <title>A</title>
+        This is a self-contained entity called <entity>X</entity>.
+        This is a forward-link to <entity>B</entity>.
+    </section>
+
+    <section>
+        <title>B</title>
+        This is a self-contained entity called <entity>Y</entity>.
+        This is a forward-link to <entity>C</entity>.
+    </section>
+
+    <section>
+        <title>C</title>
+        This is a self-contained entity called <entity>Z</entity>.
+        This is a backwards-link to <entity>A</entity> that creates a cycle.
+    </section>
+</document>
