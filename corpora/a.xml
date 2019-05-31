@@ -12,6 +12,7 @@
     <section>
         <title>B</title>
         This is a self-contained entity called <entity>Y</entity>.
+        This is a backwards-link to <entity>A</entity> that creates a cycle.
         This is a forward-link to <entity>C</entity>.
     </section>
 
