@@ -21,9 +21,11 @@ class Chunk:
     def __str__(self):
         return "'%s': %s" % (self.name, self.items)
 
+
 # TODO: Mark edges that form links.
+# TODO: Return paths that form cycles.
 # TODO: Return a list of cycle lengths.
-def find_cycles(chunk, chunks, visited, length=0):
+def find_cycles(chunk, chunks, visited, marked, length=0):
     """Check if a cycle is formed between chunks.
 
     :param chunk: The chunk to start the search from.
@@ -34,6 +36,7 @@ def find_cycles(chunk, chunks, visited, length=0):
     """
     if chunk in visited:
         print('Found cycle of length %d' % length)
+        marked.add(chunk.name)
         return 1
 
     visited.add(chunk)
@@ -42,7 +45,12 @@ def find_cycles(chunk, chunks, visited, length=0):
 
     for item in chunk.items:
         if item in chunks:
-            cycles += find_cycles(chunks[item], chunks, visited, length + 1)
+            n_cycles = find_cycles(chunks[item], chunks, visited, marked, length + 1)
+
+            if n_cycles > 0:
+                marked.add(chunk.name)
+
+            cycles += n_cycles
 
     return cycles
 
@@ -133,21 +141,37 @@ if __name__ == '__main__':
 
         print()
 
-    n_cycles = find_cycles(chunks[0], chunks_dict, set())
+    nodes_in_cycles = set()
+    n_cycles = find_cycles(chunks[0], chunks_dict, set(), nodes_in_cycles)
 
     if n_cycles > 0:
         print('Found %d cycle(s) in the graph.' % n_cycles)
+        print('These nodes are part of at least one cycle:', nodes_in_cycles)
 
     # Display the graph representing the relationships of the entities in the text.
     try:
         g = graphviz.Digraph()
 
-        for chunk in chunks:
-            g.node(chunk.name)
+        # Add the nodes for the sections first
+        g.attr('node', shape='square')
 
+        for chunk in chunks:
+            if chunk.name in nodes_in_cycles:
+                g.node(chunk.name, color='orange')
+            else:
+                g.node(chunk.name)
+
+        g.attr('node', shape='oval')
+
+        # Add the nodes for the entities and all of the edges
+        for chunk in chunks:
             for item in chunk.items:
                 g.node(item)
-                g.edge(chunk.name, item)
+
+                if chunk.name in nodes_in_cycles and item in nodes_in_cycles:
+                    g.edge(chunk.name, item, color='orange')
+                else:
+                    g.edge(chunk.name, item)
 
         g.render(view=True)
     except graphviz.backend.ExecutableNotFound:
