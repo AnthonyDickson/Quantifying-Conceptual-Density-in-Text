@@ -1,0 +1,6 @@
+name: cosc480
+dependencies:
+  - python=3.7
+  - pip
+  - pip:
+    - graphviz
