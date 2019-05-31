@@ -21,25 +21,30 @@ class Chunk:
     def __str__(self):
         return "'%s': %s" % (self.name, self.items)
 
-
-def forms_cycle(chunk, chunks, visited):
+# TODO: Mark edges that form links.
+# TODO: Return a list of cycle lengths.
+def find_cycles(chunk, chunks, visited, length=0):
     """Check if a cycle is formed between chunks.
 
     :param chunk: The chunk to start the search from.
     :param chunks: A dictionary that maps entities to the chunks they appear in.
     :param visited: The set of chunks that have been visited so far.
+    :param length: The length of the current path.
     :return: True if a cycle is found, False otherwise.
     """
     if chunk in visited:
-        return True
+        print('Found cycle of length %d' % length)
+        return 1
 
     visited.add(chunk)
 
-    for item in chunk.items:
-        if item in chunks and forms_cycle(chunks[item], chunks, visited):
-            return True
+    cycles = 0
 
-    return False
+    for item in chunk.items:
+        if item in chunks:
+            cycles += find_cycles(chunks[item], chunks, visited, length + 1)
+
+    return cycles
 
 
 def register_entity(entity, chunk, entities):
@@ -128,10 +133,10 @@ if __name__ == '__main__':
 
         print()
 
-    has_cycle = forms_cycle(chunks[0], chunks_dict, set())
+    n_cycles = find_cycles(chunks[0], chunks_dict, set())
 
-    if has_cycle:
-        print('Found cycle in graph.')
+    if n_cycles > 0:
+        print('Found %d cycle(s) in the graph.' % n_cycles)
 
     # Display the graph representing the relationships of the entities in the text.
     try:
