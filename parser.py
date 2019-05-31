@@ -134,13 +134,16 @@ if __name__ == '__main__':
         print('Found cycle in graph.')
 
     # Display the graph representing the relationships of the entities in the text.
-    g = graphviz.Digraph()
+    try:
+        g = graphviz.Digraph()
 
-    for chunk in chunks:
-        g.node(chunk.name)
+        for chunk in chunks:
+            g.node(chunk.name)
 
-        for item in chunk.items:
-            g.node(item)
-            g.edge(chunk.name, item)
+            for item in chunk.items:
+                g.node(item)
+                g.edge(chunk.name, item)
 
-    g.render(view=True)
+        g.render(view=True)
+    except graphviz.backend.ExecutableNotFound:
+        print('Could not display graph -- GraphViz does not seem to be installed.')

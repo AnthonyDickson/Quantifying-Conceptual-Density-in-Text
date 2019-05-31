@@ -14,6 +14,6 @@
         <entity>Wheat flour</entity> is made from ground up <entity>wheat</entity>.
         <entity>Wheat</entity> is a type of <entity>grain</entity>.
         <entity>Wheat</entity> is commonly used for making <entity>wheat flour</entity>,
-        the main ingredient of <entity>bread</entity>.
+        the main ingredient of <entity>bread dough</entity>.
     </section>
 </document>
