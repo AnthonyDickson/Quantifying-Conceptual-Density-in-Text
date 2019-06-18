@@ -15,7 +15,7 @@ class Text2Graph:
             {<JJ>*<NN.*>}
         """
         self.chunker = nltk.RegexpParser(self.grammar)
-        self.wnl = nltk.stem.WordNetLemmatizer()
+        self.lemmatiser = nltk.stem.WordNetLemmatizer()
         self.graph = {}
         self.text = text
         self.doc_length = 0
@@ -67,6 +67,13 @@ class Text2Graph:
         return processed
 
     def split_words(self, tokens):
+        """Split hyphenated words (two words joined by a hyphen, not a single
+        word that was hyphenated as a visual line break) into two separate words.
+
+        :param tokens: The set of tokens to process
+        :return: The new set of tokens where hyphenated words have been split
+        into two separate tokens.
+        """
         res = []
 
         for token in tokens:
@@ -86,7 +93,7 @@ class Text2Graph:
         for sent in sentences:
             tokens = nltk.word_tokenize(sent)
             tokens = filter(self.is_valid_token, tokens)
-            tokens = map(self.wnl.lemmatize, tokens)
+            tokens = map(self.lemmatiser.lemmatize, tokens)
             pos = nltk.pos_tag(list(tokens))
 
             if pos:
