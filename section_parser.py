@@ -1,5 +1,6 @@
 import argparse
 import xml.etree.ElementTree as ET
+from math import log2
 
 import graphviz
 
@@ -10,16 +11,22 @@ class Chunk:
     """
     def __init__(self, name):
         self.name = name
-        self.items = set()
+        self.entity_counts = dict()
+
+    def log_count(self, entity):
+        return 1 + log2(self.entity_counts[entity])
 
     def add(self, item):
         if item == self.name:
             return
 
-        self.items.add(item)
+        if item in self.entity_counts:
+            self.entity_counts[item] += 1
+        else:
+            self.entity_counts[item] = 1
 
     def __str__(self):
-        return "'%s': %s" % (self.name, self.items)
+        return "'%s': %s" % (self.name, list(self.entity_counts.keys()))
 
 
 # TODO: Mark edges that form links.
@@ -43,9 +50,9 @@ def find_cycles(chunk, chunks, visited, marked, length=0):
 
     cycles = 0
 
-    for item in chunk.items:
-        if item in chunks:
-            n_cycles = find_cycles(chunks[item], chunks, visited, marked, length + 1)
+    for entity in chunk.entity_counts:
+        if entity in chunks:
+            n_cycles = find_cycles(chunks[entity], chunks, visited, marked, length + 1)
 
             if n_cycles > 0:
                 marked.add(chunk.name)
@@ -123,24 +130,6 @@ if __name__ == '__main__':
 
     print('\nLink types...')
 
-    for i, chunk in enumerate(chunks):
-        print('Chunk: %s' % chunk)
-
-        for item in chunk.items:
-            if chunk.name in entities[item] and len(entities[item]) == 1:
-                print("Self-contained entity '%s' found in '%s'." % (item, chunk.name))
-
-        for j in range(i + 1, len(chunks)):
-            for item in chunk.items:
-                if item in chunks[j].name:
-                    print("Forward link from '%s' to '%s'" % (chunk.name, chunks[j].name))
-
-            for item in chunks[j].items:
-                if item in chunk.name:
-                    print("Backward link from '%s' to '%s'" % (chunks[j].name, chunk.name))
-
-        print()
-
     nodes_in_cycles = set()
     n_cycles = find_cycles(chunks[0], chunks_dict, set(), nodes_in_cycles)
 
@@ -150,28 +139,56 @@ if __name__ == '__main__':
 
     # Display the graph representing the relationships of the entities in the text.
     try:
-        g = graphviz.Digraph()
+        g = graphviz.Digraph(engine='circo')
 
         # Add the nodes for the sections first
-        g.attr('node', shape='square')
+        with g.subgraph(name='cluster_main_entities') as sg:
+            sg.attr('node', shape='doublecircle')
 
-        for chunk in chunks:
-            if chunk.name in nodes_in_cycles:
-                g.node(chunk.name, color='orange')
-            else:
-                g.node(chunk.name)
-
-        g.attr('node', shape='oval')
+            for chunk in chunks:
+                sg.node(chunk.name)
 
         # Add the nodes for the entities and all of the edges
-        for chunk in chunks:
-            for item in chunk.items:
-                g.node(item)
+        forward_backward_links = set()
 
-                if chunk.name in nodes_in_cycles and item in nodes_in_cycles:
-                    g.edge(chunk.name, item, color='orange')
-                else:
-                    g.edge(chunk.name, item)
+        for i, chunk in enumerate(chunks):
+            print('Chunk: %s' % chunk)
+
+            # Check for forward and backward links between chunk[i] and chunk[j]
+            for j in range(i + 1, len(chunks)):
+                # Check for forward links
+                for entity in chunk.entity_counts:
+                    if entity in chunks[j].name:
+                        print("Forward link from '%s' to '%s'" % (chunk.name, chunks[j].name))
+                        g.edge(chunk.name, entity,
+                               penwidth=str(chunk.log_count(entity)),
+                               color='blue')
+                        forward_backward_links.add((chunk.name, entity))
+
+                # Check for backward links
+                for entity in chunks[j].entity_counts:
+                    if entity in chunk.name:
+                        print("Backward link from '%s' to '%s'" % (chunks[j].name, chunk.name))
+                        g.edge(chunks[j].name, entity,
+                               penwidth=str(chunks[j].log_count(entity)),
+                               color='red')
+                        forward_backward_links.add((chunks[j].name, entity))
+
+            # Check for self-contained and shared entities, also add links
+            # that are neither forward or backward.
+            for entity in chunk.entity_counts:
+                if chunk.name in entities[entity]:
+                    if len(entities[entity]) == 1:
+                        print("Self-contained entity '%s' found in: '%s'." % (entity, chunk.name))
+                    else:
+                        print("Shared entity '%s' found in %s." % (entity, ', '.join(entities[entity])))
+
+                # Do check to avoid adding duplicate links
+                if (chunk.name, entity) not in forward_backward_links:
+                    g.edge(chunk.name, entity,
+                           penwidth=str(chunk.log_count(entity)))
+
+            print()
 
         g.render(view=True)
     except graphviz.backend.ExecutableNotFound:
