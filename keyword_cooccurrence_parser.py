@@ -18,8 +18,8 @@ class Text2Graph:
                 {<NN.*|JJ>*<NN.*>}  # Nouns and Adjectives, terminated with Nouns
                 
             NP:
-                {<NBAR>}
                 {<NBAR><IN><NBAR>}  # Above, connected with in/of/etc...
+                {<NBAR>}
         """
         self.chunker = nltk.RegexpParser(self.grammar)
         self.lemmatiser = nltk.stem.WordNetLemmatizer()
