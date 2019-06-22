@@ -1,1 +1,4 @@
-corpora/*.graph
+*.graph
+*.gv
+.idea/
+figures/out
