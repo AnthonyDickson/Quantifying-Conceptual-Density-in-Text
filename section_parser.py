@@ -190,6 +190,6 @@ if __name__ == '__main__':
 
             print()
 
-        g.render(view=True)
+        g.render(format='png', view=True)
     except graphviz.backend.ExecutableNotFound:
         print('Could not display graph -- GraphViz does not seem to be installed.')
