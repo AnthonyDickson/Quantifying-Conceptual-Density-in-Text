@@ -4,21 +4,21 @@
     </title>
 
     <section>
-        <title>A</title>
-        This is a self-contained entity called <entity>X</entity>.
-        This is a forward-link to <entity>B</entity>.
+        <title>AA</title>
+        This is a self-contained entity called <entity>XX</entity>.
+        This is a forward-link to <entity>BB</entity>.
     </section>
 
     <section>
-        <title>B</title>
-        This is a self-contained entity called <entity>Y</entity>.
-        This is a backwards-link to <entity>A</entity> that creates a cycle.
-        This is a forward-link to <entity>C</entity>.
+        <title>BB</title>
+        This is a self-contained entity called <entity>YY</entity>.
+        This is a backwards-link to <entity>AA</entity> that creates a cycle.
+        This is a forward-link to <entity>CC</entity>.
     </section>
 
     <section>
-        <title>C</title>
-        This is a self-contained entity called <entity>Z</entity>.
-        This is a backwards-link to <entity>A</entity> that creates a cycle.
+        <title>CC</title>
+        This is a self-contained entity called <entity>ZZ</entity>.
+        This is a backwards-link to <entity>AA</entity> that creates a cycle.
     </section>
 </document>
