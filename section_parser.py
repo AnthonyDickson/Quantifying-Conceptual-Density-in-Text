@@ -113,9 +113,23 @@ class Edge:
     def __hash__(self):
         return hash(self.tail.name + self.head.name)
 
+    @property
+    def log_weight(self):
+        """A logarithmically scaled version of `weight`.
+
+        This is used when rendering an edge so that the edges do not get
+        arbitrarily thick as the weight gets large.
+        """
+        # Log weight:
+        # > Start at one so that edges are always at least one unit thick
+        # > Add one to log argument so that the return value is strictly
+        # non-negative, weight=0 gives a return value of 0 and avoids
+        # log(0) which is undefined.
+        return 1 + log2(1 + self.weight)
+
     def render(self, g: graphviz.Digraph):
         g.edge(self.tail.name, self.head.name,
-               penwidth=str(1 + log2(self.weight)),
+               penwidth=str(self.log_weight),
                color=self.color,
                style=self.style)
 
