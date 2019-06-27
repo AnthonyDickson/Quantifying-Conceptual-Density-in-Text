@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from math import log2
 
 import graphviz
+import nltk
 
 
 class Chunk:
@@ -92,6 +93,15 @@ if __name__ == '__main__':
     chunks = []
     chunks_dict = dict()
     entities = dict()
+    grammar = r"""
+                NBAR:
+                    {<NN.*|JJ>*<NN.*>}  # Nouns and Adjectives, terminated with Nouns
+
+                NP:
+                    {<NBAR><IN><NBAR>}  # Above, connected with in/of/etc...
+                    {<NBAR>}
+            """
+    chunker = nltk.RegexpParser(grammar)
 
     for section in root.findall('section'):
         section_title = section.find('title').text
@@ -114,11 +124,20 @@ if __name__ == '__main__':
             # E.g. 'wheat flour' gives the entities 'wheat', 'flour', and 'wheat flour'
             parts = entity_name.split(' ')
 
-            for i in range(len(parts)):
-                register_entity(parts[i], chunk, entities)
+            phrase = nltk.word_tokenize(entity_name)
+            tags = nltk.pos_tag(phrase)
+            tree = chunker.parse(tags)
 
-                for j in range(i + 1, len(parts)):
-                    register_entity(' '.join(parts[i:j]), chunk, entities)
+            register_entity(entity_name, chunk, entities)
+
+            for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
+                register_entity(' '.join([str(token) for token, tag in st]), chunk, entities)
+
+                nouns = [token for token, tag in st if tag.startswith('NN')]
+
+                for i in range(len(nouns)):
+                    register_entity(nouns[i], chunk, entities)
+                    register_entity(' '.join(nouns[i:]), chunk, entities)
 
         chunks.append(chunk)
 
