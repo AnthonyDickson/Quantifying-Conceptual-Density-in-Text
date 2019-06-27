@@ -8,11 +8,13 @@ import nltk
 
 class Graph:
     def __init__(self):
+        self.edges = set()
         self.nodes = set()
         self.node_index = dict()
         self.section_index = dict()
         self.section_nodes = set()
-        self.edges = dict()
+        self.adjacency_list = dict()
+        self.adjacency_index = dict()
 
     def add_node(self, node):
         if node.name == node.section_name and node in self.nodes:
@@ -43,19 +45,18 @@ class Graph:
         if node.name == node.section_name:
             self.section_nodes.add(node)
 
-    def remove_node(self, node):
-        self.nodes.remove(node)
-        del self.node_index[node.name]
-        self.section_nodes.remove(node)
-        self.section_index[node.section_name].remove(node)
-
     def add_edge(self, tail, head):
         if tail == head:
             return
-        elif tail in self.edges:
-            self.edges[tail].add(head)
+
+        if tail in self.adjacency_list:
+            self.adjacency_list[tail].add(head)
+            self.adjacency_index[head].add(tail)
         else:
-            self.edges[tail] = {head}
+            self.adjacency_list[tail] = {head}
+            self.adjacency_index[head] = {tail}
+
+        self.edges.add(Edge(tail, head))
 
     def render(self):
         try:
@@ -70,9 +71,8 @@ class Graph:
             for node in self.nodes:
                 g.node(node.name)
 
-            for tail in self.edges:
-                for head in self.edges[tail]:
-                    g.edge(tail.name, head.name)
+            for edge in self.edges:
+                edge.render(g)
 
             g.render(format='png', view=True)
         except graphviz.backend.ExecutableNotFound:
@@ -80,7 +80,7 @@ class Graph:
 
 
 class Node:
-    def __init__(self, name, section_name):
+    def __init__(self, name: str, section_name: str):
         self.name = name
         self.section_name = section_name
 
@@ -98,16 +98,24 @@ class Node:
 
 
 class Edge:
-    def __init__(self, tail, head, weight=1):
+    def __init__(self, tail: Node, head: Node, weight=1):
         self.tail = tail
         self.head = head
         self.weight = weight
         self.color = 'black'
+        self.style = 'solid'
 
-    def render(self, g):
+    def __eq__(self, other):
+        return self.tail == other.tail and self.head == other.head
+
+    def __hash__(self):
+        return hash(self.tail.name + self.head.name)
+
+    def render(self, g: graphviz.Digraph):
         g.edge(self.tail.name, self.head.name,
                penwidth=str(1 + log2(self.weight)),
-               color=self.color)
+               color=self.color,
+               style=self.style)
 
 
 class ForwardEdge(Edge):
@@ -122,6 +130,13 @@ class BackwardEdge(Edge):
         super().__init__(tail, head, weight)
 
         self.color = 'red'
+
+
+class PartialEdge(Edge):
+    def __init__(self, tail, head, weight=1):
+        super().__init__(tail, head, weight)
+
+        self.style = 'dashed'
 
 
 class Chunk:
@@ -149,7 +164,7 @@ class Chunk:
         return "'%s': %s" % (self.name, list(self.entity_counts.keys()))
 
 
-# TODO: Mark edges that form links.
+# TODO: Mark adjacency_list that form links.
 # TODO: Return paths that form cycles.
 # TODO: Return a list of cycle lengths.
 def find_cycles(chunk, chunks, visited, marked, length=0):
@@ -301,7 +316,7 @@ if __name__ == '__main__':
     #         for chunk in chunks:
     #             sg.node(chunk.name)
     #
-    #     # Add the nodes for the entities and all of the edges
+    #     # Add the nodes for the entities and all of the adjacency_list
     #     forward_backward_links = set()
     #
     #     for i, chunk in enumerate(chunks):
