@@ -10,9 +10,16 @@ class Text2Graph:
     def __init__(self, text):
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.hyphenated_word = re.compile(r'^[a-z]+([/-][a-z]+)+$')
+        # Grammar from:
+        # S. N. Kim, T. Baldwin, and M.-Y. Kan. Evaluating n-gram based evaluation metrics for automatic keyphrase extraction.
+        # Technical report, University of Melbourne, Melbourne 2010.
         self.grammar = r"""
-        NBAR: 
-            {<JJ>*<NN.*>}
+            NBAR:
+                {<NN.*|JJ>*<NN.*>}  # Nouns and Adjectives, terminated with Nouns
+                
+            NP:
+                {<NBAR><IN><NBAR>}  # Above, connected with in/of/etc...
+                {<NBAR>}
         """
         self.chunker = nltk.RegexpParser(self.grammar)
         self.lemmatiser = nltk.stem.WordNetLemmatizer()
@@ -92,33 +99,38 @@ class Text2Graph:
 
         for sent in sentences:
             tokens = nltk.word_tokenize(sent)
-            tokens = filter(self.is_valid_token, tokens)
-            tokens = map(self.lemmatiser.lemmatize, tokens)
+            # tokens = filter(self.is_valid_token, tokens)
+            # tokens = map(self.lemmatiser.lemmatize, tokens)
             pos = nltk.pos_tag(list(tokens))
 
             if pos:
+                # parse_tree = self.chunker.parse(pos)
+                # nbars = list(parse_tree.subtrees(filter=lambda st: st.label() == 'NBAR'))
+                # noun_phrases = [' '.join([str(token) for token, pos in nbar]) for nbar in nbars]
+
                 parse_tree = self.chunker.parse(pos)
-                nbars = list(parse_tree.subtrees(filter=lambda st: st.label() == 'NBAR'))
-                noun_phrases = [' '.join([str(token) for token, pos in nbar]) for nbar in nbars]
+                noun_phrases = list(parse_tree.subtrees(filter=lambda st: st.label() == 'NP'))
+                nbar_phrases = [nbar.leaves() for nbar in noun_phrases]
+                noun_phrases = [' '.join([str(token) for token, pos in nbar]) for nbar in nbar_phrases]
 
                 for phrase in noun_phrases:
                     self.add_token(phrase, noun_phrases)
 
-                for nbar in nbars:
+                for nbar in noun_phrases:
                     self.doc_length += 1
 
-                    # skip nouns on their own since they are already in `noun_phrases` and have been added.
-                    if len(nbar) > 1:
-                        for token, pos in nbar:
-                            if pos.startswith('NN'):
-                                self.add_token(token, noun_phrases)
+                    # # skip nouns on their own since they are already in `noun_phrases` and have been added.
+                    # if len(nbar) > 1:
+                    #     for token, pos in nbar:
+                    #         if pos.startswith('NN'):
+                    #             self.add_token(token, noun_phrases)
 
     def density_score(self):
         """A fairly arbitrary scoring metric that attempts to measure the 'density' of a given document based on it's
         term co-occurrence graph.
         """
         N = len(self.graph)
-        res = N
+        res = 0
 
         for node in self.graph:
             res += sum(self.graph[node].values()) / N
