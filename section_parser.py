@@ -13,6 +13,7 @@ class Graph:
         self.node_index = dict()
         self.section_index = dict()
         self.section_nodes = set()
+        self.sections = list()  # used to record order of that sections are introduced
         self.adjacency_list = dict()
         self.adjacency_index = dict()
 
@@ -41,6 +42,7 @@ class Graph:
             self.section_index[node.section_name].add(node)
         else:
             self.section_index[node.section_name] = {node}
+            self.sections.append(node.section_name)
 
         if node.name == node.section_name:
             self.section_nodes.add(node)
