@@ -167,7 +167,8 @@ class Graph:
 
     def render(self):
         try:
-            g = graphviz.Digraph(engine='circo')
+            g = graphviz.Digraph(engine='neato')
+            g.attr(overlap='false')
 
             for node in self.nodes:
                 node.render(g)
