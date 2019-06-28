@@ -145,7 +145,9 @@ class Graph:
 
     def set_edge(self, edge: Edge):
         the_edge = self.edge_index[(edge.tail.name, edge.head.name)]
-        self.edges.remove(the_edge)
+
+        if the_edge in self.edges:
+            self.edges.remove(the_edge)
 
         self.edges.add(edge)
         self.edge_index[(edge.tail.name, edge.head.name)] = edge
@@ -161,8 +163,7 @@ class Graph:
                     self.edges.remove(the_edge)
 
                     new_edge = ForwardEdge(the_edge.tail, the_edge.head)
-                    self.edge_index[(section_a, section_b)] = new_edge
-                    self.edges.add(new_edge)
+                    self.set_edge(new_edge)
 
     def render(self):
         try:
