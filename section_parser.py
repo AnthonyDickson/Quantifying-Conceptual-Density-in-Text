@@ -1,93 +1,19 @@
 import argparse
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 from math import log2
 
 import graphviz
 import nltk
 
 
-class Graph:
-    def __init__(self):
-        self.edges = set()
-        self.nodes = set()
-        self.node_index = dict()
-        self.section_index = dict()
-        self.section_nodes = set()
-        self.sections = list()  # used to record order of that sections are introduced
-        self.adjacency_list = dict()
-        self.adjacency_index = dict()
-
-    def add_node(self, node):
-        if node.name == node.section_name and node in self.nodes:
-            prev_section_name = self.node_index[node.name].section_name
-            self.node_index[node.name].section_name = node.section_name
-            self.section_nodes.add(node)
-
-            if prev_section_name in self.section_index:
-                self.section_index[prev_section_name].remove(node)
-
-            if node.section_name in self.section_index:
-                self.section_index[node.section_name].add(node)
-            else:
-                self.section_index[node.section_name] = {node}
-
-            return
-        elif node in self.nodes:
-            return
-
-        self.nodes.add(node)
-        self.node_index[node.name] = node
-
-        if node.section_name in self.section_index:
-            self.section_index[node.section_name].add(node)
-        else:
-            self.section_index[node.section_name] = {node}
-            self.sections.append(node.section_name)
-
-        if node.name == node.section_name:
-            self.section_nodes.add(node)
-
-    def add_edge(self, tail, head):
-        if tail == head:
-            return
-
-        if tail in self.adjacency_list:
-            self.adjacency_list[tail].add(head)
-            self.adjacency_index[head].add(tail)
-        else:
-            self.adjacency_list[tail] = {head}
-            self.adjacency_index[head] = {tail}
-
-        self.edges.add(Edge(tail, head))
-
-    def render(self):
-        try:
-            g = graphviz.Digraph(engine='circo')
-
-            with g.subgraph(name='cluster_main_entities') as sg:
-                sg.attr('node', shape='doublecircle')
-
-                for section_node in self.section_nodes:
-                    sg.node(section_node.name)
-
-            for node in self.nodes:
-                g.node(node.name)
-
-            for edge in self.edges:
-                edge.render(g)
-
-            g.render(format='png', view=True)
-        except graphviz.backend.ExecutableNotFound:
-            print('Could not display graph -- GraphViz does not seem to be installed.')
-
-
 class Node:
+    def __eq__(self, other):
+        return self.name == other.name
+
     def __init__(self, name: str, section_name: str):
         self.name = name
         self.section_name = section_name
-
-    def __eq__(self, other):
-        return self.name == other.name
 
     def __hash__(self):
         return hash(self.name)
@@ -97,6 +23,12 @@ class Node:
 
     def __repr__(self):
         return 'Node(%s, %s)' % (self.name, self.section_name)
+
+    def render(self, g: graphviz.Digraph):
+        if self.name == self.section_name:
+            g.node(self.name, shape='doublecircle')
+        else:
+            g.node(self.name)
 
 
 class Edge:
@@ -135,24 +67,116 @@ class Edge:
 
 
 class ForwardEdge(Edge):
-    def __init__(self, tail, head, weight=1):
+    def __init__(self, tail, head, weight=1.5):
         super().__init__(tail, head, weight)
 
         self.color = 'blue'
 
 
 class BackwardEdge(Edge):
-    def __init__(self, tail, head, weight=1):
+    def __init__(self, tail, head, weight=0.5):
         super().__init__(tail, head, weight)
 
         self.color = 'red'
 
 
 class PartialEdge(Edge):
-    def __init__(self, tail, head, weight=1):
+    def __init__(self, tail, head, weight=0.75):
         super().__init__(tail, head, weight)
-
         self.style = 'dashed'
+
+
+class Graph:
+    def __init__(self):
+        self.edges = set()
+        self.edge_index = defaultdict(lambda: None)
+        self.nodes = set()
+        self.node_index = dict()
+        self.section_index = defaultdict(set)
+        self.section_nodes = set()
+        self.sections = list()  # used to record order of that sections are introduced
+        self.adjacency_list = defaultdict(set)
+        self.adjacency_index = defaultdict(set)
+
+    def add_node(self, node):
+        # Handle the case where the node for the main concept of a section
+        # was already added for a previous section
+        if node.name == node.section_name and node in self.nodes:
+            prev_section_name = self.node_index[node.name].section_name
+            self.node_index[node.name].section_name = node.section_name
+            self.section_nodes.add(node)
+
+            if prev_section_name in self.section_index:
+                self.section_index[prev_section_name].remove(node)
+
+            self.section_index[node.section_name].add(node)
+
+            return
+        elif node in self.nodes:
+            # Skip nodes that already exist
+            return
+
+        self.nodes.add(node)
+        self.node_index[node.name] = node
+        self.section_index[node.section_name].add(node)
+
+        if node.section_name not in self.sections:
+            self.sections.append(node.section_name)
+
+        if node.name == node.section_name:
+            self.section_nodes.add(node)
+
+    def add_edge(self, tail, head, edge_type=Edge):
+        # Ignore spurious edges, a concept cannot be defined in terms of itself
+        if tail == head:
+            return None
+
+        self.adjacency_list[tail.name].add(head)
+        self.adjacency_index[head.name].add(tail)
+
+        the_edge = edge_type(tail, head)
+        self.edges.add(the_edge)
+        self.edge_index[(tail.name, head.name)] = the_edge
+
+        return the_edge
+
+    def get_edge(self, tail: str, head: str):
+        return self.edge_index[(tail, head)]
+
+    def set_edge(self, edge: Edge):
+        the_edge = self.edge_index[(edge.tail.name, edge.head.name)]
+        self.edges.remove(the_edge)
+
+        self.edges.add(edge)
+        self.edge_index[(edge.tail.name, edge.head.name)] = edge
+
+    def colour_edges(self):
+        for i in range(len(self.sections)):
+            for j in range(i, len(self.sections)):
+                section_a = self.sections[i]
+                section_b = self.sections[j]
+
+                if (section_a, section_b) in self.edge_index:
+                    the_edge = self.edge_index[(section_a, section_b)]
+                    self.edges.remove(the_edge)
+
+                    new_edge = ForwardEdge(the_edge.tail, the_edge.head)
+                    self.edge_index[(section_a, section_b)] = new_edge
+                    self.edges.add(new_edge)
+
+    def render(self):
+        try:
+            g = graphviz.Digraph(engine='circo')
+
+            for node in self.nodes:
+                node.render(g)
+
+            for edge in self.edges:
+                edge.render(g)
+
+            g.render(format='png', view=True)
+        except graphviz.backend.ExecutableNotFound:
+            print('Could not display graph -- GraphViz does not seem to be installed.')
 
 
 class Chunk:
@@ -289,19 +313,19 @@ if __name__ == '__main__':
                 register_entity(nbar, chunk, entities)
 
                 graph.add_node(Node(nbar, section_title))
-                graph.add_edge(graph.node_index[entity_name], graph.node_index[nbar])
+                graph.add_edge(graph.node_index[entity_name], graph.node_index[nbar], edge_type=PartialEdge)
 
                 nouns = [token for token, tag in st if tag.startswith('NN')]
 
                 for i in range(len(nouns)):
                     register_entity(nouns[i], chunk, entities)
                     graph.add_node(Node(nouns[i], section_title))
-                    graph.add_edge(graph.node_index[nbar], graph.node_index[nouns[i]])
+                    graph.add_edge(graph.node_index[nbar], graph.node_index[nouns[i]], edge_type=PartialEdge)
 
                     substr = ' '.join(nouns[i:])
                     register_entity(substr, chunk, entities)
                     graph.add_node(Node(substr, section_title))
-                    graph.add_edge(graph.node_index[nbar], graph.node_index[substr])
+                    graph.add_edge(graph.node_index[nbar], graph.node_index[substr], edge_type=PartialEdge)
 
         chunks.append(chunk)
 
@@ -378,4 +402,5 @@ if __name__ == '__main__':
     # except graphviz.backend.ExecutableNotFound:
     #     print('Could not display graph -- GraphViz does not seem to be installed.')
 
+    graph.colour_edges()
     graph.render()
