@@ -149,6 +149,11 @@ class Graph:
         # Maps (tail, head) pairs to edge instance
         self.edge_index = defaultdict(lambda: None)
 
+        # Set of self-contained references (edges0
+        self.self_contained_references = set()
+        # Set of shared entities (nodes)
+        self.shared_entities = set()
+
     def add_node(self, node: Node):
         """Add a node to the graph.
 
@@ -340,6 +345,7 @@ class Graph:
             print('Could not display graph -- GraphViz does not seem to be installed.')
 
 
+# TODO: Phase out code that uses Chunks
 class Chunk:
     """A chunk is a section of text on a certain topic.
     It keeps track of what things are related to it.
@@ -424,7 +430,7 @@ if __name__ == '__main__':
     tree = ET.parse(args.file)
     root = tree.getroot()
 
-    # Parse the text and find the chunks - the sections, what the secion is about, the things that are mentioned in it -
+    # Parse the text and find the chunks - the sections, what the section is about, the things that are mentioned in it -
     # and the entities/things that appear in the text and which chunks they appear in.
     chunks = []
     chunks_dict = dict()
@@ -505,64 +511,6 @@ if __name__ == '__main__':
         print('Found %d cycle(s) in the graph.' % n_cycles)
         print('These nodes are part of at least one cycle:', nodes_in_cycles)
 
-    # TODO: do the below except with `graph`.
-    # # Display the graph representing the relationships of the entities in the text.
-    # try:
-    #     g = graphviz.Digraph(engine='circo')
-    #
-    #     # Add the nodes for the sections first
-    #     with g.subgraph(name='cluster_main_entities') as sg:
-    #         sg.attr('node', shape='doublecircle')
-    #
-    #         for chunk in chunks:
-    #             sg.node(chunk.name)
-    #
-    #     # Add the nodes for the entities and all of the adjacency_list
-    #     forward_backward_links = set()
-    #
-    #     for i, chunk in enumerate(chunks):
-    #         print('Chunk: %s' % chunk)
-    #
-    #         # Check for forward and backward links between chunk[i] and chunk[j]
-    #         for j in range(i + 1, len(chunks)):
-    #             # Check for forward links
-    #             for entity in chunk.entity_counts:
-    #                 if entity in chunks[j].name:
-    #                     print("Forward link from '%s' to '%s'" % (chunk.name, chunks[j].name))
-    #                     g.edge(chunk.name, entity,
-    #                            penwidth=str(chunk.log_count(entity)),
-    #                            color='blue')
-    #                     forward_backward_links.add((chunk.name, entity))
-    #
-    #             # Check for backward links
-    #             for entity in chunks[j].entity_counts:
-    #                 if entity in chunk.name:
-    #                     print("Backward link from '%s' to '%s'" % (chunks[j].name, chunk.name))
-    #                     g.edge(chunks[j].name, entity,
-    #                            penwidth=str(chunks[j].log_count(entity)),
-    #                            color='red')
-    #                     forward_backward_links.add((chunks[j].name, entity))
-    #
-    #         # Check for self-contained and shared entities, also add links
-    #         # that are neither forward or backward.
-    #         for entity in chunk.entity_counts:
-    #             if chunk.name in entities[entity]:
-    #                 if len(entities[entity]) == 1:
-    #                     print("Self-contained entity '%s' found in: '%s'." % (entity, chunk.name))
-    #                 else:
-    #                     print("Shared entity '%s' found in %s." % (entity, ', '.join(entities[entity])))
-    #
-    #             # Do check to avoid adding duplicate links
-    #             if (chunk.name, entity) not in forward_backward_links:
-    #                 g.edge(chunk.name, entity,
-    #                        penwidth=str(chunk.log_count(entity)))
-    #
-    #         print()
-    #
-    #     g.render(format='png', view=True)
-    # except graphviz.backend.ExecutableNotFound:
-    #     print('Could not display graph -- GraphViz does not seem to be installed.')
-
     # Correct for inferred edges derived from forward references to main entities:
     # E.g. section on bread references (the main entity) wheat flour, which creates three nodes:
     # 'wheat flour', 'wheat', and 'flour'. Initially these are all assigned the
@@ -573,6 +521,10 @@ if __name__ == '__main__':
             edge = graph.get_edge(node.name, child.name)
 
             if isinstance(edge, ImplicitEdge):
+                graph.section_listings[child.section_name].remove(child)
+                graph.section_listings[node.section_name].add(child)
+                graph.section_index[child.name] = node.section_name
+
                 child.section_name = node.section_name
 
     # Reassign nodes to another section if the node appears more times in that section.
@@ -589,6 +541,25 @@ if __name__ == '__main__':
                     if child_neighbour.section_name != node.section_name and edge.frequency > other_edge.frequency:
                         child.section_name = node.section_name
                         break
+
+    # Nodes that are only referenced from one section are 'self-contained references'
+    # TODO: If a node is only referenced from one section but references nodes
+    #  in other sections, can the edges pointing to that node still be
+    #  considered 'self-contained references'?
+    for section in graph.sections:
+        for node in graph.section_listings[section]:
+            referencing_sections = set()
+
+            for tail in graph.adjacency_index[node.name]:
+                referencing_sections.add(tail.section_name)
+
+            if len(referencing_sections) == 1 and len(referencing_sections.intersection([section])) == 1:
+                for tail in graph.adjacency_index[node.name]:
+                    the_edge = graph.get_edge(tail.name, node.name)
+                    the_edge.weight *= 0.5
+                    graph.self_contained_references.add(the_edge)
+            elif node.name != section:
+                graph.shared_entities.add(node)
 
     graph.colour_edges()
     graph.render()
