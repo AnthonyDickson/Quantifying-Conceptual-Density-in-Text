@@ -503,7 +503,18 @@ if __name__ == '__main__':
             if isinstance(edge, PartialEdge):
                 child.section_name = node.section_name
 
-    # TODO: Reassign nodes to another section if the node appears more times in that section.
+    # Reassign nodes to another section if the node appears more times in that section.
+    for node in graph.section_nodes:
+        for child in graph.adjacency_list[node.name]:
+            if child.section_name != node.section_name and child not in graph.section_nodes:
+                edge = graph.get_edge(node.name, child.name)
+
+                for child_neighbour in graph.adjacency_index[child.name]:
+                    other_edge = graph.get_edge(child_neighbour.name, child.name)
+
+                    if node.section_name != child_neighbour.section_name and edge.frequency > other_edge.frequency:
+                        child.section_name = node.section_name
+                        break
 
     graph.colour_edges()
     graph.render()
