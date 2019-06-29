@@ -442,7 +442,7 @@ class Graph:
             print(sep)
             print('Disjointed Subgraphs:', len(self.subgraphs))
             print('Avg. Disjointed Subgraph Size: %.2f' % (
-                        sum(len(subgraph) for subgraph in self.subgraphs) / len(self.subgraphs)))
+                    sum(len(subgraph) for subgraph in self.subgraphs) / len(self.subgraphs)))
 
         print(sep)
         print('Forward References:', len(self.forward_references))
@@ -454,6 +454,31 @@ class Graph:
             print(sep)
             print('Cycles:', len(self.cycles))
             print('Avg. Cycle Length: %.2f' % (sum([len(cycle) - 1 for cycle in self.cycles]) / len(self.cycles)))
+
+    def score(self) -> float:
+        """Calculate a score of conceptual density for the given graph.
+
+        :return: The score for the graph as a non-negative scalar.
+        """
+        avg_weighted_outdegree = sum([edge.weight for edge in self.edges]) / len(self.nodes)
+
+        n_forward = len(self.forward_references)
+        n_backward = len(self.backward_references)
+        n_contained = len(self.self_contained_references)
+
+        n_cycles = len(self.cycles)
+        avg_cycle_length = sum([len(cycle) - 1 for cycle in self.cycles]) / len(self.cycles)
+
+        n_disjoint = 1 - len(self.subgraphs)
+
+        if n_disjoint > 0:
+            avg_subgraph_size = sum([len(subgraph) for subgraph in self.subgraphs]) / len(self.subgraphs)
+        else:
+            avg_subgraph_size = 0
+
+        return avg_weighted_outdegree + n_forward + n_backward + n_contained + \
+               n_cycles + avg_cycle_length + n_disjoint + \
+               avg_subgraph_size
 
     def render(self):
         """Render the graph using GraphViz."""
@@ -584,4 +609,5 @@ if __name__ == '__main__':
     graph.find_cycles()
     graph.find_subgraphs()
     graph.print_summary()
+    print('Score: %.2f' % graph.score())
     graph.render()
