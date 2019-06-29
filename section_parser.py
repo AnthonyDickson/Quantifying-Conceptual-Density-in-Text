@@ -36,6 +36,7 @@ class Edge:
         self.tail = tail
         self.head = head
         self.weight = weight
+        self.frequency = 1  # the number of the times this edge occurs
         self.color = 'black'
         self.style = 'solid'
 
@@ -57,7 +58,7 @@ class Edge:
         # > Add one to log argument so that the return value is strictly
         # non-negative, weight=0 gives a return value of 0 and avoids
         # log(0) which is undefined.
-        return 1 + log2(1 + self.weight)
+        return 1 + log2(1 + self.weight * self.frequency)
 
     def render(self, g: graphviz.Digraph):
         g.edge(self.tail.name, self.head.name,
@@ -88,17 +89,33 @@ class PartialEdge(Edge):
 
 class Graph:
     def __init__(self):
-        self.edges = set()
-        self.edge_index = defaultdict(lambda: None)
+        """Create an empty graph."""
+        # The set of all nodes (vertices) in the graph.
         self.nodes = set()
+        # Maps node name (concept) to node instance.
         self.node_index = dict()
-        self.section_index = defaultdict(set)
+        # Maps section to nodes found in that section.
+        self.section_listings = defaultdict(set)
+        # Maps node names to sections:
+        self.section_index = defaultdict(lambda: None)
+        # Set of sections nodes (the main concept of a given section).
         self.section_nodes = set()
-        self.sections = list()  # used to record order of that sections are introduced
+        # List of sections used to record order that sections are introduced.
+        self.sections = list()
+        # Maps tail to head nodes
         self.adjacency_list = defaultdict(set)
+        # Maps head to tail nodes
         self.adjacency_index = defaultdict(set)
+        # The set of all edges in the graph
+        self.edges = set()
+        # Maps (tail, head) pairs to edge instance
+        self.edge_index = defaultdict(lambda: None)
 
-    def add_node(self, node):
+    def add_node(self, node: Node):
+        """Add a node to the graph.
+
+        :param node: The node to add.
+        """
         # Handle the case where the node for the main concept of a section
         # was already added for a previous section
         if node.name == node.section_name and node in self.nodes:
@@ -106,10 +123,14 @@ class Graph:
             self.node_index[node.name].section_name = node.section_name
             self.section_nodes.add(node)
 
-            if prev_section_name in self.section_index:
-                self.section_index[prev_section_name].remove(node)
+            if prev_section_name in self.section_listings:
+                self.section_listings[prev_section_name].remove(node)
 
-            self.section_index[node.section_name].add(node)
+            self.section_listings[node.section_name].add(node)
+            self.section_index[node.name] = node.section_name
+
+            if node.section_name not in self.sections:
+                self.sections.append(node.section_name)
 
             return
         elif node in self.nodes:
@@ -118,7 +139,8 @@ class Graph:
 
         self.nodes.add(node)
         self.node_index[node.name] = node
-        self.section_index[node.section_name].add(node)
+        self.section_listings[node.section_name].add(node)
+        self.section_index[node.name] = node.section_name
 
         if node.section_name not in self.sections:
             self.sections.append(node.section_name)
@@ -126,44 +148,109 @@ class Graph:
         if node.name == node.section_name:
             self.section_nodes.add(node)
 
-    def add_edge(self, tail, head, edge_type=Edge):
+    def add_edge(self, tail, head, edge_type=Edge) -> Edge:
+        """Add an edge between two nodes to the graph.
+
+        :param tail: The node that the edge originates from.
+        :param head: The node that the edge points to.
+        :param edge_type: The type of edge to be created.
+        :return: The edge instance, possibly None.
+        """
         # Ignore spurious edges, a concept cannot be defined in terms of itself
         if tail == head:
             return None
 
-        self.adjacency_list[tail.name].add(head)
-        self.adjacency_index[head.name].add(tail)
-
         the_edge = edge_type(tail, head)
-        self.edges.add(the_edge)
-        self.edge_index[(tail.name, head.name)] = the_edge
+
+        if the_edge in self.edges:
+            the_edge = self.get_edge(the_edge.tail.name, the_edge.head.name)
+            the_edge.frequency += 1
+
+            return the_edge
+        else:
+            self.adjacency_list[tail.name].add(head)
+            self.adjacency_index[head.name].add(tail)
+            self.edges.add(the_edge)
+            self.edge_index[(tail.name, head.name)] = the_edge
 
         return the_edge
 
-    def get_edge(self, tail: str, head: str):
+    def remove_edge(self, edge: Edge):
+        """Remove an edge from the graph.
+
+        :param edge: The edge to remove
+        """
+        self.edges.discard(edge)
+
+        if (edge.tail.name, edge.head.name) in self.edge_index:
+            del self.edge_index[(edge.tail.name, edge.head.name)]
+
+        self.adjacency_list[edge.tail.name].discard(edge.head)
+        self.adjacency_index[edge.head.name].discard(edge.tail)
+
+    def get_edge(self, tail: str, head: str) -> Edge:
+        """Get the edge that connects the nodes corresponding to `tail` and `head`.
+
+        :param tail: The name of the node that the edge originates from.
+        :param head: The name of the node that the edge points to.
+        :return: The corresponding edge if it exists in the graph, None otherwise.
+        """
         return self.edge_index[(tail, head)]
 
-    def set_edge(self, edge: Edge):
+    def set_edge(self, edge: Edge) -> Edge:
+        """Set (delete and add) an edge in the graph.
+
+        The edge that is deleted will be the edge that has the same tail and
+        head as the function argument `edge`.
+
+        :param edge: The new edge that should replace the one in the graph.
+        :return: The new edge.
+        """
         the_edge = self.edge_index[(edge.tail.name, edge.head.name)]
+        self.remove_edge(the_edge)
 
-        if the_edge in self.edges:
-            self.edges.remove(the_edge)
-
-        self.edges.add(edge)
-        self.edge_index[(edge.tail.name, edge.head.name)] = edge
+        return self.add_edge(edge.tail, edge.head, type(edge))
 
     def colour_edges(self):
-        for i in range(len(self.sections)):
-            for j in range(i, len(self.sections)):
-                section_a = self.sections[i]
-                section_b = self.sections[j]
+        visited = set()
+        path = list()
 
-                if (section_a, section_b) in self.edge_index:
-                    the_edge = self.edge_index[(section_a, section_b)]
-                    self.edges.remove(the_edge)
+        for section_name in self.sections:
+            origin = self.node_index[section_name]
+            self._colour_edges(origin, origin, visited, path)
 
-                    new_edge = ForwardEdge(the_edge.tail, the_edge.head)
-                    self.set_edge(new_edge)
+    def _colour_edges(self, curr: Node, start: Node, visited: set, path: list):
+        path.append(curr)
+
+        if (curr.name in self.sections and curr != start) or curr.section_name != start.section_name:
+            start_i = self.sections.index(self.section_index[start.name])
+            curr_i = self.sections.index(self.section_index[curr.name])
+
+            if start_i < curr_i:
+                self._colour_path(path, ForwardEdge)
+            elif start_i > curr_i:
+                self._colour_path(path, BackwardEdge)
+        elif curr not in visited:
+            visited.add(curr)
+
+            for child in self.adjacency_list[curr.name]:
+                self._colour_edges(child, start, visited, path)
+
+        path.pop()
+
+    def _colour_path(self, path, edge_type=Edge):
+        for i in range(1, len(path)):
+            prev_node = path[i - 1]
+            node = path[i]
+            edge = self.get_edge(prev_node.name, node.name)
+
+            new_edge = edge_type(edge.tail, edge.head)
+            new_edge = self.set_edge(new_edge)
+            new_edge.style = edge.style  # preserve edge style
+            new_edge.frequency = edge.frequency
+
+            if node.section_name == path[0].section_name:
+                new_edge.color = edge.color
 
     def render(self):
         try:
@@ -403,6 +490,20 @@ if __name__ == '__main__':
     #     g.render(format='png', view=True)
     # except graphviz.backend.ExecutableNotFound:
     #     print('Could not display graph -- GraphViz does not seem to be installed.')
+
+    # Correct for inferred edges derived from forward references to main entities:
+    # E.g. section on bread references (the main entity) wheat flour, which creates three nodes:
+    # 'wheat flour', 'wheat', and 'flour'. Initially these are all assigned the
+    # section 'bread', which is incorrect since 'wheat flour' is its own section
+    # and any nodes derived from this should also be of the same section.
+    for node in graph.section_nodes:
+        for child in graph.adjacency_list[node.name]:
+            edge = graph.get_edge(node.name, child.name)
+
+            if isinstance(edge, PartialEdge):
+                child.section_name = node.section_name
+
+    # TODO: Reassign nodes to another section if the node appears more times in that section.
 
     graph.colour_edges()
     graph.render()
