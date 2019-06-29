@@ -163,6 +163,8 @@ class Graph:
         self.shared_entities: Set[Node] = set()
         # Set of self-referential loops
         self.cycles: List[List[Edge]] = list()
+        # Set of disjointed_subgraphs
+        self.subgraphs: List[Set[Node]] = list()
 
     def add_node(self, node: Node):
         """Add a node to the graph.
@@ -386,19 +388,67 @@ class Graph:
 
         path.pop()
 
+    def find_subgraphs(self) -> List[Set[Node]]:
+        """Find disjointed subgraphs in the graph.
+
+        :return: A list of the subgraphs.
+        """
+        visited = set()
+        unvisited = set(self.nodes)
+        origin = None
+
+        while len(unvisited) > 0:
+            unvisited.difference_update(visited)
+            visited = set()
+
+            for node in unvisited:
+                origin = node
+                break
+
+            self._find_subgraphs(origin, visited)
+            self.subgraphs.append(set(visited))
+
+        return self.subgraphs
+
+    def _find_subgraphs(self, node: Node, visited: Set[Node]):
+        """Recursively find the nodes in the disjointed subgraph starting from
+        a given node.
+
+        :param node: The next node to evaluate.
+        :param visited: The nodes that have been visited in the DFS traversal
+                        so far.
+        """
+        if node not in visited:
+            visited.add(node)
+
+            for child in self.adjacency_list[node.name]:
+                self._find_subgraphs(child, visited)
+
     def print_summary(self):
+        sep = '=' * 80
+
         # TODO: Add some sort of ID or name for graph.
         print('Summary of Graph')
+        print(sep)
         print('Nodes:', len(self.nodes))
         print('Edges:', len(self.edges))
-        # print('Disjointed Subgraphs:', len(self.disjointed_subgraphs))
-        # print('Avg. Disjointed Subgraph Size:', ))
+
+        if len(self.subgraphs) > 1:
+            print(sep)
+            print('Disjointed Subgraphs:', len(self.subgraphs))
+            print('Avg. Disjointed Subgraph Size: %.2f' % (
+                        sum(len(subgraph) for subgraph in self.subgraphs) / len(self.subgraphs)))
+
+        print(sep)
         print('Forward References:', len(self.forward_references))
         print('Backward References:', len(self.backward_references))
         print('Self-contained References:', len(self.self_contained_references))
         print('Shared Entities:', len(self.shared_entities))
-        print('Cycles:', len(self.cycles))
-        print('Avg. Cycle Length: %.2f' % (sum([len(cycle) - 1 for cycle in self.cycles]) / len(self.cycles)))
+
+        if len(self.cycles) > 0:
+            print(sep)
+            print('Cycles:', len(self.cycles))
+            print('Avg. Cycle Length: %.2f' % (sum([len(cycle) - 1 for cycle in self.cycles]) / len(self.cycles)))
 
     def render(self):
         """Render the graph using GraphViz."""
@@ -527,5 +577,6 @@ if __name__ == '__main__':
 
     graph.colour_edges()
     graph.find_cycles()
+    graph.find_subgraphs()
     graph.print_summary()
     graph.render()
