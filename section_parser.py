@@ -2,6 +2,7 @@ import argparse
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from math import log2
+from typing import Set, List, Dict, Optional, Tuple, Type
 
 import graphviz
 import nltk
@@ -125,34 +126,43 @@ class ImplicitEdge(Edge):
         self.style = 'dashed'
 
 
+# TODO: Find disjointed subgraphs.
 class Graph:
     def __init__(self):
         """Create an empty graph."""
         # The set of all nodes (vertices) in the graph.
-        self.nodes = set()
+        self.nodes: Set[Node] = set()
         # Maps node name (concept) to node instance.
-        self.node_index = dict()
-        # Maps section to nodes found in that section.
-        self.section_listings = defaultdict(set)
-        # Maps node names to sections:
-        self.section_index = defaultdict(lambda: None)
-        # Set of sections nodes (the main concept of a given section).
-        self.section_nodes = set()
-        # List of sections used to record order that sections are introduced.
-        self.sections = list()
-        # Maps tail to head nodes
-        self.adjacency_list = defaultdict(set)
-        # Maps head to tail nodes
-        self.adjacency_index = defaultdict(set)
-        # The set of all edges in the graph
-        self.edges = set()
-        # Maps (tail, head) pairs to edge instance
-        self.edge_index = defaultdict(lambda: None)
+        self.node_index: Dict[str, Node] = dict()
 
-        # Set of self-contained references (edges0
-        self.self_contained_references = set()
+        # Maps section to nodes found in that section.
+        self.section_listings: Dict[str, Set[Node]] = defaultdict(set)
+        # Maps node names to sections:
+        self.section_index: Dict[str, Optional[str]] = defaultdict(lambda: None)
+        # Set of sections nodes (the main concept of a given section).
+        self.section_nodes: Set[Node] = set()
+        # List of sections used to record order that sections are introduced.
+        self.sections: List[str] = list()
+
+        # Maps tail to head nodes
+        self.adjacency_list: Dict[str, Set[Node]] = defaultdict(set)
+        # Maps head to tail nodes
+        self.adjacency_index: Dict[str: Set[Node]] = defaultdict(set)
+        # The set of all edges in the graph
+        self.edges: Set[Edge] = set()
+        # Maps (tail, head) pairs to edge instance
+        self.edge_index: Dict[Tuple[str, str], Optional[Edge]] = defaultdict(lambda: None)
+
+        # Set of forward references
+        self.forward_references: Set[Edge] = set()
+        # Set of backward references
+        self.backward_references: Set[Edge] = set()
+        # Set of self-contained references (edges)
+        self.self_contained_references: Set[Edge] = set()
         # Set of shared entities (nodes)
-        self.shared_entities = set()
+        self.shared_entities: Set[Node] = set()
+        # Set of self-referential loops
+        self.cycles: List[List[Edge]] = list()
 
     def add_node(self, node: Node):
         """Add a node to the graph.
@@ -195,7 +205,7 @@ class Graph:
         if node.name == node.section_name:
             self.section_nodes.add(node)
 
-    def add_edge(self, tail: Node, head: Node, edge_type=Edge) -> Edge:
+    def add_edge(self, tail: Node, head: Node, edge_type: Type[Edge] = Edge) -> Optional[Edge]:
         """Add an edge between two nodes to the graph.
 
         :param tail: The node that the edge originates from.
@@ -306,11 +316,10 @@ class Graph:
         path.pop()
 
     def _colour_path(self, path, edge_type=Edge):
-        """Colour a path
+        """Colour a path.
 
-        :param path:
-        :param edge_type:
-        :return:
+        :param path: The sequence of edges to colour.
+        :param edge_type: The type to 'colour' the edges.
         """
         for i in range(1, len(path)):
             prev_node = path[i - 1]
@@ -329,7 +338,70 @@ class Graph:
             if node.section_name == path[0].section_name:
                 new_edge.color = edge.color
 
+            if isinstance(new_edge, ForwardEdge):
+                self.forward_references.add(new_edge)
+            elif isinstance(new_edge, BackwardEdge):
+                self.backward_references.add(new_edge)
+
+    # TODO: Fix missing cycles inside larger cycles (see a.xml).
+    def find_cycles(self) -> List[List[Edge]]:
+        """Find cycles in the graph."""
+        visited = set()
+        unvisited = set(self.nodes)
+        path = list()
+        origin = None
+
+        while len(unvisited) > 0:
+            for node in unvisited:
+                origin = node
+                break
+
+            self._find_cycles(origin, origin, visited, path)
+
+            unvisited.difference_update(visited)
+
+        return self.cycles
+
+    def _find_cycles(self, curr: Node, start: Node, visited: set, path: list):
+        """Recursively find paths that form loops starting from a given node.
+
+        :param curr: The next node to evaluate. This should be the same node as
+                     start when first called.
+        :param start: Where the path originates from.
+        :param visited: The set of nodes that have already been visited.
+        :param path: The sequence of nodes denoting the path that has be
+                     traversed so far.
+        """
+        path.append(curr)
+
+        if curr == start and len(path) > 1:
+            print('Cycle found:', path)
+            self.cycles.append(list(path))
+        elif curr not in visited:
+            # Otherwise we continue the depth-first traversal
+            visited.add(curr)
+
+            for child in self.adjacency_list[curr.name]:
+                self._find_cycles(child, start, visited, path)
+
+        path.pop()
+
+    def print_summary(self):
+        # TODO: Add some sort of ID or name for graph.
+        print('Summary of Graph')
+        print('Nodes:', len(self.nodes))
+        print('Edges:', len(self.edges))
+        # print('Disjointed Subgraphs:', len(self.disjointed_subgraphs))
+        # print('Avg. Disjointed Subgraph Size:', ))
+        print('Forward References:', len(self.forward_references))
+        print('Backward References:', len(self.backward_references))
+        print('Self-contained References:', len(self.self_contained_references))
+        print('Shared Entities:', len(self.shared_entities))
+        print('Cycles:', len(self.cycles))
+        print('Avg. Cycle Length: %.2f' % (sum([len(cycle) - 1 for cycle in self.cycles]) / len(self.cycles)))
+
     def render(self):
+        """Render the graph using GraphViz."""
         try:
             g = graphviz.Digraph(engine='neato')
             g.attr(overlap='false')
@@ -345,80 +417,6 @@ class Graph:
             print('Could not display graph -- GraphViz does not seem to be installed.')
 
 
-# TODO: Phase out code that uses Chunks
-class Chunk:
-    """A chunk is a section of text on a certain topic.
-    It keeps track of what things are related to it.
-    """
-
-    def __init__(self, name):
-        self.name = name
-        self.entity_counts = dict()
-
-    def log_count(self, entity):
-        return 1 + log2(self.entity_counts[entity])
-
-    def add(self, item):
-        if item == self.name:
-            return
-
-        if item in self.entity_counts:
-            self.entity_counts[item] += 1
-        else:
-            self.entity_counts[item] = 1
-
-    def __str__(self):
-        return "'%s': %s" % (self.name, list(self.entity_counts.keys()))
-
-
-# TODO: Mark adjacency_list that form links.
-# TODO: Return paths that form cycles.
-# TODO: Return a list of cycle lengths.
-def find_cycles(chunk, chunks, visited, marked, length=0):
-    """Check if a cycle is formed between chunks.
-
-    :param chunk: The chunk to start the search from.
-    :param chunks: A dictionary that maps entities to the chunks they appear in.
-    :param visited: The set of chunks that have been visited so far.
-    :param length: The length of the current path.
-    :return: True if a cycle is found, False otherwise.
-    """
-    if chunk in visited:
-        print('Found cycle of length %d' % length)
-        marked.add(chunk.name)
-        return 1
-
-    visited.add(chunk)
-
-    cycles = 0
-
-    for entity in chunk.entity_counts:
-        if entity in chunks:
-            n_cycles = find_cycles(chunks[entity], chunks, visited, marked, length + 1)
-
-            if n_cycles > 0:
-                marked.add(chunk.name)
-
-            cycles += n_cycles
-
-    return cycles
-
-
-def register_entity(entity, chunk, entities):
-    """Register an entity with the given chunk and entity-chunk index.
-
-    :param entity: The entity to register.
-    :param chunk: The chunk to register the entity with.
-    :param entities: The index that maps entities to the chunk they appeared in.
-    """
-    chunk.add(entity)
-
-    if entity in entities:
-        entities[entity].add(chunk.name)
-    else:
-        entities[entity] = {chunk.name}
-
-
 # TODO: Fix bugs with single letter entities
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Parse a file and group the entities by section.')
@@ -430,11 +428,6 @@ if __name__ == '__main__':
     tree = ET.parse(args.file)
     root = tree.getroot()
 
-    # Parse the text and find the chunks - the sections, what the section is about, the things that are mentioned in it -
-    # and the entities/things that appear in the text and which chunks they appear in.
-    chunks = []
-    chunks_dict = dict()
-    entities = dict()
     grammar = r"""
                 NBAR:
                     {<NN.*|JJ>*<NN.*>}  # Nouns and Adjectives, terminated with Nouns
@@ -450,20 +443,11 @@ if __name__ == '__main__':
         section_title = section.find('title').text
         section_title = section_title.lower()
 
-        chunk = Chunk(section_title)
-        chunks_dict[section_title] = chunk
-
         graph.add_node(Node(section_title, section_title))
-
-        if chunk.name in entities:
-            entities[chunk.name].add(chunk.name)
-        else:
-            entities[chunk.name] = {chunk.name}
 
         for entity in section.findall('entity'):
             entity_name = entity.text.lower()
 
-            register_entity(entity_name, chunk, entities)
             graph.add_node(Node(entity_name, section_title))
             graph.add_edge(graph.node_index[section_title], graph.node_index[entity_name])
 
@@ -477,7 +461,6 @@ if __name__ == '__main__':
 
             for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
                 nbar = ' '.join([str(token) for token, tag in st])
-                register_entity(nbar, chunk, entities)
 
                 graph.add_node(Node(nbar, section_title))
                 graph.add_edge(graph.node_index[entity_name], graph.node_index[nbar], edge_type=ImplicitEdge)
@@ -485,31 +468,12 @@ if __name__ == '__main__':
                 nouns = [token for token, tag in st if tag.startswith('NN')]
 
                 for i in range(len(nouns)):
-                    register_entity(nouns[i], chunk, entities)
                     graph.add_node(Node(nouns[i], section_title))
                     graph.add_edge(graph.node_index[nbar], graph.node_index[nouns[i]], edge_type=ImplicitEdge)
 
                     substr = ' '.join(nouns[i:])
-                    register_entity(substr, chunk, entities)
                     graph.add_node(Node(substr, section_title))
                     graph.add_edge(graph.node_index[nbar], graph.node_index[substr], edge_type=ImplicitEdge)
-
-        chunks.append(chunk)
-
-        print(chunk)
-
-    # Analyse the chunks for forward links, backwards links, cyclic links, and self-contained entities.
-    print('\nEntities and the sections they appear in:')
-    print(entities)
-
-    print('\nLink types...')
-
-    nodes_in_cycles = set()
-    n_cycles = find_cycles(chunks[0], chunks_dict, set(), nodes_in_cycles)
-
-    if n_cycles > 0:
-        print('Found %d cycle(s) in the graph.' % n_cycles)
-        print('These nodes are part of at least one cycle:', nodes_in_cycles)
 
     # Correct for inferred edges derived from forward references to main entities:
     # E.g. section on bread references (the main entity) wheat flour, which creates three nodes:
@@ -562,4 +526,6 @@ if __name__ == '__main__':
                 graph.shared_entities.add(node)
 
     graph.colour_edges()
+    graph.find_cycles()
+    graph.print_summary()
     graph.render()
