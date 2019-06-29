@@ -5,6 +5,7 @@ from math import log2
 from typing import Set, List, Dict, Optional, Tuple, Type
 
 import graphviz
+import networkx as nx
 import nltk
 
 
@@ -76,7 +77,7 @@ class Edge:
         return self.weight * self.frequency
 
     @property
-    def log_frequency(self):
+    def log_weighted_frequency(self):
         """A logarithmically scaled version of the edge's frequency count.
 
         This is used when rendering an edge so that the edges do not get
@@ -95,7 +96,7 @@ class Edge:
         :param g: The graphviz graph instance.
         """
         g.edge(self.tail.name, self.head.name,
-               penwidth=str(self.log_frequency),
+               penwidth=str(self.log_weighted_frequency),
                color=self.color,
                style=self.style)
 
@@ -162,7 +163,7 @@ class Graph:
         # Set of shared entities (nodes)
         self.shared_entities: Set[Node] = set()
         # Set of self-referential loops
-        self.cycles: List[List[Edge]] = list()
+        self.cycles: List[List[Node]] = list()
         # Set of disjointed_subgraphs
         self.subgraphs: List[Set[Node]] = list()
 
@@ -345,87 +346,29 @@ class Graph:
             elif isinstance(new_edge, BackwardEdge):
                 self.backward_references.add(new_edge)
 
-    # TODO: Fix missing cycles inside larger cycles (see a.xml).
-    def find_cycles(self) -> List[List[Edge]]:
+    def find_cycles(self) -> List[List[Node]]:
         """Find cycles in the graph."""
-        visited = set()
-        unvisited = set(self.nodes)
-        path = list()
-        origin = None
+        G = nx.DiGraph()
+        G.add_nodes_from([node.name for node in self.nodes])
+        G.add_edges_from([(edge.tail.name, edge.head.name) for edge in self.edges])
 
-        while len(unvisited) > 0:
-            for node in unvisited:
-                origin = node
-                break
-
-            self._find_cycles(origin, origin, visited, path)
-
-            unvisited.difference_update(visited)
+        for cycle in nx.simple_cycles(G):
+            self.cycles.append([self.node_index[node] for node in cycle])
 
         return self.cycles
-
-    def _find_cycles(self, curr: Node, start: Node, visited: set, path: list):
-        """Recursively find paths that form loops starting from a given node.
-
-        :param curr: The next node to evaluate. This should be the same node as
-                     start when first called.
-        :param start: Where the path originates from.
-        :param visited: The set of nodes that have already been visited.
-        :param path: The sequence of nodes denoting the path that has be
-                     traversed so far.
-        """
-        path.append(curr)
-
-        if curr == start and len(path) > 1:
-            self.cycles.append(list(path))
-        elif curr not in visited:
-            # Otherwise we continue the depth-first traversal
-            visited.add(curr)
-
-            for child in self.adjacency_list[curr.name]:
-                self._find_cycles(child, start, visited, path)
-
-        path.pop()
 
     def find_subgraphs(self) -> List[Set[Node]]:
         """Find disjointed subgraphs in the graph.
 
         :return: A list of the subgraphs.
         """
-        visited = set()
-        unvisited = set(self.nodes)
-        origin = None
+        G = nx.Graph()
+        G.add_nodes_from([node.name for node in self.nodes])
+        G.add_edges_from([(edge.tail.name, edge.head.name) for edge in self.edges])
 
-        while len(unvisited) > 0:
-            unvisited.difference_update(visited)
-            visited = set()
-
-            for node in unvisited:
-                origin = node
-                break
-
-            self._find_subgraphs(origin, visited)
-
-            if visited not in self.subgraphs:
-                self.subgraphs.append(set(visited))
+        self.subgraphs = [nodes for nodes in nx.connected_components(G)]
 
         return self.subgraphs
-
-    def _find_subgraphs(self, node: Node, visited: Set[Node]):
-        """Recursively find the nodes in the disjointed subgraph starting from
-        a given node.
-
-        :param node: The next node to evaluate.
-        :param visited: The nodes that have been visited in the DFS traversal
-                        so far.
-        """
-        if node not in visited:
-            visited.add(node)
-
-            children = self.adjacency_list[node.name].union(self.adjacency_index[node.name])
-
-            for child in children:
-                self._find_subgraphs(child, visited)
 
     def print_summary(self):
         sep = '=' * 80
@@ -453,7 +396,7 @@ class Graph:
         if len(self.cycles) > 0:
             print(sep)
             print('Cycles:', len(self.cycles))
-            print('Avg. Cycle Length: %.2f' % (sum([len(cycle) - 1 for cycle in self.cycles]) / len(self.cycles)))
+            print('Avg. Cycle Length: %.2f' % (sum([len(cycle) for cycle in self.cycles]) / len(self.cycles)))
 
     def score(self) -> float:
         """Calculate a score of conceptual density for the given graph.
@@ -467,7 +410,7 @@ class Graph:
         n_contained = len(self.self_contained_references)
 
         n_cycles = len(self.cycles)
-        avg_cycle_length = sum([len(cycle) - 1 for cycle in self.cycles]) / len(self.cycles)
+        avg_cycle_length = sum([len(cycle) for cycle in self.cycles]) / len(self.cycles)
 
         n_disjoint = 1 - len(self.subgraphs)
 
