@@ -377,7 +377,6 @@ class Graph:
         path.append(curr)
 
         if curr == start and len(path) > 1:
-            print('Cycle found:', path)
             self.cycles.append(list(path))
         elif curr not in visited:
             # Otherwise we continue the depth-first traversal
@@ -406,7 +405,9 @@ class Graph:
                 break
 
             self._find_subgraphs(origin, visited)
-            self.subgraphs.append(set(visited))
+
+            if visited not in self.subgraphs:
+                self.subgraphs.append(set(visited))
 
         return self.subgraphs
 
@@ -421,7 +422,9 @@ class Graph:
         if node not in visited:
             visited.add(node)
 
-            for child in self.adjacency_list[node.name]:
+            children = self.adjacency_list[node.name].union(self.adjacency_index[node.name])
+
+            for child in children:
                 self._find_subgraphs(child, visited)
 
     def print_summary(self):
@@ -432,6 +435,8 @@ class Graph:
         print(sep)
         print('Nodes:', len(self.nodes))
         print('Edges:', len(self.edges))
+        print('Avg. Edges per Node: %.2f' % (
+                sum([len(self.adjacency_list[node.name]) for node in self.nodes]) / len(self.nodes)))
 
         if len(self.subgraphs) > 1:
             print(sep)
