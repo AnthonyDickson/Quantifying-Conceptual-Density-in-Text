@@ -8,10 +8,18 @@ import nltk
 
 
 class Node:
+    """A node/vertex in a graph."""
+
     def __eq__(self, other):
         return self.name == other.name
 
     def __init__(self, name: str, section_name: str):
+        """Create a node representing a named entity that appears in a section
+        of a given text.
+
+        :param name: The name of the entity that the node represents.
+        :param section_name: The name of the section that the entity appears in.
+        """
         self.name = name
         self.section_name = section_name
 
@@ -25,6 +33,10 @@ class Node:
         return 'Node(%s, %s)' % (self.name, self.section_name)
 
     def render(self, g: graphviz.Digraph):
+        """Render/draw the node using GraphViz.
+
+        :param g: The graphviz graph instance.
+        """
         if self.name == self.section_name:
             g.node(self.name, shape='doublecircle')
         else:
@@ -32,11 +44,22 @@ class Node:
 
 
 class Edge:
+    """A connection between two nodes in a graph."""
+
     def __init__(self, tail: Node, head: Node, weight=1):
+        """Create an edge between two nodes.
+
+        :param tail: The node from which the edge originates from, or points
+                     aways from.
+        :param head: The node that the edge points towards.
+        :param weight: The weighting of edge frequency (how often the edge is
+                       added to, or appears in, a graph.
+        """
         self.tail = tail
         self.head = head
         self.weight = weight
         self.frequency = 1  # the number of the times this edge occurs
+
         self.color = 'black'
         self.style = 'solid'
 
@@ -47,8 +70,13 @@ class Edge:
         return hash(self.tail.name + self.head.name)
 
     @property
-    def log_weight(self):
-        """A logarithmically scaled version of `weight`.
+    def weighted_frequency(self):
+        """The weighted frequency of the edge."""
+        return self.weight * self.frequency
+
+    @property
+    def log_frequency(self):
+        """A logarithmically scaled version of the edge's frequency count.
 
         This is used when rendering an edge so that the edges do not get
         arbitrarily thick as the weight gets large.
@@ -58,16 +86,23 @@ class Edge:
         # > Add one to log argument so that the return value is strictly
         # non-negative, weight=0 gives a return value of 0 and avoids
         # log(0) which is undefined.
-        return 1 + log2(1 + self.weight * self.frequency)
+        return 1 + log2(1 + self.weighted_frequency)
 
     def render(self, g: graphviz.Digraph):
+        """Render/draw the edge using GraphViz.
+
+        :param g: The graphviz graph instance.
+        """
         g.edge(self.tail.name, self.head.name,
-               penwidth=str(self.log_weight),
+               penwidth=str(self.log_frequency),
                color=self.color,
                style=self.style)
 
 
 class ForwardEdge(Edge):
+    """An edge that references a node in a section that comes after the section
+    that the tail node is in."""
+
     def __init__(self, tail, head, weight=1.5):
         super().__init__(tail, head, weight)
 
@@ -75,13 +110,16 @@ class ForwardEdge(Edge):
 
 
 class BackwardEdge(Edge):
+    """An edge that references a node in a section that comes before the section
+    that the tail node is in."""
+
     def __init__(self, tail, head, weight=0.5):
         super().__init__(tail, head, weight)
 
         self.color = 'red'
 
 
-class PartialEdge(Edge):
+class ImplicitEdge(Edge):
     def __init__(self, tail, head, weight=0.75):
         super().__init__(tail, head, weight)
         self.style = 'dashed'
@@ -119,13 +157,17 @@ class Graph:
         # Handle the case where the node for the main concept of a section
         # was already added for a previous section
         if node.name == node.section_name and node in self.nodes:
+            # Remove or update the section details
             prev_section_name = self.node_index[node.name].section_name
             self.node_index[node.name].section_name = node.section_name
-            self.section_nodes.add(node)
 
-            if prev_section_name in self.section_listings:
+            try:
                 self.section_listings[prev_section_name].remove(node)
+            except ValueError:
+                pass
 
+            # Add new section details.
+            self.section_nodes.add(node)
             self.section_listings[node.section_name].add(node)
             self.section_index[node.name] = node.section_name
 
@@ -148,7 +190,7 @@ class Graph:
         if node.name == node.section_name:
             self.section_nodes.add(node)
 
-    def add_edge(self, tail, head, edge_type=Edge) -> Edge:
+    def add_edge(self, tail: Node, head: Node, edge_type=Edge) -> Edge:
         """Add an edge between two nodes to the graph.
 
         :param tail: The node that the edge originates from.
@@ -163,6 +205,8 @@ class Graph:
         the_edge = edge_type(tail, head)
 
         if the_edge in self.edges:
+            # Duplicate edges only increase a count so each edge is only
+            # rendered once.
             the_edge = self.get_edge(the_edge.tail.name, the_edge.head.name)
             the_edge.frequency += 1
 
@@ -182,8 +226,10 @@ class Graph:
         """
         self.edges.discard(edge)
 
-        if (edge.tail.name, edge.head.name) in self.edge_index:
+        try:
             del self.edge_index[(edge.tail.name, edge.head.name)]
+        except KeyError:
+            pass
 
         self.adjacency_list[edge.tail.name].discard(edge.head)
         self.adjacency_index[edge.head.name].discard(edge.tail)
@@ -212,6 +258,7 @@ class Graph:
         return self.add_edge(edge.tail, edge.head, type(edge))
 
     def colour_edges(self):
+        """Colour edges as either forward or backward edges."""
         visited = set()
         path = list()
 
@@ -220,9 +267,23 @@ class Graph:
             self._colour_edges(origin, origin, visited, path)
 
     def _colour_edges(self, curr: Node, start: Node, visited: set, path: list):
+        """Recursively colour paths starting from a given node.
+
+        :param curr: The next node to evaluate. This should be the same node as
+                     start when first called.
+        :param start: Where the path originates from.
+        :param visited: The set of nodes that have already been visited.
+        :param path: The sequence of nodes denoting the path that has be
+                     traversed so far.
+        """
         path.append(curr)
 
+        # We have reached a 'leaf node' which is either:
+        # - the main node of a section
+        # OR
+        # - a child node belonging to another section
         if (curr.name in self.sections and curr != start) or curr.section_name != start.section_name:
+            # Check if the path goes forward from section to a later section, or vice versa
             start_i = self.sections.index(self.section_index[start.name])
             curr_i = self.sections.index(self.section_index[curr.name])
 
@@ -231,6 +292,7 @@ class Graph:
             elif start_i > curr_i:
                 self._colour_path(path, BackwardEdge)
         elif curr not in visited:
+            # Otherwise we continue the depth-first traversal
             visited.add(curr)
 
             for child in self.adjacency_list[curr.name]:
@@ -239,6 +301,12 @@ class Graph:
         path.pop()
 
     def _colour_path(self, path, edge_type=Edge):
+        """Colour a path
+
+        :param path:
+        :param edge_type:
+        :return:
+        """
         for i in range(1, len(path)):
             prev_node = path[i - 1]
             node = path[i]
@@ -246,9 +314,13 @@ class Graph:
 
             new_edge = edge_type(edge.tail, edge.head)
             new_edge = self.set_edge(new_edge)
-            new_edge.style = edge.style  # preserve edge style
+            # preserve edge style for cases where there are implicit
+            # forward/backward edges
+            new_edge.style = edge.style
             new_edge.frequency = edge.frequency
 
+            # Override default edge colour to preserve original colours for
+            # direct references within a section.
             if node.section_name == path[0].section_name:
                 new_edge.color = edge.color
 
@@ -402,19 +474,19 @@ if __name__ == '__main__':
                 register_entity(nbar, chunk, entities)
 
                 graph.add_node(Node(nbar, section_title))
-                graph.add_edge(graph.node_index[entity_name], graph.node_index[nbar], edge_type=PartialEdge)
+                graph.add_edge(graph.node_index[entity_name], graph.node_index[nbar], edge_type=ImplicitEdge)
 
                 nouns = [token for token, tag in st if tag.startswith('NN')]
 
                 for i in range(len(nouns)):
                     register_entity(nouns[i], chunk, entities)
                     graph.add_node(Node(nouns[i], section_title))
-                    graph.add_edge(graph.node_index[nbar], graph.node_index[nouns[i]], edge_type=PartialEdge)
+                    graph.add_edge(graph.node_index[nbar], graph.node_index[nouns[i]], edge_type=ImplicitEdge)
 
                     substr = ' '.join(nouns[i:])
                     register_entity(substr, chunk, entities)
                     graph.add_node(Node(substr, section_title))
-                    graph.add_edge(graph.node_index[nbar], graph.node_index[substr], edge_type=PartialEdge)
+                    graph.add_edge(graph.node_index[nbar], graph.node_index[substr], edge_type=ImplicitEdge)
 
         chunks.append(chunk)
 
@@ -500,19 +572,21 @@ if __name__ == '__main__':
         for child in graph.adjacency_list[node.name]:
             edge = graph.get_edge(node.name, child.name)
 
-            if isinstance(edge, PartialEdge):
+            if isinstance(edge, ImplicitEdge):
                 child.section_name = node.section_name
 
     # Reassign nodes to another section if the node appears more times in that section.
     for node in graph.section_nodes:
         for child in graph.adjacency_list[node.name]:
+            # Select child nodes from other sections
             if child.section_name != node.section_name and child not in graph.section_nodes:
                 edge = graph.get_edge(node.name, child.name)
 
                 for child_neighbour in graph.adjacency_index[child.name]:
                     other_edge = graph.get_edge(child_neighbour.name, child.name)
 
-                    if node.section_name != child_neighbour.section_name and edge.frequency > other_edge.frequency:
+                    # Compare the frequency of edges coming from different sections.
+                    if child_neighbour.section_name != node.section_name and edge.frequency > other_edge.frequency:
                         child.section_name = node.section_name
                         break
 
