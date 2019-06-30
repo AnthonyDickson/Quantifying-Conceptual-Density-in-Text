@@ -105,7 +105,7 @@ class ForwardEdge(Edge):
     """An edge that references a node in a section that comes after the section
     that the tail node is in."""
 
-    def __init__(self, tail, head, weight=1.5):
+    def __init__(self, tail, head, weight=2.0):
         super().__init__(tail, head, weight)
 
         self.color = 'blue'
@@ -115,14 +115,14 @@ class BackwardEdge(Edge):
     """An edge that references a node in a section that comes before the section
     that the tail node is in."""
 
-    def __init__(self, tail, head, weight=0.5):
+    def __init__(self, tail, head, weight=1.5):
         super().__init__(tail, head, weight)
 
         self.color = 'red'
 
 
 class ImplicitEdge(Edge):
-    def __init__(self, tail, head, weight=0.75):
+    def __init__(self, tail, head, weight=0.5):
         super().__init__(tail, head, weight)
         self.style = 'dashed'
 
@@ -406,7 +406,6 @@ class Graph:
 
         n_forward = len(self.forward_references)
         n_backward = len(self.backward_references)
-        n_contained = len(self.self_contained_references)
 
         n_cycles = len(self.cycles)
 
@@ -479,8 +478,6 @@ if __name__ == '__main__':
 
             # register permutations of a phrase.
             # E.g. 'wheat flour' gives the entities 'wheat', 'flour', and 'wheat flour'
-            parts = entity_name.split(' ')
-
             phrase = nltk.word_tokenize(entity_name)
             tags = nltk.pos_tag(phrase)
             tree = chunker.parse(tags)
