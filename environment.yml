@@ -6,3 +6,5 @@ dependencies:
   - pip:
       - graphviz
       - networkx
+      - spacy==2.1
+      - neuralcoref
