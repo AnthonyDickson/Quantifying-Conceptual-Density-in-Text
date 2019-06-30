@@ -127,7 +127,6 @@ class ImplicitEdge(Edge):
         self.style = 'dashed'
 
 
-# TODO: Find disjointed subgraphs.
 class Graph:
     def __init__(self):
         """Create an empty graph."""
@@ -410,7 +409,11 @@ class Graph:
         n_contained = len(self.self_contained_references)
 
         n_cycles = len(self.cycles)
-        avg_cycle_length = sum([len(cycle) for cycle in self.cycles]) / len(self.cycles)
+
+        if n_cycles > 0:
+            avg_cycle_length = sum([len(cycle) for cycle in self.cycles]) / len(self.cycles)
+        else:
+            avg_cycle_length = 0
 
         n_disjoint = 1 - len(self.subgraphs)
 
