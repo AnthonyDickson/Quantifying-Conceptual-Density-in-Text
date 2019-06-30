@@ -469,16 +469,19 @@ if __name__ == '__main__':
                     {<NBAR>}
             """
     chunker = nltk.RegexpParser(grammar)
+    lemmatizer = nltk.WordNetLemmatizer()
     graph = Graph()
 
     for section in root.findall('section'):
         section_title = section.find('title').text
         section_title = section_title.lower()
+        section_title = ' '.join(map(lemmatizer.lemmatize, nltk.word_tokenize(section_title)))
 
         graph.add_node(Node(section_title, section_title))
 
         for entity in section.findall('entity'):
             entity_name = entity.text.lower()
+            entity_name = ' '.join(map(lemmatizer.lemmatize, nltk.word_tokenize(entity_name)))
 
             graph.add_node(Node(entity_name, section_title))
             graph.add_edge(graph.node_index[section_title], graph.node_index[entity_name])
@@ -487,6 +490,11 @@ if __name__ == '__main__':
             # E.g. 'wheat flour' gives the entities 'wheat', 'flour', and 'wheat flour'
             phrase = nltk.word_tokenize(entity_name)
             tags = nltk.pos_tag(phrase)
+
+            # Drop leading determiner
+            if tags[0][1] == 'DT':
+                tags = tags[:1]
+
             tree = chunker.parse(tags)
 
             for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
