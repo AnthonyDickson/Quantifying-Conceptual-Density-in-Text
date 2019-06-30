@@ -402,7 +402,14 @@ class Graph:
 
         :return: The score for the graph as a non-negative scalar.
         """
-        avg_weighted_outdegree = sum([edge.weight for edge in self.edges]) / len(self.nodes)
+        avg_weighted_outdegree = sum([edge.log_weighted_frequency for edge in self.edges]) / len(self.nodes)
+
+        avg_degree = 0
+
+        for section in self.sections:
+            avg_degree += sum(
+                [len(self.adjacency_list[node.section_name]) for node in self.section_listings[section]]) / len(
+                self.section_listings[section])
 
         n_forward = len(self.forward_references)
         n_backward = len(self.backward_references)
@@ -421,7 +428,7 @@ class Graph:
         else:
             avg_subgraph_size = 0
 
-        return avg_weighted_outdegree + n_forward + n_backward + n_contained + \
+        return avg_degree + avg_weighted_outdegree + n_forward + n_backward + \
                n_cycles + avg_cycle_length + n_disjoint + \
                avg_subgraph_size
 
