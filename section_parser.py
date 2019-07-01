@@ -32,7 +32,7 @@ class Node:
         return self.name
 
     def __repr__(self):
-        return 'Node(%s, %s)' % (self.name, self.section_name)
+        return "Node('%s', '%s')" % (self.name, self.section_name)
 
     def render(self, g: graphviz.Digraph):
         """Render/draw the node using GraphViz.
@@ -124,6 +124,7 @@ class BackwardEdge(Edge):
 class ImplicitEdge(Edge):
     def __init__(self, tail, head, weight=0.5):
         super().__init__(tail, head, weight)
+
         self.style = 'dashed'
 
 
@@ -329,12 +330,8 @@ class Graph:
 
     def colour_edges(self):
         """Colour edges as either forward or backward edges."""
-        visited = set()
-        path = list()
-
-        for section_name in self.sections:
-            origin = self.node_index[section_name]
-            self._colour_edges(origin, origin, visited, path)
+        for node in self.section_nodes:
+            self._colour_edges(node, node, set(), list())
 
     def _colour_edges(self, curr: Node, start: Node, visited: set, path: list):
         """Recursively colour paths starting from a given node.
@@ -425,7 +422,7 @@ class Graph:
     def print_summary(self):
         sep = '=' * 80
 
-        # TODO: Add some sort of ID or name for graph.
+        print(sep)
         print('Summary of Graph')
         print(sep)
         print('Nodes:', len(self.nodes))
@@ -453,6 +450,8 @@ class Graph:
             print(sep)
             print('Cycles:', len(self.cycles))
             print('Avg. Cycle Length: %.2f' % (sum([len(cycle) for cycle in self.cycles]) / len(self.cycles)))
+
+        print(sep)
 
     def score(self) -> float:
         """Calculate a score of conceptual density for the given graph.
@@ -489,6 +488,51 @@ class Graph:
             print('Could not display graph -- GraphViz does not seem to be installed.')
 
 
+def get_tagged(phrase):
+    phrase = phrase.lower()
+    tokens = list(map(lemmatizer.lemmatize, nltk.word_tokenize(phrase)))
+    tags = nltk.pos_tag(tokens)
+
+    # Drop leading determiner
+    if tags[0][1] == 'DT':
+        return tags[1:]
+    else:
+        return tags
+
+
+def permutations(tagged_phrase):
+    context = ' '.join([token for token, tag in tagged_phrase])
+    tree = chunker.parse(tagged_phrase)
+
+    for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
+        nbar = ' '.join([token for token, tag in st])
+        yield nbar, context
+
+        chunk = []
+
+        for token, tag in st:
+            if tag.startswith('NN'):
+                # yield token, nbar
+                chunk.append(token)
+            elif chunk:
+                noun_chunk = ' '.join(chunk)
+
+                yield noun_chunk, nbar
+
+                for noun in chunk:
+                    yield noun, noun_chunk
+
+                chunk = []
+
+        if chunk:
+            noun_chunk = ' '.join(chunk)
+
+            yield noun_chunk, nbar
+
+            for noun in chunk:
+                yield noun, noun_chunk
+
+
 # TODO: Fix bugs with single letter entities
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Parse a file and group the entities by section.')
@@ -517,41 +561,29 @@ if __name__ == '__main__':
         section_title = section_title.lower()
         section_title = ' '.join(map(lemmatizer.lemmatize, nltk.word_tokenize(section_title)))
 
-        graph.add_node(Node(section_title, section_title))
+        section_node = Node(section_title, section_title)
+        graph.add_node(section_node)
 
         for entity in section.findall('entity'):
-            entity_name = entity.text.lower()
-            entity_name = ' '.join(map(lemmatizer.lemmatize, nltk.word_tokenize(entity_name)))
+            tags = get_tagged(entity.text)
+            entity_name = ' '.join([token for token, _ in tags])
 
-            graph.add_node(Node(entity_name, section_title))
-            graph.add_edge(graph.node_index[section_title], graph.node_index[entity_name])
+            try:
+                entity_node = graph.node_index[entity_name]
+            except KeyError:
+                entity_node = Node(entity_name, section_title)
+                graph.add_node(entity_node)
 
-            # register permutations of a phrase.
-            # E.g. 'wheat flour' gives the entities 'wheat', 'flour', and 'wheat flour'
-            phrase = nltk.word_tokenize(entity_name)
-            tags = nltk.pos_tag(phrase)
+            graph.add_edge(section_node, entity_node)
 
-            # Drop leading determiner
-            if tags[0][1] == 'DT':
-                tags = tags[:1]
+            for implicit_entity, context in permutations(tags):
+                try:
+                    implicit_entity_node = graph.node_index[implicit_entity]
+                except KeyError:
+                    implicit_entity_node = Node(implicit_entity, section_title)
+                    graph.add_node(implicit_entity_node)
 
-            tree = chunker.parse(tags)
-
-            for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
-                nbar = ' '.join([str(token) for token, tag in st])
-
-                graph.add_node(Node(nbar, section_title))
-                graph.add_edge(graph.node_index[entity_name], graph.node_index[nbar], edge_type=ImplicitEdge)
-
-                nouns = [token for token, tag in st if tag.startswith('NN')]
-
-                for i in range(len(nouns)):
-                    graph.add_node(Node(nouns[i], section_title))
-                    graph.add_edge(graph.node_index[nbar], graph.node_index[nouns[i]], edge_type=ImplicitEdge)
-
-                    substr = ' '.join(nouns[i:])
-                    graph.add_node(Node(substr, section_title))
-                    graph.add_edge(graph.node_index[nbar], graph.node_index[substr], edge_type=ImplicitEdge)
+                graph.add_edge(graph.node_index[context], implicit_entity_node, ImplicitEdge)
 
     # Correct for inferred edges derived from forward references to main entities:
     # E.g. section on bread references (the main entity) wheat flour, which creates three nodes:
