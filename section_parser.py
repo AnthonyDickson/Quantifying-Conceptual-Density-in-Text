@@ -166,6 +166,59 @@ class Graph:
         # Set of disjointed_subgraphs
         self.subgraphs: List[Set[Node]] = list()
 
+    @property
+    def mean_outdegree(self):
+        return sum([len(self.adjacency_list[node.name]) for node in self.nodes]) / len(self.nodes)
+
+    @property
+    def mean_section_outdegree(self):
+        avg_degree = 0
+
+        for section in self.sections:
+            avg_degree += sum(
+                [len(self.adjacency_list[node.name]) for node in self.section_listings[section]]) / len(
+                self.section_listings[section])
+
+        avg_degree /= len(self.sections)
+
+        return avg_degree
+
+    @property
+    def mean_weighted_outdegree(self):
+        return sum([edge.log_weighted_frequency for edge in self.edges]) / len(self.nodes)
+
+    @property
+    def mean_weighted_section_outdegree(self):
+        avg_degree = 0
+
+        for section in self.sections:
+            section_degree = 0
+
+            for tail in self.section_listings[section]:
+                for head in self.adjacency_list[tail.name]:
+                    section_degree += self.get_edge(tail.name, head.name).log_weighted_frequency
+
+            section_degree /= len(self.section_listings[section])
+            avg_degree += section_degree
+
+        avg_degree /= len(self.sections)
+
+        return avg_degree
+
+    @property
+    def mean_cycle_length(self):
+        if len(self.cycles) > 0:
+            return sum([len(cycle) for cycle in self.cycles]) / len(self.cycles)
+        else:
+            return 0
+
+    @property
+    def mean_subgraph_size(self):
+        if len(self.subgraphs) > 0:
+            return sum([len(subgraph) for subgraph in self.subgraphs]) / len(self.subgraphs)
+        else:
+            return 0
+
     def add_node(self, node: Node):
         """Add a node to the graph.
 
@@ -377,8 +430,12 @@ class Graph:
         print(sep)
         print('Nodes:', len(self.nodes))
         print('Edges:', len(self.edges))
-        print('Avg. Edges per Node: %.2f' % (
-                sum([len(self.adjacency_list[node.name]) for node in self.nodes]) / len(self.nodes)))
+
+        print(sep)
+        print('Avg. Outdegree: %.2f' % self.mean_outdegree)
+        print('Avg. Section Outdegree: %.2f' % self.mean_section_outdegree)
+        print('Avg. Weighted Outdegree: %.2f' % self.mean_weighted_outdegree)
+        print('Avg. Weighted Section Outdegree: %.2f' % self.mean_weighted_section_outdegree)
 
         if len(self.subgraphs) > 1:
             print(sep)
@@ -402,33 +459,16 @@ class Graph:
 
         :return: The score for the graph as a non-negative scalar.
         """
-        avg_weighted_outdegree = sum([edge.log_weighted_frequency for edge in self.edges]) / len(self.nodes)
-
-        avg_degree = 0
-
-        for section in self.sections:
-            avg_degree += sum(
-                [len(self.adjacency_list[node.section_name]) for node in self.section_listings[section]]) / len(
-                self.section_listings[section])
-
         n_forward = len(self.forward_references)
         n_backward = len(self.backward_references)
 
         n_cycles = len(self.cycles)
-
-        if n_cycles > 0:
-            avg_cycle_length = sum([len(cycle) for cycle in self.cycles]) / len(self.cycles)
-        else:
-            avg_cycle_length = 0
+        avg_cycle_length = self.mean_cycle_length
 
         n_disjoint = 1 - len(self.subgraphs)
+        avg_subgraph_size = self.mean_subgraph_size if n_disjoint > 0 else 0
 
-        if n_disjoint > 0:
-            avg_subgraph_size = sum([len(subgraph) for subgraph in self.subgraphs]) / len(self.subgraphs)
-        else:
-            avg_subgraph_size = 0
-
-        return avg_degree + avg_weighted_outdegree + n_forward + n_backward + \
+        return self.mean_weighted_outdegree + n_forward + n_backward + \
                n_cycles + avg_cycle_length + n_disjoint + \
                avg_subgraph_size
 
