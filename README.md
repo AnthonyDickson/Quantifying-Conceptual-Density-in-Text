@@ -24,3 +24,5 @@ The main approaches are:
     ```shell
     $ python setup.py
     ```
+
+3.  [Install GraphViz](https://graphviz.gitlab.io/download/) if you want to visualise the generated graph structures.
