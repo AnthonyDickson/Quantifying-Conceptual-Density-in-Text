@@ -328,72 +328,56 @@ class Graph:
 
         return self.add_edge(edge.tail, edge.head, type(edge))
 
-    def colour_edges(self):
+    def mark_edges(self):
         """Colour edges as either forward or backward edges."""
         for node in self.section_nodes:
-            self._colour_edges(node, node, set(), list())
+            self._mark_edges(node, None, set())
 
-    def _colour_edges(self, curr: Node, start: Node, visited: set, path: list):
-        """Recursively colour paths starting from a given node.
+    def _mark_edges(self, curr: Node, prev: Optional[Node], visited: set):
+        """Recursively mark edges.
 
-        :param curr: The next node to evaluate. This should be the same node as
-                     start when first called.
-        :param start: Where the path originates from.
+        :param curr: The next node to vist.
+        :param prev: The node that was previously visited.
         :param visited: The set of nodes that have already been visited.
-        :param path: The sequence of nodes denoting the path that has be
-                     traversed so far.
         """
-        path.append(curr)
-
-        # We have reached a 'leaf node' which is either:
-        # - the main node of a section
-        # OR
-        # - a child node belonging to another section
-        if (curr.name in self.sections and curr != start) or curr.section_name != start.section_name:
+        # We have reached a 'leaf node' which is a node belonging to another section
+        if prev and curr.section_name != prev.section_name:
             # Check if the path goes forward from section to a later section, or vice versa
-            start_i = self.sections.index(self.section_index[start.name])
-            curr_i = self.sections.index(self.section_index[curr.name])
+            curr_i = self.sections.index(curr.section_name)
+            prev_i = self.sections.index(prev.section_name)
 
-            if start_i < curr_i:
-                self._colour_path(path, ForwardEdge)
-            elif start_i > curr_i:
-                self._colour_path(path, BackwardEdge)
+            if curr_i < prev_i:
+                self._mark_edge(prev, curr, BackwardEdge)
+            elif curr_i > prev_i:
+                self._mark_edge(prev, curr, ForwardEdge)
         elif curr not in visited:
             # Otherwise we continue the depth-first traversal
             visited.add(curr)
 
             for child in self.adjacency_list[curr.name]:
-                self._colour_edges(child, start, visited, path)
+                self._mark_edges(child, curr, visited)
 
-        path.pop()
+    def _mark_edge(self, tail: Node, head: Node, edge_type: Type[Edge] = Edge):
+        """Mark an edge.
 
-    def _colour_path(self, path, edge_type=Edge):
-        """Colour a path.
-
-        :param path: The sequence of edges to colour.
-        :param edge_type: The type to 'colour' the edges.
+        :param tail: The node from which the edge originates from, or points
+                     aways from.
+        :param head: The node that the edge points towards.
+        :param edge_type: The type to mark the edge as.
         """
-        for i in range(1, len(path)):
-            prev_node = path[i - 1]
-            node = path[i]
-            edge = self.get_edge(prev_node.name, node.name)
+        edge = self.get_edge(tail.name, head.name)
 
-            new_edge = edge_type(edge.tail, edge.head)
-            new_edge = self.set_edge(new_edge)
-            # preserve edge style for cases where there are implicit
-            # forward/backward edges
-            new_edge.style = edge.style
-            new_edge.frequency = edge.frequency
+        new_edge = edge_type(tail, head)
+        new_edge = self.set_edge(new_edge)
+        # preserve edge style for cases where there are implicit
+        # forward/backward edges
+        new_edge.style = edge.style
+        new_edge.frequency = edge.frequency
 
-            # Override default edge colour to preserve original colours for
-            # direct references within a section.
-            if node.section_name == path[0].section_name:
-                new_edge.color = edge.color
-
-            if isinstance(new_edge, ForwardEdge):
-                self.forward_references.add(new_edge)
-            elif isinstance(new_edge, BackwardEdge):
-                self.backward_references.add(new_edge)
+        if isinstance(new_edge, ForwardEdge):
+            self.forward_references.add(new_edge)
+        elif isinstance(new_edge, BackwardEdge):
+            self.backward_references.add(new_edge)
 
     def find_cycles(self) -> List[List[Node]]:
         """Find cycles in the graph."""
@@ -635,7 +619,7 @@ if __name__ == '__main__':
             elif node.name != section:
                 graph.shared_entities.add(node)
 
-    graph.colour_edges()
+    graph.mark_edges()
     graph.find_cycles()
     graph.find_subgraphs()
     graph.print_summary()
