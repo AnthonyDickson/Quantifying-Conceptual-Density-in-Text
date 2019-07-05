@@ -1,0 +1,11 @@
+<document>
+    <section>
+        <title>Hello, World!</title>
+        Printing 'Hello <entity>World</entity>!' is probably <entity>the first thing</entity> a
+        <entity>programmer</entity>
+        will do when learning a <entity>new programming language</entity>.
+        Printing a <entity>message</entity> is typically the <entity>easiest thing</entity> to do in a
+        <entity>programming language</entity>.
+        It is much like learning how to say 'Hello' in a <entity>foreign language</entity>.
+    </section>
+</document>

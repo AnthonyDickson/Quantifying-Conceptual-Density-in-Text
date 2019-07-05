@@ -1,0 +1,6 @@
+<document>
+    <section>
+        <title>Hello, world!</title>
+        Hello, <entity>world</entity>!
+    </section>
+</document>
