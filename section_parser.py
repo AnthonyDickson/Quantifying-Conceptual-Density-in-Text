@@ -427,7 +427,7 @@ class Graph:
         print(sep)
         print('Forward References:', len(self.forward_references))
         print('Backward References:', len(self.backward_references))
-        print('Self-contained References:', len(self.self_contained_references))
+        print('Self-contained Entities:', len(self.self_contained_references))
         print('Shared Entities:', len(self.shared_entities))
 
         if len(self.cycles) > 0:
@@ -604,6 +604,7 @@ if __name__ == '__main__':
     # TODO: If a node is only referenced from one section but references nodes
     #  in other sections, can the edges pointing to that node still be
     #  considered 'self-contained references'?
+    # TODO: Change self_contained_references to external concepts (edges to nodes)
     for section in graph.sections:
         for node in graph.section_listings[section]:
             referencing_sections = set()
