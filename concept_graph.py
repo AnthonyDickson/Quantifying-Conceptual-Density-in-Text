@@ -34,8 +34,13 @@ class Parser:
         raise NotImplementedError
 
     def get_tagged(self, phrase):
+        """
+
+        :param phrase:
+        :return:
+        """
+        # TODO: Fill in docstring!
         phrase = phrase.lower()
-        # tokens = list(map(self.lemmatizer.lemmatize, nltk.word_tokenize(phrase)))
         tags = nltk.pos_tag(nltk.word_tokenize(phrase))
         tags = [(self.lemmatizer.lemmatize(token), tag) for token, tag in tags]
 
@@ -153,6 +158,13 @@ class Parser:
             yield token, noun_chunk
 
     def add_implicit_references(self, pos_tags, section, graph):
+        """
+
+        :param pos_tags:
+        :param section:
+        :param graph:
+        """
+        # TODO: Fill in above docstring!
         for implicit_entity, context in self.permutations(pos_tags):
             try:
                 implicit_entity_node = graph.node_index[implicit_entity]
@@ -600,6 +612,7 @@ class ConceptGraph:
         Nodes that are only referenced from one section represent 'self-contained references',
         all other nodes represent 'shared entities'.
         """
+        # TODO: Change self_contained_references to external entities (edges to nodes)?
         for section in self.sections:
             for node in self.section_listings[section]:
                 referencing_sections = set()
