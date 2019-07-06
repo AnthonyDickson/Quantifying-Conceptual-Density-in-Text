@@ -133,6 +133,8 @@ class Parser:
         for token, tag in chunk:
             if tag.startswith('NN'):
                 noun_chunk.append((token, tag))
+            elif tag == 'JJ':
+                yield token, nbar
             elif noun_chunk:
                 yield from Parser.process_noun_chunk(noun_chunk, nbar)
 
@@ -148,9 +150,6 @@ class Parser:
         :param chunk: List of 2-tuples containing a POS tag and a token.
         :param context: The parent phrase that the chunk originates from.
         """
-        if chunk[0][1] == 'DT':
-            chunk = chunk[1:]
-
         noun_chunk = ' '.join([token for token, tag in chunk])
         yield noun_chunk, context
 
@@ -235,10 +234,7 @@ class Node:
 
         :param g: The graphviz graph instance.
         """
-        if self.name == self.section_name:
-            g.node(self.name, shape='doublecircle')
-        else:
-            g.node(self.name)
+        g.node(self.name)
 
 
 class Edge:
@@ -345,6 +341,8 @@ class ConceptGraph:
         self.section_nodes: Set[Node] = set()
         # List of sections used to record order that sections are introduced.
         self.sections: List[str] = list()
+        # Maps nodes to the frequency they appear in each section.
+        self.section_counts: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
 
         # Maps tail to head nodes
         self.adjacency_list: Dict[str, Set[Node]] = defaultdict(set)
@@ -454,6 +452,8 @@ class ConceptGraph:
             if node.section_name not in self.sections:
                 self.sections.append(node.section_name)
 
+            self.update_section_count(node.name, node.section_name)
+
             return
         elif node in self.nodes:
             # Skip nodes that already exist
@@ -463,6 +463,7 @@ class ConceptGraph:
         self.node_index[node.name] = node
         self.section_listings[node.section_name].add(node)
         self.section_index[node.name] = node.section_name
+        self.update_section_count(node.name, node.section_name)
 
         if node.section_name not in self.sections:
             self.sections.append(node.section_name)
@@ -537,6 +538,14 @@ class ConceptGraph:
 
         return self.add_edge(edge.tail, edge.head, type(edge))
 
+    def update_section_count(self, node: str, section: str):
+        """Update the count of times a node appears in a given section by one.
+
+        :param node: The node.
+        :param section: The section the node was found in.
+        """
+        self.section_counts[node][section] += 1
+
     def parse(self, filename):
         """Parse a XML document and build up a graph structure.
 
@@ -592,19 +601,21 @@ class ConceptGraph:
 
     def _reassign_sections(self):
         """Reassign nodes to another section if the node appears more times in that section."""
-        for node in self.section_nodes:
-            for child in self.adjacency_list[node.name]:
-                # Select child nodes from other sections
-                if child.section_name != node.section_name and child not in self.section_nodes:
-                    edge = self.get_edge(node.name, child.name)
+        # TODO: Refactor common code between this function and add_nodes.
+        for node in self.nodes:
+            section = max(self.section_counts[node.name], key=lambda key: self.section_counts[node.name][key])
+            prev_section = node.section_name
 
-                    for child_neighbour in self.adjacency_index[child.name]:
-                        other_edge = self.get_edge(child_neighbour.name, child.name)
+            if section != prev_section:
+                node.section_name = section
+                self.section_index[node.name] = section
 
-                        # Compare the frequency of edges coming from different sections.
-                        if child_neighbour.section_name != node.section_name and edge.frequency > other_edge.frequency:
-                            child.section_name = node.section_name
-                            break
+                try:
+                    self.section_listings[prev_section].remove(node)
+                except KeyError:
+                    pass
+
+                self.section_listings[section].add(node)
 
     def _categorise_nodes(self):
         """Categorise nodes in the graph into 'self-contained' and 'shared' entities.
@@ -630,8 +641,10 @@ class ConceptGraph:
 
     def mark_edges(self):
         """Colour edges as either forward or backward edges."""
-        for node in self.section_nodes:
-            self._mark_edges(node, None, set())
+        visited = set()
+
+        for node in self.nodes:
+            self._mark_edges(node, None, visited)
 
     def _mark_edges(self, curr: Node, prev: Optional[Node], visited: set):
         """Recursively mark edges.
