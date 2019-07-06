@@ -3,6 +3,7 @@ import argparse
 from concept_graph import ConceptGraph
 
 # TODO: Fix bugs with single letter entities
+# TODO: Add option for simple noun phrase chunker (just a string of adjectives and nouns terminated by a noun).
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Parse a file and group the entities by section.')
     parser.add_argument('-f', '--file', metavar='INPUT_FILE', type=str, required=True,

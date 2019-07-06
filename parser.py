@@ -383,6 +383,7 @@ class XMLSectionParser(Parser):
                     graph.add_edge(graph.node_index[context], implicit_entity_node, ImplicitEdge)
 
     # TODO: Handle cases where no subject found (e.g. subordinate clauses).
+    # TODO: Handle subjects that have more than one actor (e.g. two things joined by 'and').
     def get_subject(self, sent) -> str:
         subject = [w for w in sent.root.lefts if w.dep_.startswith('nsubj')]
 
