@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 import spacy
 
-from concept_graph import Parser, Node, ImplicitEdge, ConceptGraph
+from concept_graph import Parser, ImplicitEdge, ConceptGraph
 
 
 class XMLSectionParser(Parser):
@@ -44,8 +44,7 @@ class XMLSectionParser(Parser):
                 # Find the subject of the sentence
                 subject = self.get_subject(sent)
 
-                subject_node = Node(subject, section_title)
-                graph.add_node(subject_node)
+                graph.add_node(subject, section_title)
 
                 # Add other noun phrases to the graph
                 for np in tree.subtrees(lambda t: t.label() == 'NP'):
@@ -56,24 +55,20 @@ class XMLSectionParser(Parser):
 
                     entity = ' '.join([token for token, tag in tags])
 
-                    try:
-                        entity_node = graph.node_index[entity]
+                    if entity not in graph.nodes:
+                        graph.add_node(entity, section_title)
+                    else:
                         graph.update_section_count(entity, section_title)
-                    except KeyError:
-                        entity_node = Node(entity, section_title)
-                        graph.add_node(entity_node)
 
-                    graph.add_edge(subject_node, entity_node)
+                    graph.add_edge(subject, entity)
 
                     for implicit_entity, context in self.permutations(tags):
-                        try:
-                            implicit_entity_node = graph.node_index[implicit_entity]
+                        if implicit_entity not in graph.nodes:
+                            graph.add_node(implicit_entity, section_title)
+                        else:
                             graph.update_section_count(implicit_entity, section_title)
-                        except KeyError:
-                            implicit_entity_node = Node(implicit_entity, section_title)
-                            graph.add_node(implicit_entity_node)
 
-                        graph.add_edge(graph.node_index[context], implicit_entity_node, ImplicitEdge)
+                        graph.add_edge(context, implicit_entity, ImplicitEdge)
 
     # TODO: Handle cases where no subject found (e.g. subordinate clauses).
     # TODO: Handle subjects that have more than one actor (e.g. two things joined by 'and').

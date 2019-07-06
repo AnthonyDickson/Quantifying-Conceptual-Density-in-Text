@@ -165,13 +165,12 @@ class Parser:
         """
         # TODO: Fill in above docstring!
         for implicit_entity, context in self.permutations(pos_tags):
-            try:
-                implicit_entity_node = graph.node_index[implicit_entity]
-            except KeyError:
-                implicit_entity_node = Node(implicit_entity, section)
-                graph.add_node(implicit_entity_node)
+            if implicit_entity not in graph.nodes:
+                graph.add_node(implicit_entity, section)
+            else:
+                graph.update_section_count(implicit_entity, section)
 
-            graph.add_edge(graph.node_index[context], implicit_entity_node, ImplicitEdge)
+            graph.add_edge(context, implicit_entity, ImplicitEdge)
 
 
 class XMLSectionParser(Parser):
@@ -184,57 +183,21 @@ class XMLSectionParser(Parser):
             section_title = section_title.lower()
             section_title = ' '.join(map(self.lemmatizer.lemmatize, nltk.word_tokenize(section_title)))
 
-            section_node = Node(section_title, section_title)
-            graph.add_node(section_node)
+            graph.add_node(section_title, section_title)
 
             for entity in section.findall('entity'):
                 tags = self.get_tagged(entity.text)
                 entity_name = ' '.join([token for token, _ in tags])
 
-                try:
-                    entity_node = graph.node_index[entity_name]
-                except KeyError:
-                    entity_node = Node(entity_name, section_title)
-                    graph.add_node(entity_node)
+                if entity_name not in graph.nodes:
+                    graph.add_node(entity_name, section_title)
+                else:
+                    graph.update_section_count(entity_name, section_title)
 
-                graph.add_edge(section_node, entity_node)
+                graph.add_edge(section_title, entity_name)
 
                 if implicit_references:
                     self.add_implicit_references(tags, section_title, graph)
-
-
-# TODO: Remove class and replace nodes with just strings
-class Node:
-    """A node/vertex in a graph."""
-
-    def __eq__(self, other):
-        return self.name == other.name
-
-    def __init__(self, name: str, section_name: str):
-        """Create a node representing a named entity that appears in a section
-        of a given text.
-
-        :param name: The name of the entity that the node represents.
-        :param section_name: The name of the section that the entity appears in.
-        """
-        self.name = name
-        self.section_name = section_name
-
-    def __hash__(self):
-        return hash(self.name)
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return "Node('%s', '%s')" % (self.name, self.section_name)
-
-    def render(self, g: graphviz.Digraph):
-        """Render/draw the node using GraphViz.
-
-        :param g: The graphviz graph instance.
-        """
-        g.node(self.name)
 
 
 class Edge:
@@ -261,7 +224,7 @@ class Edge:
         return self.tail == other.tail and self.head == other.head
 
     def __hash__(self):
-        return hash(self.tail.name + self.head.name)
+        return hash(self.tail + self.head)
 
     @property
     def weighted_frequency(self):
@@ -287,7 +250,7 @@ class Edge:
 
         :param g: The graphviz graph instance.
         """
-        g.edge(self.tail.name, self.head.name,
+        g.edge(self.tail, self.head,
                penwidth=str(self.log_weighted_frequency),
                color=self.color,
                style=self.style)
@@ -330,8 +293,6 @@ class ConceptGraph:
         """
         # The set of all nodes (vertices) in the graph.
         self.nodes: Set[Node] = set()
-        # Maps node name (concept) to node instance.
-        self.node_index: Dict[str, Node] = dict()
 
         # Maps section to nodes found in that section.
         self.section_listings: Dict[str, Set[Node]] = defaultdict(set)
@@ -357,8 +318,8 @@ class ConceptGraph:
         self.forward_references: Set[Edge] = set()
         # Set of backward references
         self.backward_references: Set[Edge] = set()
-        # Set of self-contained references (edges)
-        self.self_contained_references: Set[Edge] = set()
+        # Set of external references (edges)
+        self.external_entities: Set[Edge] = set()
         # Set of shared entities (nodes)
         self.shared_entities: Set[Node] = set()
         # Set of self-referential loops
@@ -376,7 +337,7 @@ class ConceptGraph:
 
     @property
     def mean_outdegree(self):
-        return sum([len(self.adjacency_list[node.name]) for node in self.nodes]) / len(self.nodes)
+        return sum([len(self.adjacency_list[node]) for node in self.nodes]) / len(self.nodes)
 
     @property
     def mean_section_outdegree(self):
@@ -384,7 +345,7 @@ class ConceptGraph:
 
         for section in self.sections:
             avg_degree += sum(
-                [len(self.adjacency_list[node.name]) for node in self.section_listings[section]]) / len(
+                [len(self.adjacency_list[node]) for node in self.section_listings[section]]) / len(
                 self.section_listings[section])
 
         avg_degree /= len(self.sections)
@@ -403,8 +364,8 @@ class ConceptGraph:
             section_degree = 0
 
             for tail in self.section_listings[section]:
-                for head in self.adjacency_list[tail.name]:
-                    section_degree += self.get_edge(tail.name, head.name).log_weighted_frequency
+                for head in self.adjacency_list[tail]:
+                    section_degree += self.get_edge(tail, head).log_weighted_frequency
 
             section_degree /= len(self.section_listings[section])
             avg_degree += section_degree
@@ -427,51 +388,28 @@ class ConceptGraph:
         else:
             return 0
 
-    def add_node(self, node: Node):
+    def add_node(self, node: Node, section: str):
         """Add a node to the graph.
 
         :param node: The node to add.
+        :param section: The section that the node appeared in.
         """
-        # Handle the case where the node for the main concept of a section
-        # was already added for a previous section
-        if node.name == node.section_name and node in self.nodes:
-            # Remove or update the section details
-            prev_section_name = self.node_index[node.name].section_name
-            self.node_index[node.name].section_name = node.section_name
-
-            try:
-                self.section_listings[prev_section_name].remove(node)
-            except ValueError:
-                pass
-
-            # Add new section details.
-            self.section_nodes.add(node)
-            self.section_listings[node.section_name].add(node)
-            self.section_index[node.name] = node.section_name
-
-            if node.section_name not in self.sections:
-                self.sections.append(node.section_name)
-
-            self.update_section_count(node.name, node.section_name)
-
-            return
-        elif node in self.nodes:
+        if node in self.nodes:
             # Skip nodes that already exist
             return
 
         self.nodes.add(node)
-        self.node_index[node.name] = node
-        self.section_listings[node.section_name].add(node)
-        self.section_index[node.name] = node.section_name
-        self.update_section_count(node.name, node.section_name)
+        self.section_listings[section].add(node)
+        self.section_index[node] = section
+        self.update_section_count(node, section)
 
-        if node.section_name not in self.sections:
-            self.sections.append(node.section_name)
+        if section not in self.sections:
+            self.sections.append(section)
 
-        if node.name == node.section_name:
+        if node == section:
             self.section_nodes.add(node)
 
-    def add_edge(self, tail: Node, head: Node, edge_type: Type[Edge] = Edge) -> Optional[Edge]:
+    def add_edge(self, tail: str, head: str, edge_type: Type[Edge] = Edge) -> Optional[Edge]:
         """Add an edge between two nodes to the graph.
 
         :param tail: The node that the edge originates from.
@@ -488,15 +426,15 @@ class ConceptGraph:
         if the_edge in self.edges:
             # Duplicate edges only increase a count so each edge is only
             # rendered once.
-            the_edge = self.get_edge(the_edge.tail.name, the_edge.head.name)
+            the_edge = self.get_edge(the_edge.tail, the_edge.head)
             the_edge.frequency += 1
 
             return the_edge
         else:
-            self.adjacency_list[tail.name].add(head)
-            self.adjacency_index[head.name].add(tail)
+            self.adjacency_list[tail].add(head)
+            self.adjacency_index[head].add(tail)
             self.edges.add(the_edge)
-            self.edge_index[(tail.name, head.name)] = the_edge
+            self.edge_index[(tail, head)] = the_edge
 
         return the_edge
 
@@ -508,12 +446,12 @@ class ConceptGraph:
         self.edges.discard(edge)
 
         try:
-            del self.edge_index[(edge.tail.name, edge.head.name)]
+            del self.edge_index[(edge.tail, edge.head)]
         except KeyError:
             pass
 
-        self.adjacency_list[edge.tail.name].discard(edge.head)
-        self.adjacency_index[edge.head.name].discard(edge.tail)
+        self.adjacency_list[edge.tail].discard(edge.head)
+        self.adjacency_index[edge.head].discard(edge.tail)
 
     def get_edge(self, tail: str, head: str) -> Edge:
         """Get the edge that connects the nodes corresponding to `tail` and `head`.
@@ -533,7 +471,7 @@ class ConceptGraph:
         :param edge: The new edge that should replace the one in the graph.
         :return: The new edge.
         """
-        the_edge = self.edge_index[(edge.tail.name, edge.head.name)]
+        the_edge = self.edge_index[(edge.tail, edge.head)]
         self.remove_edge(the_edge)
 
         return self.add_edge(edge.tail, edge.head, type(edge))
@@ -573,8 +511,8 @@ class ConceptGraph:
         :return: The graph as an NetworkX graph.
         """
         G = nx.DiGraph()
-        G.add_nodes_from([node.name for node in self.nodes])
-        G.add_edges_from([(edge.tail.name, edge.head.name) for edge in self.edges])
+        G.add_nodes_from([node for node in self.nodes])
+        G.add_edges_from([(edge.tail, edge.head) for edge in self.edges])
 
         return G
 
@@ -589,26 +527,30 @@ class ConceptGraph:
         the same section.
         """
         for node in self.section_nodes:
-            for child in self.adjacency_list[node.name]:
-                edge = self.get_edge(node.name, child.name)
+            for child in self.adjacency_list[node]:
+                edge = self.get_edge(node, child)
 
                 if isinstance(edge, ImplicitEdge):
-                    self.section_listings[child.section_name].remove(child)
-                    self.section_listings[node.section_name].add(child)
-                    self.section_index[child.name] = node.section_name
+                    child_section = self.section_index[child]
+                    node_section = self.section_index[node]
 
-                    child.section_name = node.section_name
+                    try:
+                        self.section_listings[child_section].remove(child)
+                    except KeyError:
+                        pass
+
+                    self.section_listings[node_section].add(child)
+                    self.section_index[child] = node_section
 
     def _reassign_sections(self):
         """Reassign nodes to another section if the node appears more times in that section."""
         # TODO: Refactor common code between this function and add_nodes.
         for node in self.nodes:
-            section = max(self.section_counts[node.name], key=lambda key: self.section_counts[node.name][key])
-            prev_section = node.section_name
+            section = max(self.section_counts[node], key=lambda key: self.section_counts[node][key])
+            prev_section = self.section_index[node]
 
             if section != prev_section:
-                node.section_name = section
-                self.section_index[node.name] = section
+                self.section_index[node] = section
 
                 try:
                     self.section_listings[prev_section].remove(node)
@@ -628,15 +570,16 @@ class ConceptGraph:
             for node in self.section_listings[section]:
                 referencing_sections = set()
 
-                for tail in self.adjacency_index[node.name]:
-                    referencing_sections.add(tail.section_name)
+                for tail in self.adjacency_index[node]:
+                    tail_section = self.section_index[tail]
+                    referencing_sections.add(tail_section)
 
                 if len(referencing_sections) == 1 and len(referencing_sections.intersection([section])) == 1:
-                    for tail in self.adjacency_index[node.name]:
-                        the_edge = self.get_edge(tail.name, node.name)
+                    for tail in self.adjacency_index[node]:
+                        the_edge = self.get_edge(tail, node)
                         the_edge.weight *= 0.5
-                        self.self_contained_references.add(the_edge)
-                elif node.name != section:
+                        self.external_entities.add(the_edge)
+                elif node != section:
                     self.shared_entities.add(node)
 
     def mark_edges(self):
@@ -654,10 +597,10 @@ class ConceptGraph:
         :param visited: The set of nodes that have already been visited.
         """
         # We have reached a 'leaf node' which is a node belonging to another section
-        if prev and curr.section_name != prev.section_name:
+        if prev and self.section_index[curr] != self.section_index[prev]:
             # Check if the path goes forward from section to a later section, or vice versa
-            curr_i = self.sections.index(curr.section_name)
-            prev_i = self.sections.index(prev.section_name)
+            curr_i = self.sections.index(self.section_index[curr])
+            prev_i = self.sections.index(self.section_index[prev])
 
             if curr_i < prev_i:
                 self._mark_edge(prev, curr, BackwardEdge)
@@ -667,7 +610,7 @@ class ConceptGraph:
             # Otherwise we continue the depth-first traversal
             visited.add(curr)
 
-            for child in self.adjacency_list[curr.name]:
+            for child in self.adjacency_list[curr]:
                 self._mark_edges(child, curr, visited)
 
     def _mark_edge(self, tail: Node, head: Node, edge_type: Type[Edge] = Edge):
@@ -678,7 +621,7 @@ class ConceptGraph:
         :param head: The node that the edge points towards.
         :param edge_type: The type to mark the edge as.
         """
-        edge = self.get_edge(tail.name, head.name)
+        edge = self.get_edge(tail, head)
 
         new_edge = edge_type(tail, head)
         new_edge = self.set_edge(new_edge)
@@ -697,7 +640,7 @@ class ConceptGraph:
         self.cycles = list()
 
         for cycle in nx.simple_cycles(self.nx):
-            self.cycles.append([self.node_index[node] for node in cycle])
+            self.cycles.append([node for node in cycle])
 
         return self.cycles
 
@@ -734,7 +677,7 @@ class ConceptGraph:
         print(sep)
         print('Forward References:', len(self.forward_references))
         print('Backward References:', len(self.backward_references))
-        print('Self-contained References:', len(self.self_contained_references))
+        print('Self-contained References:', len(self.external_entities))
         print('Shared Entities:', len(self.shared_entities))
 
         if len(self.cycles) > 0:
@@ -761,7 +704,11 @@ class ConceptGraph:
             g.attr(overlap='false')
 
             for node in self.nodes:
-                node.render(g)
+                # TODO: Fix bug where some section nodes are not correctly rendered
+                if node == self.section_index[node]:
+                    g.node(node, shape='doublecircle')
+                else:
+                    g.node(node)
 
             for edge in self.edges:
                 edge.render(g)
