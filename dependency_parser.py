@@ -2,6 +2,7 @@ import argparse
 import xml.etree.ElementTree as ET
 
 import neuralcoref
+import nltk
 import spacy
 from spacy import displacy
 
@@ -46,16 +47,23 @@ if __name__ == '__main__':
                         help='The file to parse. Can be a `.xml` file.')
     args = parser.parse_args()
 
-    with open(args.file, 'r') as f:
-        text = f.read()
-
     if args.file.endswith('xml'):
-        sentences = ET.fromstring(text).itertext()
+        tree = ET.parse(args.file)
+        root = tree.getroot()
+
+        sentences = []
+
+        for section in root.findall('section'):
+            for text in section.findall('text'):
+                sentences += nltk.sent_tokenize(text.text)
+
         sentences = map(lambda s: s.strip(), sentences)
         sentences = filter(lambda s: len(s) > 0, sentences)
         sentences = list(sentences)
-        print(sentences)
         text = ' '.join(sentences)
+    else:
+        with open(args.file, 'r') as f:
+            text = f.read()
 
     text = text.lower()
 
@@ -79,8 +87,68 @@ if __name__ == '__main__':
     # print(displacy.render(doc, style='dep'))
     # displacy.serve(doc, style='dep')
 
-    relations = extract_currency_relations(doc)
-    for r1, r2 in relations:
-        print("{:<10}\t{}".format(r1.text, r2.text))
+    spans = list(doc.noun_chunks)
+    spans = filter_spans(spans)
 
-    displacy.serve(list(doc.sents))
+    with doc.retokenize() as retokenizer:
+        for span in spans:
+            retokenizer.merge(span)
+
+    for token in doc:
+        print('TOKEN:', token,
+              '\n\tDEP:', token.dep_,
+              '\n\tHEAD:', token.head,
+              '\n\tLEFTS:', list(token.lefts),
+              '\n\tRIGHTS:', list(token.rights))
+
+
+    def append_rights(token, a, stop_at=None):
+        for right in token.rights:
+            if right.dep_ == stop_at:
+                break
+
+            a.append(right)
+
+            append_rights(right, a)
+
+    relations = []
+
+    for token in doc:
+        if token.dep_ == 'ROOT':
+            subject = [w for w in token.lefts if w.dep_.startswith('nsubj')]
+            subject = subject[0] if subject else ''
+
+            verb = token
+            found = False
+
+            for attr in [w for w in token.rights if w.dep_ == 'attr']:
+                obj = [attr]
+                append_rights(attr, obj, stop_at='acl')
+
+                relations.append((subject, verb, obj))
+                found = True
+
+                for acl in [w for w in attr.rights if w.dep_ == 'acl']:
+                    acl_verb = [acl]
+                    acl_obj = []
+
+                    for adp in [w for w in acl.rights if w.dep_ == 'prep']:
+                        acl_verb.append(adp)
+
+                        acl_obj = []
+                        append_rights(adp, acl_obj)
+
+                        relations.append((subject, acl_verb, acl_obj))
+                        found = True
+
+            if not found:
+                relations.append((subject, verb))
+
+    # return relations
+    print(relations)
+
+    # relations = extract_currency_relations(doc)
+    # for r1, r2 in relations:
+    #     print("{:<10}\t{}".format(r1.text, r2.text))
+
+    # displacy.serve(list(doc.sents))
