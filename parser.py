@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 import spacy
 
-from concept_graph import Parser, ImplicitEdge, ConceptGraph
+from concept_graph import Parser, ConceptGraph
 
 
 class XMLSectionParser(Parser):
@@ -23,7 +23,6 @@ class XMLSectionParser(Parser):
     def parse(self, filename, graph, implicit_references=True):
         nlp = spacy.load('en')
 
-        # TODO: Add sections back in? Also remove above Graph class and replace with ConceptGraph?
         tree = ET.parse(filename)
         root = tree.getroot()
 
@@ -62,13 +61,7 @@ class XMLSectionParser(Parser):
 
                     graph.add_edge(subject, entity)
 
-                    for implicit_entity, context in self.permutations(tags):
-                        if implicit_entity not in graph.nodes:
-                            graph.add_node(implicit_entity, section_title)
-                        else:
-                            graph.update_section_count(implicit_entity, section_title)
-
-                        graph.add_edge(context, implicit_entity, ImplicitEdge)
+                    self.add_implicit_references(tags, section_title, graph)
 
     # TODO: Handle cases where no subject found (e.g. subordinate clauses).
     # TODO: Handle subjects that have more than one actor (e.g. two things joined by 'and').
@@ -104,7 +97,7 @@ if __name__ == '__main__':
                         help='The file to parse. Can be a `.xml` file.')
 
     args = parser.parse_args()
-    graph = ConceptGraph(parser_type=XMLSectionParser)
+    graph = ConceptGraph(parser=XMLSectionParser())
     graph.parse(args.file)
 
     graph.print_summary()

@@ -24,7 +24,7 @@ class Parser:
         self.chunker = nltk.RegexpParser(self.grammar)
         self.lemmatizer = nltk.WordNetLemmatizer()
 
-    def parse(self, filename: str, graph: 'ConceptGraph', implicit_references=True):
+    def parse(self, filename: str, graph: 'ConceptGraph', implicit_references: bool = True):
         """Parse a file and build up a graph structure.
 
         :param filename: The file to parse.
@@ -33,13 +33,12 @@ class Parser:
         """
         raise NotImplementedError
 
-    def get_tagged(self, phrase):
-        """
+    def get_tagged(self, phrase: str) -> List[Tuple[str, str]]:
+        """Normalise and tag a string.
 
-        :param phrase:
-        :return:
+        :param phrase: The string to process.
+        :return: List of token, tag pairs.
         """
-        # TODO: Fill in docstring!
         phrase = phrase.lower()
         tags = nltk.pos_tag(nltk.word_tokenize(phrase))
         tags = [(self.lemmatizer.lemmatize(token), tag) for token, tag in tags]
@@ -50,7 +49,7 @@ class Parser:
         else:
             return tags
 
-    def permutations(self, tagged_phrase: List[Tuple[str, str]]):
+    def permutations(self, tagged_phrase: List[Tuple[str, str]]) -> Tuple[str, str]:
         """Generate variations of a POS (part of speech) tagged phrase.
 
         Variations generated are:
@@ -96,7 +95,7 @@ class Parser:
                 yield from self._process_np_chunk(chunk, nbar)
 
     @staticmethod
-    def _process_np_chunk(chunk, context):
+    def _process_np_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
         """Generate variations of a NP (noun phrase) chunk.
 
         :param chunk: List of 2-tuples containing a POS tag and a token.
@@ -119,7 +118,7 @@ class Parser:
             yield from Parser.process_nbar_chunk(nbar_chunk, np)
 
     @staticmethod
-    def process_nbar_chunk(chunk, context):
+    def process_nbar_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
         """Generate variations of a NBAR chunk.
 
         :param chunk: List of 2-tuples containing a POS tag and a token.
@@ -144,7 +143,7 @@ class Parser:
             yield from Parser.process_noun_chunk(noun_chunk, nbar)
 
     @staticmethod
-    def process_noun_chunk(chunk, context):
+    def process_noun_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
         """Generate variations of a noun chunk.
 
         :param chunk: List of 2-tuples containing a POS tag and a token.
@@ -156,14 +155,15 @@ class Parser:
         for token, _ in chunk:
             yield token, noun_chunk
 
-    def add_implicit_references(self, pos_tags, section, graph):
-        """
+    def add_implicit_references(self, pos_tags: List[Tuple[str, str]], section: str, graph: 'ConceptGraph'):
+        """Derive nodes and edges from a POS tagged phrase.
 
-        :param pos_tags:
-        :param section:
-        :param graph:
+        See `permutations()` for details on what kind of nodes and edges are derived.
+
+        :param pos_tags: A phrase as a list of token, tag pairs.
+        :param section: The section that the phrase appears in.
+        :param graph: The graph to add the derived nodes and edges to.
         """
-        # TODO: Fill in above docstring!
         for implicit_entity, context in self.permutations(pos_tags):
             if implicit_entity not in graph.nodes:
                 graph.add_node(implicit_entity, section)
@@ -174,7 +174,12 @@ class Parser:
 
 
 class XMLSectionParser(Parser):
-    def parse(self, filename, graph, implicit_references=True):
+    """Parser for XML documents.
+
+    Expects XML documents to have section tags containing a title tag and entity tags around the concepts.
+    """
+
+    def parse(self, filename: str, graph: 'ConceptGraph', implicit_references=True):
         tree = ET.parse(filename)
         root = tree.getroot()
 
@@ -206,7 +211,7 @@ Node = str
 class Edge:
     """A connection between two nodes in a graph."""
 
-    def __init__(self, tail: Node, head: Node, weight=1):
+    def __init__(self, tail: Node, head: Node, weight: float = 1):
         """Create an edge between two nodes.
 
         :param tail: The node from which the edge originates from, or points
@@ -263,7 +268,7 @@ class ForwardEdge(Edge):
     """An edge that references a node in a section that comes after the section
     that the tail node is in."""
 
-    def __init__(self, tail, head, weight=2.0):
+    def __init__(self, tail: Node, head: Node, weight: float = 2.0):
         super().__init__(tail, head, weight)
 
         self.color = 'blue'
@@ -273,21 +278,22 @@ class BackwardEdge(Edge):
     """An edge that references a node in a section that comes before the section
     that the tail node is in."""
 
-    def __init__(self, tail, head, weight=1.5):
+    def __init__(self, tail: Node, head: Node, weight: float = 1.5):
         super().__init__(tail, head, weight)
 
         self.color = 'red'
 
 
 class ImplicitEdge(Edge):
-    def __init__(self, tail, head, weight=0.5):
+    def __init__(self, tail: Node, head: Node, weight: float = 0.5):
         super().__init__(tail, head, weight)
 
         self.style = 'dashed'
 
 
 class ConceptGraph:
-    def __init__(self, parser_type: Type[Parser] = XMLSectionParser, implicit_references=True, mark_references=True):
+    # TODO: Add 'dirty' flag to indicate the graph has been changed since postprocessing() was last called.
+    def __init__(self, parser: Parser = None, implicit_references=True, mark_references=True):
         """Create an empty graph.
 
         :param parser_type: The type of parser to use.
@@ -331,7 +337,7 @@ class ConceptGraph:
         self.subgraphs: List[Set[Node]] = list()
 
         ## Parse Options ##
-        self.parser: Parser = parser_type()
+        self.parser: Parser = parser if parser else XMLSectionParser()
         self.implicit_references: bool = implicit_references
         self.mark_references: bool = mark_references
 
@@ -398,6 +404,14 @@ class ConceptGraph:
         :param section: The section that the node appeared in.
         """
         if node in self.nodes:
+            # Main section node was referenced before, but now is being added under its own section.
+            if node == section:
+                self.section_listings[self.section_index[node]].remove(node)
+                self.section_index[node] = section
+                self.section_listings[section].add(node)
+                self.section_nodes.add(node)
+                self.update_section_count(node, section)
+
             # Skip nodes that already exist
             return
 
@@ -547,19 +561,16 @@ class ConceptGraph:
 
     def _reassign_sections(self):
         """Reassign nodes to another section if the node appears more times in that section."""
-        # TODO: Refactor common code between this function and add_nodes.
         for node in self.nodes:
-            section = max(self.section_counts[node], key=lambda key: self.section_counts[node][key])
+            if node == self.section_index[node]:
+                continue
+
             prev_section = self.section_index[node]
+            section = max(self.section_counts[node], key=lambda key: self.section_counts[node][key])
 
             if section != prev_section:
+                self.section_listings[prev_section].remove(node)
                 self.section_index[node] = section
-
-                try:
-                    self.section_listings[prev_section].remove(node)
-                except KeyError:
-                    pass
-
                 self.section_listings[section].add(node)
 
     def _categorise_nodes(self):
@@ -640,10 +651,7 @@ class ConceptGraph:
 
     def find_cycles(self) -> List[List[Node]]:
         """Find cycles in the graph."""
-        self.cycles = list()
-
-        for cycle in nx.simple_cycles(self.nx):
-            self.cycles.append([node for node in cycle])
+        self.cycles = [cycle for cycle in nx.simple_cycles(self.nx)]
 
         return self.cycles
 
@@ -707,7 +715,6 @@ class ConceptGraph:
             g.attr(overlap='false')
 
             for node in self.nodes:
-                # TODO: Fix bug where some section nodes are not correctly rendered
                 if node == self.section_index[node]:
                     g.node(node, shape='doublecircle')
                 else:
