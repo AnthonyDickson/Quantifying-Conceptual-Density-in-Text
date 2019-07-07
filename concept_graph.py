@@ -200,6 +200,9 @@ class XMLSectionParser(Parser):
                     self.add_implicit_references(tags, section_title, graph)
 
 
+Node = str
+
+
 class Edge:
     """A connection between two nodes in a graph."""
 
