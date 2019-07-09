@@ -217,8 +217,9 @@ class Edge:
         self.weight = weight
         self.frequency = 1  # the number of the times this edge occurs
 
-        self.color = 'black'
+        self.colour = 'black'
         self.style = 'solid'
+        self.label = ''
 
     def __eq__(self, other):
         return self.tail == other.tail and self.head == other.head
@@ -245,15 +246,17 @@ class Edge:
         # log(0) which is undefined.
         return 1 + log2(1 + self.weighted_frequency)
 
-    def render(self, g: graphviz.Digraph):
+    def render(self, g: graphviz.Digraph, colour: Optional[str] = None):
         """Render/draw the edge using GraphViz.
 
         :param g: The graphviz graph instance.
+        :param colour: The colour to render the edge. If None then the edge's colour attribute is used.
         """
         g.edge(self.tail, self.head,
                penwidth=str(self.log_weighted_frequency),
-               color=self.color,
-               style=self.style)
+               color=colour if colour else self.colour,
+               style=self.style,
+               label=self.label)
 
 
 class ForwardEdge(Edge):
@@ -263,7 +266,7 @@ class ForwardEdge(Edge):
     def __init__(self, tail: Node, head: Node, weight: float = 2.0):
         super().__init__(tail, head, weight)
 
-        self.color = 'blue'
+        self.colour = 'blue'
 
 
 class BackwardEdge(Edge):
@@ -273,7 +276,7 @@ class BackwardEdge(Edge):
     def __init__(self, tail: Node, head: Node, weight: float = 1.5):
         super().__init__(tail, head, weight)
 
-        self.color = 'red'
+        self.colour = 'red'
 
 
 class ImplicitEdge(Edge):
@@ -505,11 +508,9 @@ class ConceptGraph:
         self._reassign_implicit_entities()
         self._reassign_sections()
         self._categorise_nodes()
-
-        if self.mark_references:
-            self.mark_edges()
-
         self.nx = self.to_nx()
+
+        self.mark_edges()
         self.find_cycles()
         self.find_subgraphs()
 
@@ -708,8 +709,12 @@ class ConceptGraph:
             for node in self.nodes:
                 g.node(node)
 
-            for edge in self.edges:
-                edge.render(g)
+            if self.mark_references:
+                for edge in self.edges:
+                    edge.render(g)
+            else:
+                for edge in self.edges:
+                    edge.render(g, colour='black')
 
             g.render(format='png', view=True)
         except graphviz.backend.ExecutableNotFound:
