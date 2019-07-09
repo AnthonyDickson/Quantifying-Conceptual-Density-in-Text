@@ -449,20 +449,22 @@ class ConceptGraph:
 
         return the_edge
 
-    def remove_edge(self, edge: Edge):
+    def remove_edge(self, tail: Node, head: Node):
         """Remove an edge from the graph.
 
-        :param edge: The edge to remove
+        :param tail: The tail node of the edge to remove.
+        :param head: The head node of the edge to remove.
         """
-        self.edges.discard(edge)
-
         try:
-            del self.edge_index[(edge.tail, edge.head)]
-        except KeyError:
-            pass
+            edge = self.edge_index[(tail, head)]
+            self.edges.discard(edge)
+            del self.edge_index[(tail, head)]
 
-        self.adjacency_list[edge.tail].discard(edge.head)
-        self.adjacency_index[edge.head].discard(edge.tail)
+            self.adjacency_list[tail].discard(head)
+            self.adjacency_index[head].discard(tail)
+        except KeyError:
+            # non-existent edge, probably
+            pass
 
     def get_edge(self, tail: str, head: str) -> Edge:
         """Get the edge that connects the nodes corresponding to `tail` and `head`.
@@ -482,8 +484,7 @@ class ConceptGraph:
         :param edge: The new edge that should replace the one in the graph.
         :return: The new edge.
         """
-        the_edge = self.edge_index[(edge.tail, edge.head)]
-        self.remove_edge(the_edge)
+        self.remove_edge(edge.tail, edge.head)
 
         return self.add_edge(edge.tail, edge.head, type(edge))
 
