@@ -557,12 +557,12 @@ class ConceptGraph:
                 continue
 
             prev_section = self.section_index[node]
-            section = max(self.section_counts[node], key=lambda key: self.section_counts[node][key])
+            new_section = max(self.section_counts[node], key=lambda key: self.section_counts[node][key])
 
-            if section != prev_section:
+            if new_section != prev_section:
                 self.section_listings[prev_section].remove(node)
-                self.section_index[node] = section
-                self.section_listings[section].add(node)
+                self.section_index[node] = new_section
+                self.section_listings[new_section].add(node)
 
     def _categorise_nodes(self):
         """Categorise nodes in the graph into 'self-contained' and 'shared' entities.
