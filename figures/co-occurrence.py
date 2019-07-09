@@ -6,11 +6,11 @@ if __name__ == '__main__':
 	B = 'Subaru'
 	C = 'Toyota'
 
-	g = graphviz.Digraph(engine='circo')
+	g = graphviz.Digraph()
 	
 	g.node(X)
 	g.edge(X, A)
 	g.edge(X, B)
 	g.edge(X, C)
 
-	g.render('co-occurrence', format='png')
+	g.render('co-occurrence', format='png', cleanup=True)
