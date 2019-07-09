@@ -158,9 +158,6 @@ if __name__ == '__main__':
                          mark_references=not args.no_reference_marking)
     graph.parse(args.file)
 
-    if not args.no_reference_marking:
-        graph.mark_edges()
-
     if not args.no_summary:
         graph.print_summary()
 
