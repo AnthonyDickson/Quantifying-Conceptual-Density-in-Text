@@ -45,6 +45,8 @@ class XMLSectionParser(Parser):
 
                 graph.add_node(subject, section_title)
 
+                self.add_gerund_phrase(subject, section_title, sent, graph)
+
                 # Add other noun phrases to the graph
                 for np in tree.subtrees(lambda t: t.label() == 'NP'):
                     tags = np.leaves()
@@ -57,7 +59,50 @@ class XMLSectionParser(Parser):
                     graph.add_node(entity, section_title)
                     graph.add_edge(subject, entity)
 
-                    self.add_implicit_references(tags, section_title, graph)
+                    if implicit_references:
+                        self.add_implicit_references(tags, section_title, graph)
+
+    def add_gerund_phrase(self, subject: str, section: str, sentence: spacy.tokens.span.Span, graph: ConceptGraph):
+        """Add gerund (verb) phrases to the graph.
+
+        For gerunds without an object, just the verb is added to the graph.
+        For all other gerunds, the object is added to the graph and the edge between the subject and object is annotated
+        with the S-form of the gerund. Form example, 'Tom likes cake.' yields the nodes 'Tom' and 'cake' connected by
+        an edge annotated with 'likes'.
+
+        :param subject: The subject of the sentence the gerund was found in.
+        :param section: The section the gerund (and its sentence) was found in.
+        :param sentence: The sentence the gerund was found in.
+        :param graph: The graph to add the gerund phrase to.
+        """
+        for gerund in filter(lambda token: token.tag_ == 'VBG', sentence):
+            verb = str(gerund)
+
+            # TODO: Add edge between gerund and object
+            # TODO: Remove redundant edge between subject and object since that relation is represented
+            #  through the path subject -> verb -> object.
+            # TODO: Refactor verbal phrase stuff such that we instead have
+            #  subject -- verb (S-form) --> object
+            #  including is_a and has_a relations.
+            for right in gerund.rights:
+                if 'obj' in right.dep_:
+                    object_ = str(right)
+                    graph.add_node(object_, section)
+
+                    the_edge = graph.add_edge(subject, object_)
+                    the_edge.label = gerund.lemma_
+
+                    if the_edge.label.endswith(('s', 'sh', 'ch')):
+                        the_edge.label += 'es'
+                    elif the_edge.label.endswith('y'):
+                        the_edge.label = the_edge.label[:-1] + 'ies'
+                    else:
+                        the_edge.label += 's'
+
+                    break
+            else:
+                graph.add_node(verb, section)
+                graph.add_edge(subject, verb)
 
     # TODO: Handle cases where no subject found (e.g. subordinate clauses).
     # TODO: Handle subjects that have more than one actor (e.g. two things joined by 'and').
