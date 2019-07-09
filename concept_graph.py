@@ -700,8 +700,12 @@ class ConceptGraph:
 
         return self.mean_weighted_outdegree + n_cycles + avg_cycle_length
 
-    def render(self):
-        """Render the graph using GraphViz."""
+    def render(self, filename='concept_graph', view=True):
+        """Render the graph using GraphViz.
+
+        :param filename: The name of the file to save the output to.
+        :param view: Whether or not to show the output in a window.
+        """
         try:
             g = graphviz.Digraph(engine='neato')
             g.attr(overlap='false')
@@ -716,6 +720,6 @@ class ConceptGraph:
                 for edge in self.edges:
                     edge.render(g, colour='black')
 
-            g.render(format='png', view=True)
+            g.render(filename, format='png', view=view, cleanup=True)
         except graphviz.backend.ExecutableNotFound:
             print('Could not display graph -- GraphViz does not seem to be installed.')
