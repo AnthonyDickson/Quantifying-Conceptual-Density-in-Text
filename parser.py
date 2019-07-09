@@ -54,11 +54,7 @@ class XMLSectionParser(Parser):
 
                     entity = ' '.join([token for token, tag in tags])
 
-                    if entity not in graph.nodes:
-                        graph.add_node(entity, section_title)
-                    else:
-                        graph.update_section_count(entity, section_title)
-
+                    graph.add_node(entity, section_title)
                     graph.add_edge(subject, entity)
 
                     self.add_implicit_references(tags, section_title, graph)

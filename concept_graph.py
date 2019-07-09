@@ -165,11 +165,7 @@ class Parser:
         :param graph: The graph to add the derived nodes and edges to.
         """
         for implicit_entity, context in self.permutations(pos_tags):
-            if implicit_entity not in graph.nodes:
-                graph.add_node(implicit_entity, section)
-            else:
-                graph.update_section_count(implicit_entity, section)
-
+            graph.add_node(implicit_entity, section)
             graph.add_edge(context, implicit_entity, ImplicitEdge)
 
 
@@ -194,11 +190,7 @@ class XMLSectionParser(Parser):
                 tags = self.get_tagged(entity.text)
                 entity_name = ' '.join([token for token, _ in tags])
 
-                if entity_name not in graph.nodes:
-                    graph.add_node(entity_name, section_title)
-                else:
-                    graph.update_section_count(entity_name, section_title)
-
+                graph.add_node(entity_name, section_title)
                 graph.add_edge(section_title, entity_name)
 
                 if implicit_references:
@@ -403,28 +395,25 @@ class ConceptGraph:
         :param node: The node to add.
         :param section: The section that the node appeared in.
         """
-        if node in self.nodes:
-            # Main section node was referenced before, but now is being added under its own section.
-            if node == section:
-                self.section_listings[self.section_index[node]].remove(node)
-                self.section_index[node] = section
-                self.section_listings[section].add(node)
-                self.section_nodes.add(node)
-                self.update_section_count(node, section)
-
-            # Skip nodes that already exist
-            return
-
-        self.nodes.add(node)
-        self.section_listings[section].add(node)
-        self.section_index[node] = section
-        self.update_section_count(node, section)
-
-        if section not in self.sections:
-            self.sections.append(section)
-
-        if node == section:
+        # Main section node was referenced before but now is being added under its own section,
+        # update the relevant section details.
+        if node in self.nodes and node == section:
+            self.section_listings[self.section_index[node]].remove(node)
+            self.section_index[node] = section
+            self.section_listings[section].add(node)
             self.section_nodes.add(node)
+        elif node not in self.nodes:
+            self.nodes.add(node)
+            self.section_index[node] = section
+            self.section_listings[section].add(node)
+
+            if section not in self.sections:
+                self.sections.append(section)
+
+            if node == section:
+                self.section_nodes.add(node)
+
+        self.update_section_count(node, section)
 
     def add_edge(self, tail: str, head: str, edge_type: Type[Edge] = Edge) -> Optional[Edge]:
         """Add an edge between two nodes to the graph.
@@ -437,6 +426,8 @@ class ConceptGraph:
         # Ignore spurious edges, a concept cannot be defined in terms of itself
         if tail == head:
             return None
+
+        assert tail in self.nodes and head in self.nodes, 'Both nodes in the edge must exist within the graph.'
 
         the_edge = edge_type(tail, head)
 
