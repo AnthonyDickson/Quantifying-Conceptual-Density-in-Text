@@ -715,10 +715,7 @@ class ConceptGraph:
             g.attr(overlap='false')
 
             for node in self.nodes:
-                if node == self.section_index[node]:
-                    g.node(node, shape='doublecircle')
-                else:
-                    g.node(node)
+                g.node(node)
 
             for edge in self.edges:
                 edge.render(g)
