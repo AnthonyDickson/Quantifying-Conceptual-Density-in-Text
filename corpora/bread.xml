@@ -6,14 +6,15 @@
     <section>
         <title>Bread</title>
         <entity>Bread</entity> is a <entity>staple food</entity> typically prepared from a
-        <entity>dough</entity> of <entity>wheat flour</entity> and <entity>water</entity>, usually by baking.
+        <entity>dough</entity>
+        of <entity>wheat flour</entity> and <entity>water</entity>, usually by <entity>baking</entity>.
     </section>
 
     <section>
-        <title>Wheat Flour</title>
-        <entity>Wheat flour</entity> is made from ground up <entity>wheat</entity>.
+        <title>Wheat</title>
         <entity>Wheat</entity> is a type of <entity>grain</entity>.
-        <entity>Wheat</entity> is commonly used for making <entity>wheat flour</entity>,
-        the main ingredient of <entity>bread dough</entity>.
+        <entity>Wheat</entity>
+        is commonly used for <entity>making wheat flour</entity>,
+        a <entity>typical ingredient of bread dough</entity>.
     </section>
 </document>
