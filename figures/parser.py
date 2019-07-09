@@ -80,19 +80,6 @@ class XMLSectionParser(Parser):
 
             for right in gerund.rights:
                 if 'obj' in right.dep_:
-                    object_ = str(right)
-                    graph.add_node(object_, section)
-
-                    the_edge = graph.add_edge(subject, object_)
-                    the_edge.label = gerund.lemma_
-
-                    if the_edge.label.endswith(('s', 'sh', 'ch')):
-                        the_edge.label += 'es'
-                    elif the_edge.label.endswith('y'):
-                        the_edge.label = the_edge.label[:-1] + 'ies'
-                    else:
-                        the_edge.label += 's'
-
                     break
             else:
                 graph.add_node(verb, section)
@@ -129,8 +116,25 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     graph = ConceptGraph(parser=XMLSectionParser(),
+                         implicit_references=False,
+                         mark_references=False)
+    graph.parse('bread-sections_only.xml')
+    graph.render('bread_graph-sections_only-simple', view=False)
+
+    graph = ConceptGraph(parser=XMLSectionParser(),
+                         implicit_references=False,
+                         mark_references=True)
+    graph.parse('bread-sections_only.xml')
+    graph.render('bread_graph-sections_only-reference_marking', view=False)
+
+    graph = ConceptGraph(parser=XMLSectionParser(),
                          implicit_references=True,
                          mark_references=False)
+    graph.parse('bread-sections_only.xml')
+    graph.render('bread_graph-sections_only-implicit_references', view=False)
 
+    graph = ConceptGraph(parser=XMLSectionParser(),
+                         implicit_references=True,
+                         mark_references=True)
     graph.parse('bread-sections_only.xml')
     graph.render('bread_graph-sections_only', view=False)
