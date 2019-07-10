@@ -186,12 +186,12 @@ class XMLSectionParser(Parser):
 
             graph.add_node(section_title, section_title)
 
-            for entity in section.findall('entity'):
-                tags = self.get_tagged(entity.text)
-                entity_name = ' '.join([token for token, _ in tags])
+            for concept_element in section.findall('concept'):
+                tags = self.get_tagged(concept_element.text)
+                concept = ' '.join([token for token, _ in tags])
 
-                graph.add_node(entity_name, section_title)
-                graph.add_edge(section_title, entity_name)
+                graph.add_node(concept, section_title)
+                graph.add_edge(section_title, concept)
 
                 if implicit_references:
                     self.add_implicit_references(tags, section_title, graph)
