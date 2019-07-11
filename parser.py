@@ -37,6 +37,7 @@ class XMLSectionParser(Parser):
             self.chunk(span)
 
             for sent in span.sents:
+                # TODO: Use spacy tags instead, more accurate.
                 tags = self.get_tagged(str(sent))
                 tree = self.chunker.parse(tags)
 
