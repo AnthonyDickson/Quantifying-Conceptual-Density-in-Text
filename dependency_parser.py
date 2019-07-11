@@ -4,7 +4,6 @@ import xml.etree.ElementTree as ET
 import neuralcoref
 import nltk
 import spacy
-from spacy import displacy
 
 
 def filter_spans(spans):
@@ -113,36 +112,51 @@ if __name__ == '__main__':
 
     relations = []
 
-    for token in doc:
-        if token.dep_ == 'ROOT':
-            subject = [w for w in token.lefts if w.dep_.startswith('nsubj')]
-            subject = subject[0] if subject else ''
+    for sent in doc.sents:
+        for token in sent:
+            if token.dep_ == 'ROOT':
+                subject = [w for w in token.lefts if w.dep_.startswith('nsubj')]
+                subject = subject[0] if subject else ''
 
-            verb = token
-            found = False
+                verb = token
+                found = False
 
-            for attr in [w for w in token.rights if w.dep_ == 'attr']:
-                obj = [attr]
-                append_rights(attr, obj, stop_at='acl')
+                for attr in [w for w in token.rights if w.dep_ == 'attr']:
+                    obj = [attr]
+                    append_rights(attr, obj, stop_at='acl')
 
-                relations.append((subject, verb, obj))
-                found = True
+                    relations.append((subject, verb, obj))
+                    found = True
 
-                for acl in [w for w in attr.rights if w.dep_ == 'acl']:
-                    acl_verb = [acl]
-                    acl_obj = []
-
-                    for adp in [w for w in acl.rights if w.dep_ == 'prep']:
-                        acl_verb.append(adp)
-
+                    for acl in [w for w in attr.rights if w.dep_ == 'acl']:
+                        acl_verb = [acl]
                         acl_obj = []
-                        append_rights(adp, acl_obj)
 
-                        relations.append((subject, acl_verb, acl_obj))
-                        found = True
+                        for adp in [w for w in acl.rights if w.dep_ == 'prep']:
+                            acl_verb.append(adp)
 
-            if not found:
-                relations.append((subject, verb))
+                            acl_obj = []
+                            append_rights(adp, acl_obj)
+
+                            relations.append((subject, acl_verb, acl_obj))
+                            found = True
+
+                if not found:
+                    relations.append((subject, verb))
+
+            elif token.dep_ == 'appos':
+                dobj = None
+
+                for token_ in sent:
+                    if token_.dep_.endswith('obj'):
+                        dobj = token_
+                        break
+                else:
+                    continue
+
+                rights = []
+                append_rights(token, rights)
+                relations.append((dobj, [token] + rights))
 
     # return relations
     print(relations)
