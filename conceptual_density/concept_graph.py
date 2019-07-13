@@ -280,8 +280,6 @@ class ImplicitEdge(Edge):
     def __init__(self, tail: Node, head: Node, weight: float = 0.5):
         super().__init__(tail, head, weight)
 
-        self.style = 'dashed'
-
 
 class ConceptGraph:
     # TODO: Add 'dirty' flag to indicate the graph has been changed since postprocessing() was last called.

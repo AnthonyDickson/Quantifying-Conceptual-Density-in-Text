@@ -14,6 +14,9 @@ for doc in *.xml; do
 	ln $doc out/$doc
 done
 
+# Add root directory to python path
+export PYTHONPATH=$PYTHONPATH:$(realpath ..)
+
 # Run all of the scripts in figures/
 cd out/
 

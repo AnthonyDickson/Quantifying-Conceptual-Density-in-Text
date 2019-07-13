@@ -8,3 +8,4 @@ dependencies:
       - networkx
       - spacy==2.1
       - neuralcoref
+      - plac

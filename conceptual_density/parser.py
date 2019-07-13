@@ -1,12 +1,28 @@
-import argparse
+import sys
 import xml.etree.ElementTree as ET
 
+import plac
 import spacy
 
-from concept_graph import Parser, ConceptGraph
+from conceptual_density.concept_graph import Parser, ConceptGraph
 
 
 class XMLSectionParser(Parser):
+    """Parser for XML documents.
+
+    Expects XML documents to have section tags containing a 'title' tag and a 'text' tag around the text.
+    """
+
+    def __init__(self, annotate_edges=True):
+        """Create a parser for XML documents.
+
+        :param annotate_edges: Whether or not to annotate edges with a relationship type.
+        """
+
+        super().__init__()
+
+        self.annotate_edges = annotate_edges
+
     @staticmethod
     def filter_spans(spans):
         # Filter a sequence of spans so they don't contain overlaps
@@ -23,7 +39,15 @@ class XMLSectionParser(Parser):
     def parse(self, filename, graph, implicit_references=True):
         nlp = spacy.load('en')
 
-        tree = ET.parse(filename)
+        try:
+            tree = ET.parse(filename)
+        except ET.ParseError as e:
+            print('Could not parse the file. \n%s.' % e.msg.capitalize(), file=sys.stderr)
+            exit(1)
+        except FileNotFoundError as e:
+            print('Could not open the file. \n%s' % e)
+            exit(2)
+
         root = tree.getroot()
 
         for section in root.findall('section'):
@@ -37,6 +61,7 @@ class XMLSectionParser(Parser):
             self.chunk(span)
 
             for sent in span.sents:
+                # TODO: Use spacy tags instead, more accurate.
                 tags = self.get_tagged(str(sent))
                 tree = self.chunker.parse(tags)
 
@@ -78,13 +103,35 @@ class XMLSectionParser(Parser):
         for gerund in filter(lambda token: token.tag_ == 'VBG', sentence):
             verb = str(gerund)
 
+            # TODO: Add edge between gerund and object
+            # TODO: Remove redundant edge between subject and object since that relation is represented
+            #  through the path subject -> verb -> object.
+            # TODO: Refactor verbal phrase stuff such that we instead have
+            #  subject -- verb (S-form) --> object
+            #  including is_a and has_a relations.
             for right in gerund.rights:
                 if 'obj' in right.dep_:
+                    if self.annotate_edges:
+                        object_ = str(right)
+                        graph.add_node(object_, section)
+
+                        the_edge = graph.add_edge(subject, object_)
+                        the_edge.label = gerund.lemma_
+
+                        if the_edge.label.endswith(('s', 'sh', 'ch')):
+                            the_edge.label += 'es'
+                        elif the_edge.label.endswith('y'):
+                            the_edge.label = the_edge.label[:-1] + 'ies'
+                        else:
+                            the_edge.label += 's'
+
                     break
             else:
                 graph.add_node(verb, section)
                 graph.add_edge(subject, verb)
 
+    # TODO: Handle cases where no subject found (e.g. subordinate clauses).
+    # TODO: Handle subjects that have more than one actor (e.g. two things joined by 'and').
     def get_subject(self, sent) -> str:
         subject = [w for w in sent.root.lefts if w.dep_.startswith('nsubj')]
 
@@ -110,31 +157,33 @@ class XMLSectionParser(Parser):
                 retokenizer.merge(span)
 
 
+@plac.annotations(
+    file=plac.Annotation("The file to parse. Must be a XML formatted file.", type=str),
+    no_implicit_references=plac.Annotation('Flag indicating to not add implicit references.', kind='flag', abbrev='i'),
+    no_reference_marking=plac.Annotation('Flag indicating to not mark reference types.', kind='flag', abbrev='m'),
+    no_edge_annotation=plac.Annotation('Flag indicating to not annotate edges with relation types.', kind='flag',
+                                       abbrev='a'),
+    no_summary=plac.Annotation('Flag indicating to not print the graph summary.', kind='flag', abbrev='s'),
+    no_graph_rendering=plac.Annotation('Flag indicating to not render (visualise) the graph structure.', kind='flag',
+                                       abbrev='r')
+
+)
+def main(file, no_implicit_references=False, no_reference_marking=False, no_edge_annotation=False, no_summary=False,
+         no_graph_rendering=False):
+    """Parse a text document and produce a score relating to conceptual density."""
+    graph = ConceptGraph(parser=XMLSectionParser(not no_edge_annotation),
+                         implicit_references=not no_implicit_references,
+                         mark_references=not no_reference_marking)
+    graph.parse(file)
+
+    if not no_summary:
+        graph.print_summary()
+
+    print('Score: %.2f' % graph.score())
+
+    if not no_graph_rendering:
+        graph.render()
+
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Parse a file and create a graph structure, '
-                                                 'grouping concepts by section.')
-    args = parser.parse_args()
-
-    graph = ConceptGraph(parser=XMLSectionParser(),
-                         implicit_references=False,
-                         mark_references=False)
-    graph.parse('bread-sections_only.xml')
-    graph.render('bread_graph-sections_only-simple', view=False)
-
-    graph = ConceptGraph(parser=XMLSectionParser(),
-                         implicit_references=False,
-                         mark_references=True)
-    graph.parse('bread-sections_only.xml')
-    graph.render('bread_graph-sections_only-reference_marking', view=False)
-
-    graph = ConceptGraph(parser=XMLSectionParser(),
-                         implicit_references=True,
-                         mark_references=False)
-    graph.parse('bread-sections_only.xml')
-    graph.render('bread_graph-sections_only-implicit_references', view=False)
-
-    graph = ConceptGraph(parser=XMLSectionParser(),
-                         implicit_references=True,
-                         mark_references=True)
-    graph.parse('bread-sections_only.xml')
-    graph.render('bread_graph-sections_only', view=False)
+    plac.call(main)
