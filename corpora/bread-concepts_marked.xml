@@ -1,0 +1,23 @@
+<document>
+    <title>
+        Bread
+    </title>
+
+    <section>
+        <title>Bread</title>
+        <concept>Bread</concept>
+        is a <concept>staple food</concept> typically prepared from a
+        <concept>dough</concept>
+        of <concept>wheat flour</concept> and <concept>water</concept>, usually by <concept>baking</concept>.
+    </section>
+
+    <section>
+        <title>Wheat</title>
+        <concept>Wheat</concept>
+        is a type of <concept>grain</concept>.
+        <concept>Wheat</concept>
+        is commonly used for making <concept>wheat flour</concept>,
+        a <concept>typical ingredient of bread dough</concept>.
+    </section>
+</document>
+

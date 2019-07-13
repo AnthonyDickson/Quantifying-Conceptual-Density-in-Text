@@ -3,7 +3,7 @@ from conceptual_density.parser import XMLSectionParser
 
 if __name__ == '__main__':
     parser = XMLSectionParser(annotate_edges=False)
-    filename = 'bread-sections_only.xml'
+    filename = 'bread.xml'
 
     graph = ConceptGraph(parser=parser,
                          implicit_references=False,
