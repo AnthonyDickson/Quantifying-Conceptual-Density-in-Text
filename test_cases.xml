@@ -15,7 +15,7 @@
     </testcase>
 
     <testcase>
-        <about>Test appositional modifiers</about>
+        <about>Test appositive modifiers</about>
         <input>Wheat is used for making wheat flour, a typical ingredient of bread dough.</input>
         <output>
             <set>

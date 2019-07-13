@@ -13,13 +13,10 @@ class Parser:
         """Create a parser."""
         self.grammar = r"""
             NBAR:
-                # {<DT|NN.*><JJ|NN.*|IN|CC|DT>*<NN.*>}  # Nouns and Adjectives, terminated with Nouns
-                # {<DT|JJ|NN.*|IN|CC>*<NN.*>}
-                {<DT>?<NN.*|JJ>*<NN.*>}
+                {<DT>?<NN.*|JJ>*<NN.*>} # Nouns and Adjectives, terminated with Nouns
 
             NP:
                 {<NBAR>(<IN|CC><NBAR>)*}  # Above, connected with in/of/etc...
-                {<NBAR>}
         """
         self.chunker = nltk.RegexpParser(self.grammar)
         self.lemmatizer = nltk.WordNetLemmatizer()
