@@ -1,4 +1,0 @@
-Some things are more difficult than others to learn or understand.
-It is theorised that a component of this difficulty is intrinsic to the material itself.
-The core of this theory is that the number of concepts present in the material and the degree to which these concepts interact and are interdependent plays a large role in ones ability to understand the material.
-We propose conceptual density to capture this effect. We establish a definition of conceptual density and a method of quantifying it in the context of text documents through natural language processing techniques.
