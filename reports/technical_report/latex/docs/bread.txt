@@ -1,10 +1,7 @@
 Bread
 
 Bread
-Bread is a staple food typically prepared from a dough of 
-wheat flour and water, usually by baking.
+Bread is a staple food typically prepared from a dough of wheat flour and water, usually by baking.
 
 Wheat Flour
-Wheat Flour is made from ground up wheat.Wheat is a type of 
-grain. Wheat is commonly used for making wheat flour, the 
-main ingredient of bread dough. 
+Wheat Flour is made from ground up wheat.Wheat is a type of grain. Wheat is commonly used for making wheat flour, the main ingredient of bread dough. 

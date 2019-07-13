@@ -142,6 +142,7 @@ How we present material can affect how difficult it is understand it. For exampl
 
 \begin{figure}
     \centering
+     \lstset{xleftmargin=20pt}
     \lstinputlisting[language=Java]{docs/HelloWorld.java}
     \caption{Java hello world example}
     \label{fig:java_hello_world}
@@ -183,7 +184,7 @@ This rather simple definition of a concept is in line with what is currently imp
     \centering
     
     \begin{subfigure}{\linewidth}
-        \lstset{breaklines=true, numbers=none}
+        \lstset{breaklines=true, numbers=none, breakindent=0mm}
         \lstinputlisting[language={}]{docs/bread.txt}
         \caption{A simple text document on the topic of bread.}
         \label{fig:sample_txt_document}
@@ -195,12 +196,9 @@ This rather simple definition of a concept is in line with what is currently imp
         \centering
         \lstset{
         language=xml,
-        tabsize=3,
-        label=code:sample,
-        frame=shadowbox,
+        tabsize=4,
         rulesepcolor=\color{gray},
         xleftmargin=20pt,
-        framexleftmargin=15pt,
         keywordstyle=\color{blue}\bf,
         commentstyle=\color{OliveGreen},
         stringstyle=\color{red},
@@ -210,7 +208,7 @@ This rather simple definition of a concept is in line with what is currently imp
         breaklines=true,
         showstringspaces=false,
         basicstyle=\footnotesize,
-        emph={document,title,section,concept},emphstyle={\color{magenta}}}
+        emph={document,title,section,text},emphstyle={\color{magenta}}}
         \lstinputlisting{docs/bread.xml}
         \caption{A version of the document in Figure \ref{fig:sample_txt_document} where concepts have been explicitly marked.}
         \label{fig:sample_xml_document}
@@ -260,20 +258,20 @@ The cost of backward references are relatively low when compared to forward refe
 %\todo{Talk about schema?}
 %\todo{If weighting introduced into the graph: Thus, we have a theoretical basis on weighting backward references less. Note: May want to expand on the theoretical basis more.}
 
-\subsubsection{Cyclic References}
-Cyclic references are a type of reference where two or more concepts are cyclically dependent on each other, i.e. form a self-referential loop. Sometimes they may be directly dependent, e.g. A depends on B and B depends on A. Other times the dependence may be transitive, e.g. A depends on B, B depends on C, C depends on A. These types of self-referential cycles make it harder to learn the concepts in the cycles since all elements in the self-referential cycle must be considered simultaneously, increasing element interactivity. These types of self-referential cycles would also be difficult to approach from instructional design point-of-view; there is no way to present the concepts in a linear order as required for text books or course work. And while I struggle to come up with concrete examples, it will be interesting see if these types of self-reference occur naturally and how often.
-\todo{Talk about examples:
-value + variable + assignment
-or
-class + object + constructor}
+% \subsubsection{Cyclic References}
+% Cyclic references are a type of reference where two or more concepts are cyclically dependent on each other, i.e. form a self-referential loop. Sometimes they may be directly dependent, e.g. A depends on B and B depends on A. Other times the dependence may be transitive, e.g. A depends on B, B depends on C, C depends on A. These types of self-referential cycles make it harder to learn the concepts in the cycles since all elements in the self-referential cycle must be considered simultaneously, increasing element interactivity. These types of self-referential cycles would also be difficult to approach from instructional design point-of-view; there is no way to present the concepts in a linear order as required for text books or course work. And while I struggle to come up with concrete examples, it will be interesting see if these types of self-reference occur naturally and how often.
+% \todo{Talk about examples:
+% value + variable + assignment
+% or
+% class + object + constructor}
 
-\subsubsection{Implicit References}
-Implicit references are, as the name suggests, references that are not explicit in the text. These occur in compound phrases. For example, consider the phrase `bread dough'. What are the concepts being referenced here? Are we just referencing `bread dough' as a single atomic entity, or are we referencing just the root of the phrase `dough'? Maybe we are referencing `bread' too? Why not all of the above? Here we can see a case for inferring references to concepts that are constituent of a larger compound phrase. So when a explicit reference is made to a concept that is represented by a compound noun phrase, we can infer implicit references to the constituent concepts (nouns) too. I call these inferred references ``implicit references''. 
+% \subsubsection{Implicit References}
+% Implicit references are, as the name suggests, references that are not explicit in the text. These occur in compound phrases. For example, consider the phrase `bread dough'. What are the concepts being referenced here? Are we just referencing `bread dough' as a single atomic entity, or are we referencing just the root of the phrase `dough'? Maybe we are referencing `bread' too? Why not all of the above? Here we can see a case for inferring references to concepts that are constituent of a larger compound phrase. So when a explicit reference is made to a concept that is represented by a compound noun phrase, we can infer implicit references to the constituent concepts (nouns) too. I call these inferred references ``implicit references''. 
 
-Implicit references may not impact conceptual density all too much since some compound noun phrases are just a specification of a known concept, e.g. `bread dough' is a particular type, or subset, of all types of `dough'. However, I believe it important to include implicit references since omitting them may result in missing important connections between concepts. For example, consider the text document in Figure \ref{fig:sample document} and the resulting graph structure in Figure \ref{fig:graph_example}. Not including implicit references would mean that `wheat flour' would not reference `wheat' nor `flour', does this seem sensible? Furthermore, there would be no link between `bread dough' and the concepts `bread' or `dough'; surely `bread dough' should be associated with both `bread' and `dough'. Thus, I believe there is fair reason to include implicit references.
+% Implicit references may not impact conceptual density all too much since some compound noun phrases are just a specification of a known concept, e.g. `bread dough' is a particular type, or subset, of all types of `dough'. However, I believe it important to include implicit references since omitting them may result in missing important connections between concepts. For example, consider the text document in Figure \ref{fig:sample document} and the resulting graph structure in Figure \ref{fig:graph_example}. Not including implicit references would mean that `wheat flour' would not reference `wheat' nor `flour', does this seem sensible? Furthermore, there would be no link between `bread dough' and the concepts `bread' or `dough'; surely `bread dough' should be associated with both `bread' and `dough'. Thus, I believe there is fair reason to include implicit references.
 
 \section{Building a Mind-Map} \label{sec:building_a_mind-map}
-The degree to which concepts in a given text document are integrated can be found through a graph representation of the concepts present in the document. The graph structure that is built is similar to a mind-map, except instead of a single central idea/concept, we are building a rather free-form graph with multiple central concepts with related concepts branching off of these (see Figure \ref{fig:graph_example}). The graph that is built is similar to semantic networks and knowledge graphs. This graph-based approach to representing the knowledge domain that a text document encodes is a natural representation for the problem of quantifying conceptual density. This is because the core concern of conceptual density is the degree of interaction between the concepts found in a text document, in other words the relationships between the concepts. With respect to the quantification of conceptual density, the well-established graph theory and related analysis techniques will provide ways to derive a numerical score for conceptual density that could help with objectively comparing the complexity of documents. 
+The degree to which concepts in a given text document are integrated can be found through a graph representation of the concepts present in the document. The graph structure that is built is similar to a mind-map, except instead of a single central idea/concept, we are building a rather free-form graph with concepts branching off other related concepts. The type graph that is being built has precedent in semantic networks and knowledge graphs. This graph-based approach to representing the knowledge domain that a text document encodes is a natural representation for the problem of quantifying conceptual density. This is because the core concern of conceptual density is the degree of interaction between the concepts found in a text document, in other words the relationships between the concepts. With respect to the quantification of conceptual density, well-established graph theory and related analysis techniques will provide ways to derive a numerical score of conceptual density. 
 
 In this section, I will discuss the process of building up a graph structure in text and the aspects unique to this project. The next section, Section \ref{sec:graph analysis}, will discuss how the graph structure built in this section is analysed and Section \ref{sec:quantifying_conceptual_density} will discuss how a score is derived from the graph structure and analysis.
 
@@ -326,63 +324,37 @@ From the example in Figure \ref{fig:parse_tree_example} we can see that noun phr
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/dependency_parse.png}
+    \includegraphics[width=\linewidth]{reports/technical_report/latex/figures/dependency_parse.png}
     \caption{An example of a dependency parse.\protect\footnotemark 
     For a description of what the relations on the arcs mean refer to page 3 of \citep{martin2009speech}.}
     \label{fig:dependency_parse_example}
 \end{figure}
 
-\subsection{Edges \& Relating Concepts}
-In the graph structure we are building a relationship between concepts is represented as a directed edge between nodes. Edges are used to represent a `references' type relationship between concepts. The scheme I choose for relating two concepts has two main criteria: an edge is created from the subject of the sentence to any other concepts in the same sentence; an edge is created between any `complex' concept and each of the constituent concepts extracted from the complex concept. So how do we identify the subject of a sentence? We can do this through a dependency parse, which marks the relationships between words in a sentence. See Figure \ref{fig:dependency_parse_example} for an example. 
-
 \footnotetext{
     Figure generated from \url{https://corenlp.run/}.
 }
 
+\subsection{Edges \& Relating Concepts}
+In the graph structure we are building a relationship between concepts is represented as a directed edge between nodes. Edges are used to represent a `references' type relationship between concepts. The scheme I choose for relating two concepts has two main criteria: an edge is created from the subject of the sentence to any other concepts in the same sentence; an edge is created between any `complex' concept and each of the constituent concepts extracted from the complex concept. So how do we identify the subject of a sentence? We can do this through a dependency parse, which marks the relationships between words in a sentence. See Figure \ref{fig:dependency_parse_example} for an example. 
+
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/bread_graph.png}
-    \caption{The section-centric graph structure created using the XML document from Figure \ref{fig:sample_xml_document}. Nodes with the double circles represent the main concept of each section in the text document, and oval nodes represent the other concepts that are referenced in the document. Edges in the graph represent the relationship A references B. Blue edges represent forward references, red edges represent backward references, black edges represent references to a priori and emerging references, and dashed edges represent implicit references.
-    The thickness of the edges represent how often the concept at the head of the edge is referenced from a given section.}
+    \includegraphics[width=\linewidth]{reports/technical_report/latex/figures/bread_graph-sections_only-implicit_references.png}
+    \caption{An example of a dependency-based graph created using the XML document from Figure \ref{fig:sample_xml_document}. Nodes represent the concepts that are referenced in the document. Edges in the graph represent the relationship `A references B'. Blue edges represent forward references and red edges represent backward references.}
     \label{fig:graph_example}
 \end{figure}
 
-\begin{figure}
-    \centering
-    
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/simple_co-occurrence.png}
-        \caption{Co-occurrence}
-        \label{fig:simple co-occurrence}
-    \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/co-occurrence.png}
-        \caption{Dependency parse}
-        \label{fig:co-occurrence}
-    \end{subfigure}
-    
-    \caption{A comparison of using co-occurrence (left) and using dependency parses (right) for generating the graph structure for the example sentence ``Examples of Japanese car brands are Mitsubishi, Subaru and Toyota''. The graph on the left is bi-directional (undirected) and the graph on the right is directed. Note that the edges in the graph represent an `A references B' relation.}
-    \label{fig:co-occurrence method comparison}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/dependency_graph.png}
-    \caption{An example of a dependency-based graph. The semantics of this graph are similar to that in Figure \ref{fig:graph_example}.}
-    \label{fig:dependency_graph_example}
-\end{figure}
+\subsection{Summary}
+By using part of speech tags and a regex-based chunker we can extract concepts from text. At present concepts are only defined in a limited scope (mainly just nouns). We can derive relationships between concepts by looking at dependency parses of sentence structures and by looking at the constituent parts of complex concepts represented by compound nouns. Concepts are represented as a node in the graph and relationships between concepts are represented as edges in the graph.
 
 \section{Graph Analysis} \label{sec:graph analysis}
-In this section I will discuss briefly how different types of concepts and references can be identified in a section-centric graph.
+In this section I will discuss how different types of concepts and references can be identified in a graph, and then how we can derive a score of conceptual density from the graph.
 
 \subsection{A Priori \& Emerging Concepts}
-A priori and emerging concepts can be identified in a section-centric graph by looking at the incoming edges. For a given section, we can look at each of the nodes associated with that section. If all of the incoming references come from nodes in the same section as the node in question, then the node represents an a priori concept. Otherwise, if there are two or more sections that the incoming references originate from, then the node in question represents an emerging concept.
+A priori and emerging concepts can be identified in a graph by looking at the incoming edges. For a given node, we can look at each of the edges associated with that node. If all of the incoming edges come from nodes in the same section as the node in question, then we can say that the node represents an a priori concept. Otherwise, if there are two or more sections that the incoming edges originate from, then we can say that the node in question represents an emerging concept.
 
 \subsection{Forward and Backward References}
-In the section-centric graph, forward and backward references can be found through a DFS (depth-first search) and identifying when the algorithm crosses between sections (see Algorithm \ref{alg:mark edges}). A prerequisite is that we must record the sections that appear in the text, and the order in which they are introduced during the parsing of the text document. Then, we can perform a DFS originating from the nodes that represent the main concept of the sections. We can identify a forward reference when the DFS algorithm visits a node that is associated with a section that comes after the section of the previously visited node. Similarly, backward references can be identified when the DFS algorithm visits a node that is associated with a section that comes before the section of the previously visited node. When the algorithm crosses between sections the edges between the current and previous node can then be appropriately marked as a forward or backward reference.
+In the section-centric graph, forward and backward references can be found through a DFS (depth-first search) and identifying when the algorithm crosses between sections (see Algorithm \ref{alg:mark edges}). A prerequisite is that we must record the sections that appear in the text, and the order in which they are introduced during the parsing of the text document. Then, we can perform a DFS originating from the nodes that represent the main concept of the sections. We can identify a forward reference when the DFS algorithm visits a node that is associated with a section that comes after the section of the previously visited node. Similarly, backward references can be identified when the DFS algorithm visits a node that is associated with a section that comes before the section of the previously visited node. When the algorithm crosses between sections the edges between the current and previous node can then be appropriately marked as a forward or backward reference. An example of a graph where the forward and backward egdes have been coloured is shown in Figure \ref{fig:graph_example-coloured_edges}.
 
 \SetKwProg{Fn}{Function}{}{end}
 \SetKwFunction{FMarkEdges}{markEdges}
@@ -432,65 +404,72 @@ In the section-centric graph, forward and backward references can be found throu
     }
 \end{algorithm*}
 
-\subsection{Cycles} 
-We can also consider the number and length of cycles in the graph. Cycles in a graph would suggest the existence of self-referential loops in the text document - in other words sets of concepts that are defined in terms of themselves. Long cycles are perhaps not of too much concern since a long cycle may not necessarily encode a strong dependency between all of the concepts in the cycle. Short cycles, on the other hand may be indicative of strong interdependence and may prove difficult to learn the corresponding concepts since learning one of the concepts in isolation may not suffice.
+% \subsection{Cycles} 
+% We can also consider the number and length of cycles in the graph. Cycles in a graph would suggest the existence of self-referential loops in the text document - in other words sets of concepts that are defined in terms of themselves. Long cycles are perhaps not of too much concern since a long cycle may not necessarily encode a strong dependency between all of the concepts in the cycle. Short cycles, on the other hand may be indicative of strong interdependence and may prove difficult to learn the corresponding concepts since learning one of the concepts in isolation may not suffice.
 
-\subsection{Isolated and Disjoint Subgraphs} 
-The idea of identifying bottlenecks in the graph structure can be extended to finding subgraphs that form isolated/disjointed clusters. Isolated clusters would be a set of interconnected vertices that have a small number of edges connecting them to the rest of the graph. These clusters would likely represent areas of a knowledge domain that could be learned in relative isolation from the reset of the domain, as long as the bottleneck concepts are learned. Similarly, disjointed subgraphs would also denote a similar thing. The existence of these isolated clusters or disjointed subgraphs would imply lower conceptual density than the alternative - a highly interconnteced graph.
+% \subsection{Isolated and Disjoint Subgraphs} 
+% The idea of identifying bottlenecks in the graph structure can be extended to finding subgraphs that form isolated/disjointed clusters. Isolated clusters would be a set of interconnected vertices that have a small number of edges connecting them to the rest of the graph. These clusters would likely represent areas of a knowledge domain that could be learned in relative isolation from the reset of the domain, as long as the bottleneck concepts are learned. Similarly, disjointed subgraphs would also denote a similar thing. The existence of these isolated clusters or disjointed subgraphs would imply lower conceptual density than the alternative - a highly interconnteced graph.
 
-\section{Quantifying Conceptual Density} \label{sec:quantifying_conceptual_density}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{reports/technical_report/latex/figures/bread_graph-sections_only.png}
+    \caption{An example of a dependency-based graph created using the XML document from Figure \ref{fig:sample_xml_document} where forward and backward references have been coloured. Nodes represent the concepts that are referenced in the document. Edges in the graph represent the relationship `A references B'. Blue edges represent forward references and red edges represent backward references.}
+    \label{fig:graph_example-coloured_edges}
+\end{figure}
+
+\subsection{Quantifying Conceptual Density} \label{sec:quantifying_conceptual_density}
 At the centre of conceptual density is the notion of the degree of integration between concepts. In the graph structure this can be measured by looking at the connectivity of nodes. One useful measure may be the average outdegree:
 \begin{equation} \label{eq:simple score}
     S_D = \frac{1}{|V|} \sum_{v \in V} \text{deg}^+(v)
 \end{equation}
-where $S_D$ is the score of the document $D$, $V$ is the set of vertices in the graph,  and $\text{deg}^+(v)$ is the outdegree, or the number of outgoing edges from the vertex $v$. The interpretation of a high average degree can be either: the concept is related to many other concepts and therefore harder to learn since you must learn the other concepts as well; or the concept is related to many other concepts and therefore easier to learn since you have more knowledge to which you can relate the concept. I choose the former interpretation. Perhaps for the latter, we could consider the indegree as some indication of conceptual density. In the case of low indegree, it may indicate that the concept in question is \_, and in the case of high indegree the concept is \_.
+where $S_D$ is the score of the document $D$, $V$ is the set of vertices in the graph,  and $\text{deg}^+(v)$ is the outdegree, or the number of outgoing edges from the vertex $v$. The interpretation of a high average degree can be either: the concept is related to many other concepts and therefore harder to learn since you must learn the other concepts as well; or the concept is related to many other concepts and therefore easier to learn since you have more knowledge to which you can relate the concept. I choose the former interpretation. 
 
 % Perhaps it is not appropriate to include the number of vertices into the score. After all, the main contributor to conceptual density is not necessarily the number of concepts, but rather the interaction between the concepts and the degree to which the concepts interact. Going back to the element interactivity effect, again we are simply concerned with the number of \textit{interacting} elements. There is bound to be correlation between the number of vertices and the average outdegree, so perhaps information about the number of vertices in the graph is implicitly, and partially, encoded in the measure of average (out)degree. Furthermore, including the number of vertices into the score may lead to bias to longer documents. Longer documents have more opportunities to elaborate and give examples compared to shorter documents. And whether or not a longer document is more conceptually dense than a shorter document should be based on the interactions of the concepts. Thus, I believe that it is best to leave out the number of vertices from the scoring metric, thus reducing the score to:
 % \begin{equation} \label{eq:simple score without vertices}
 %     S_D = \frac{1}{|V|} \sum_{v \in V} \text{deg}^+(v)
 % \end{equation}
 
-We can further refine the scoring method by taking into account the strength of the edges, or in other words the weights of the edges:
-\begin{equation} \label{eq:weighed score}
-    S_D = \frac{1}{|V|} \sum_{v \in V} \sum_{w \in W_v} w
-\end{equation}
-where $W_v$ is the set of weights for the outgoing edges of the vertex $v$, and $w$ is a single weight for a given edge. The previous formulation in Equation \ref{eq:simple score} can be thought of as a special case of this formulation where the weight for every edge is one.
-The weight for given edge can be adjusted based on the type of reference the edge represents. For example, we could set the weight of an edge to: 0.5 for implicit references since they are not explicitly represented in the text and as such the reader may not need consider the referenced concept; 1.0 for references to a priori concepts since they typically represent a concept that the reader is expected to know beforehand and only impose germane load; 1.5 for backward references since the reader is required to recall a concept that may have been introduced within the text and using a poorly integrated schema will require more mental exertion than when considering an a priori concept; and 2.0 for forward references since the reader is required to \textit{park} a new concept without anything concrete to pin it too, increasing cognitive load. The exact numbers are not important, but rather the relative scales of the numbers. references to a priori concepts should impose less cognitive load than backward references, and backward references should impose less cognitive load than forward references.
+% We can further refine the scoring method by taking into account the strength of the edges, or in other words the weights of the edges:
+% \begin{equation} \label{eq:weighed score}
+%     S_D = \frac{1}{|V|} \sum_{v \in V} \sum_{w \in W_v} w
+% \end{equation}
+% where $W_v$ is the set of weights for the outgoing edges of the vertex $v$, and $w$ is a single weight for a given edge. The previous formulation in Equation \ref{eq:simple score} can be thought of as a special case of this formulation where the weight for every edge is one.
+% The weight for given edge can be adjusted based on the type of reference the edge represents. For example, we could set the weight of an edge to: 0.5 for implicit references since they are not explicitly represented in the text and as such the reader may not need consider the referenced concept; 1.0 for references to a priori concepts since they typically represent a concept that the reader is expected to know beforehand and only impose germane load; 1.5 for backward references since the reader is required to recall a concept that may have been introduced within the text and using a poorly integrated schema will require more mental exertion than when considering an a priori concept; and 2.0 for forward references since the reader is required to \textit{park} a new concept without anything concrete to pin it too, increasing cognitive load. The exact numbers are not important, but rather the relative scales of the numbers. references to a priori concepts should impose less cognitive load than backward references, and backward references should impose less cognitive load than forward references.
 
-What about references that occur often? If concept A references concept B 100 times, and concept C references concept D 10 times, out of the referenced concepts B and D which would be more difficult to learn? Perhaps a concept being referenced frequently means there are plenty of examples to learn concept B, making it relatively easy to learn concept B. On the other hand, infrequent references to a concept may indicate that the concept is mentioned in passing or as an example and that the concept is relatively simple. Maybe just looking at the frequency of references does not give us enough information to decide this. In this report I will use the interpretation that highly frequent references indicate a higher level of interdependence between two concepts, and as such higher conceptual density. I choose to incorporate frequency into the score by taking a weighted frequency:
-\begin{equation} \label{eq:weighed frequency score}
-    S_D = \frac{1}{|V|} \sum_{\{x, y\} \in E} w(x, y) f(x, y)
-\end{equation}
-where $E$ is the set of all edges $\{x, y\} $ in the graph, $w: \{x, y\} \mapsto \mathbb{R}^+$ is a function that maps the edge $\{x, y\}$ to a weight, and $f: \{x, y\} \mapsto \mathbb{Z}^+$ is a function that maps the edge $\{x, y\}$ to a frequency count.
+% What about references that occur often? If concept A references concept B 100 times, and concept C references concept D 10 times, out of the referenced concepts B and D which would be more difficult to learn? Perhaps a concept being referenced frequently means there are plenty of examples to learn concept B, making it relatively easy to learn concept B. On the other hand, infrequent references to a concept may indicate that the concept is mentioned in passing or as an example and that the concept is relatively simple. Maybe just looking at the frequency of references does not give us enough information to decide this. In this report I will use the interpretation that highly frequent references indicate a higher level of interdependence between two concepts, and as such higher conceptual density. I choose to incorporate frequency into the score by taking a weighted frequency:
+% \begin{equation} \label{eq:weighed frequency score}
+%     S_D = \frac{1}{|V|} \sum_{\{x, y\} \in E} w(x, y) f(x, y)
+% \end{equation}
+% where $E$ is the set of all edges $\{x, y\} $ in the graph, $w: \{x, y\} \mapsto \mathbb{R}^+$ is a function that maps the edge $\{x, y\}$ to a weight, and $f: \{x, y\} \mapsto \mathbb{Z}^+$ is a function that maps the edge $\{x, y\}$ to a frequency count.
 
-One possible issue with Equation \ref{eq:weighed frequency score} is that a reference with a frequency of 40 is not necessarily much more important than a reference with a frequency of 20. In extreme cases, how important is the frequency of a reference when we get to frequency counts of  100 and 200. There is a point where a higher frequency does not really mean much. Thus, it may be sensible to scale down large frequency counts. I do this by scaling the weighted frequency logarithmically: \todo{what is the precedent for this? (Zipf's law, typical language models, tf-idf?)}
-\begin{equation} \label{eq:log weighed frequency score}
-    S_D = \frac{1}{|V|} \sum_{\{x, y\} \in E} 1 + \text{log}_2 (1 + w(x, y) f(x, y))
-\end{equation}
-where I add one to the argument to the log function so that the most basic reference (weight of one, frequency of one) results in zero, in other words no effect. Adding one to the logarithmically-scaled weighted frequency means that the minimum contribution of an edge to the score is one.
+% One possible issue with Equation \ref{eq:weighed frequency score} is that a reference with a frequency of 40 is not necessarily much more important than a reference with a frequency of 20. In extreme cases, how important is the frequency of a reference when we get to frequency counts of  100 and 200. There is a point where a higher frequency does not really mean much. Thus, it may be sensible to scale down large frequency counts. I do this by scaling the weighted frequency logarithmically: \todo{what is the precedent for this? (Zipf's law, typical language models, tf-idf?)}
+% \begin{equation} \label{eq:log weighed frequency score}
+%     S_D = \frac{1}{|V|} \sum_{\{x, y\} \in E} 1 + \text{log}_2 (1 + w(x, y) f(x, y))
+% \end{equation}
+% where I add one to the argument to the log function so that the most basic reference (weight of one, frequency of one) results in zero, in other words no effect. Adding one to the logarithmically-scaled weighted frequency means that the minimum contribution of an edge to the score is one.
 
-However, as discussed in Section \ref{sec:presentation of concepts} not all references are created equal. So the type of reference should be taken into account. This is done by assigning different weights to the different types of references. We can also include the frequency of references (e.g. how often A references B) and combine it with the associated weights. I also scale this weighted frequency logarithmically in case a single or few concepts are dominant in a text. For example, in this paper words such `concept' and `graph' appear in almost every section and mentioned frequently. These types of dominant concepts may skew the score of an otherwise simple document and so I scale the frequency count of references.
+% However, as discussed in Section \ref{sec:presentation of concepts} not all references are created equal. So the type of reference should be taken into account. This is done by assigning different weights to the different types of references. We can also include the frequency of references (e.g. how often A references B) and combine it with the associated weights. I also scale this weighted frequency logarithmically in case a single or few concepts are dominant in a text. For example, in this paper words such `concept' and `graph' appear in almost every section and mentioned frequently. These types of dominant concepts may skew the score of an otherwise simple document and so I scale the frequency count of references.
 
-Including cycles and disjointed subgraphs, we can define a scoring scheme of conceptual density for a given document as such:
-\begin{equation*}
-	\begin{aligned}	
-    S_D =\ &|C| + \frac{1}{|C|} \sum_{c \in C} |c| \\ 
-    			&+ |M| + \frac{1}{|M|} \sum_{m \in M} |m| \\
-    			&+  \frac{1}{|V|} \sum_{\{x, y\} \in E} 1 + \text{log}_2 (1 + w(x, y) f(x, y))
-	\end{aligned}
-\end{equation*}
-where $S_D$ is the score for a given text document $D$, $C$ is the set of simple cycles in the graph, $c$ is a simple cycle in $C$, $M$ is the set of disjointed subgraphs in the graph, $m$ is a disjointed subgraph in $M$, $V$ is the set of all vertices (nodes) in the graph, $E$ is the set of all edges $\{x, y\} $ in the graph, $w: \{x, y\} \mapsto \mathbb{R}^+$ is a function that maps the edge $\{x, y\}$ to a weight, and $f: \{x, y\} \mapsto \mathbb{Z}^+$ is a function that maps the edge $\{x, y\}$ to a frequency count.
- I add one to the argument to the log function so that the most basic reference (weight of one, frequency of one) results in zero, in other words no effect. Adding one to the log term means that the minimum contribution of an edge to the score is one.
+% Including cycles and disjointed subgraphs, we can define a scoring scheme of conceptual density for a given document as such:
+% \begin{equation*}
+% 	\begin{aligned}	
+%     S_D =\ &|C| + \frac{1}{|C|} \sum_{c \in C} |c| \\ 
+%     			&+ |M| + \frac{1}{|M|} \sum_{m \in M} |m| \\
+%     			&+  \frac{1}{|V|} \sum_{\{x, y\} \in E} 1 + \text{log}_2 (1 + w(x, y) f(x, y))
+% 	\end{aligned}
+% \end{equation*}
+% where $S_D$ is the score for a given text document $D$, $C$ is the set of simple cycles in the graph, $c$ is a simple cycle in $C$, $M$ is the set of disjointed subgraphs in the graph, $m$ is a disjointed subgraph in $M$, $V$ is the set of all vertices (nodes) in the graph, $E$ is the set of all edges $\{x, y\} $ in the graph, $w: \{x, y\} \mapsto \mathbb{R}^+$ is a function that maps the edge $\{x, y\}$ to a weight, and $f: \{x, y\} \mapsto \mathbb{Z}^+$ is a function that maps the edge $\{x, y\}$ to a frequency count.
+%  I add one to the argument to the log function so that the most basic reference (weight of one, frequency of one) results in zero, in other words no effect. Adding one to the log term means that the minimum contribution of an edge to the score is one.
 
 \section{Related Work} \label{sec:related_work}
-\subsection{The  PMOSE/IKIRSCH  document readability  formula?}
-This paper \citep{mosenthal1998new}
-\begin{itemize}
-    \item A measure of document complexity
-    \item Only takes into account layout/structure and reference to external information
-\end{itemize}
+% \subsection{The  PMOSE/IKIRSCH  document readability  formula?}
+% This paper \citep{mosenthal1998new}
+% \begin{itemize}
+%     \item A measure of document complexity
+%     \item Only takes into account layout/structure and reference to external information
+% \end{itemize}
 
-\subsection{Automatic Essay Grading?}
+% \subsection{Automatic Essay Grading?}
 
 \subsection{Information Extraction}
 The process of identifying concepts and how they are related that I have described in this report is similar to the task of information extraction. However, there are some key differences between what I have done and what is usually done in information extraction. First and foremost, information extraction is typically concerned with named-entity recognition - the identification of named-entities such as names of people, companies, locations, and dates. In this project we are concerned with concepts in general (all types of entities), which can be thought of as a superset of named-entities. Furthermore, information extraction is also interested in the relationship between named-entities. However, in this project and the work-to-date we are not too concerned about the nature of a relationship between concepts as much as we are interested in just the existence of a relationship.
@@ -513,7 +492,7 @@ In addition to noun phrases we can include other types of phrases into the defin
 \subsubsection{Better Dependency Parsing}
 The current scheme for relating concepts in the dependency-based graph simply relates the subject of a sentence to the other concepts that appear in the sentence. This does not capture the nuances of natural language very well. For example, consider the sentence ``Wheat is used for making wheat flour, a typical ingredient of bread dough'' from Figure \ref{fig:sample_txt_document}. Under the current scheme the subject, `Wheat', would have an edge created between itself and the other concepts `wheat flour' and `typical ingredient of bread dough'. However, the sentence is phrased such that wheat flour is being to referred to as a `typical ingredient of bread dough', not `wheat'. A more correct set of edges in this case would connect `wheat' to `wheat flour' and `wheat flour' to `typical ingredient of bread dough'. 
 
-\subsubsection{Information Extraction Frameworks} Much of the work in this project has been inspired by other work but built from scratch. As discussed earlier, much of the process of building a mind-map like graph structure is similar to the task of information extraction. There exists a framework called OpenIE \citep{banko2007open} which is made for performing information extraction. The benefits of using such a framework is that many of the issues with the current dependency parsing in this project have more or less been solved in OpenIE. A couple of issues that I foresee with adapting a framework such as OpenIE to use in this project are that OpenIE is geared towards working with named-entities and it may be difficult to recover section information relating to extracted entities. 
+\subsubsection{Information Extraction Frameworks} Much of the work in this project has been inspired by other work but built from scratch. As discussed earlier, much of the process of extracting and relating concepts is similar to the task of information extraction. There exists a framework called OpenIE \citep{banko2007open} which is made for performing information extraction. The benefits of using such a framework is that many of the issues with the current dependency parsing in this project have more or less been solved in OpenIE. A couple of issues that I foresee with adapting a framework such as OpenIE to use in this project are that OpenIE is geared towards working with named-entities and it may be difficult to recover section information relating to extracted entities. 
 % Perhaps there are patterns in the dependency parse that could be used to assign the correct relation in this sort of case.
 %In this particular case, `wheat flour' is the direct object of `making' and `typical ingredient` is the appositive modifier of `wheat flour'.
 
@@ -522,7 +501,9 @@ The current scheme for relating concepts in the dependency-based graph simply re
 There are many graph analysis techniques that have not been explored in this report (see \citep{algorithms_documentation}, for example). It would be interesting to see if incorporating features derived from these analysis techniques into the scoring scheme improves the quality of it.
 
 \subsubsection{Bottlenecks} \label{sec:bottlenecks}
-Another interesting possible feature in the graph topology is the idea of a bottleneck vertex/vertices that might be able to be found by identifying the minimum cuts of the graph. One could imagine a bottleneck in a graph structure being visually similar to a hourglass (see Figure \ref{fig:bottleneck example} in  \ref{sec:supplementary figures} for an example). The vertex at the centre of the hourglass shape would be the bottleneck vertex. This would correspond to a concept that is defined in terms of other concepts and is used to define a set of other concepts. For example, in programming polymorphism and inheritance cannot be explained if classes are not explained, similarly classes cannot be explained if variables and functions are not explained. While in this example we could imagine back references from polymorphism to functions, to explain polymorphism we must first explain classes. Therefore, directionality must included when defining and identifying bottleneck concepts. Bottleneck concepts are important to the idea of conceptual density because they make learning more difficult.
+Another interesting possible feature in the graph topology is the idea of a bottleneck vertex/vertices that might be able to be found by identifying the minimum cuts of the graph. One could imagine a bottleneck in a graph structure being visually similar to a hourglass.
+% (see Figure \ref{fig:bottleneck example} in  \ref{sec:supplementary figures} for an example).
+The vertex at the centre of the hourglass shape would be the bottleneck vertex. This would correspond to a concept that is defined in terms of other concepts and is used to define a set of other concepts. For example, in programming polymorphism and inheritance cannot be explained if classes are not explained, similarly classes cannot be explained if variables and functions are not explained. While in this example we could imagine back references from polymorphism to functions, to explain polymorphism we must first explain classes. Therefore, directionality must included when defining and identifying bottleneck concepts. Bottleneck concepts are important to the idea of conceptual density because they make learning more difficult.
 
 \subsubsection{A priori concepts}
 It may be possible to redefine what an a priori concept is in terms of sinks in a graph. A sink is a node in a directed graph that has an outdegree of zero, i.e. it has no outgoing edges. Identifying sinks in a graph is trivial, but we could also extend the idea of an a priori concept being a concept that is only referenced from within one section to: a concept that only leads to a sink and is not part of a self-referential system. 
@@ -532,7 +513,7 @@ There are other features that could be extracted from text.
 In \citep{robins2010learning} it is suggested that a measure of distance between keywords (concepts) could be used to help measure conceptual density. There are some methods that may help with this such as: using lexical chains for keyword extraction \citep{ercan2007using}; and looking at long distance dependency as a metric of reading comprehension difficulty \citep{liu2008dependency}. 
 
 \subsection{Evaluation of the Scoring Scheme} \label{sec:evaluation_of_the_model}
-Regarding the evaluation of the scoring algorithm, the quality of the scores derived from graphs that were generated from semi-structured text have only been evaluated qualitatively in an ad-hoc manner. One particular experiment that I envision is one performed on a labelled data set of abstracts created from human judgements. We need to use human judgements since, as discussed near the start of this report, there no objective measures of conceptual density or element interactivity and as such human judgements are the only baseline available to compare the model with. For the collection of documents, we could gather a number of abstracts from various fields. The reason for choosing abstracts is that they are short, self-contained, expository documents. And if we are to get human judgements then it will be a lot easier and a lot less time consuming to use abstracts as apposed to long documents such as textbooks. Once a collection of abstracts have been created we could group abstracts into pairs and get a panel of human judges to judge which document appears to be more conceptually dense.  Then, we could compare the output of the model against the human judgements and see how well it mimics the human judgements.
+Regarding the evaluation of the scoring algorithm, the quality of the scores derived from graphs that were generated from semi-structured text have only been evaluated qualitatively in an ad-hoc manner. One particular experiment that I envision is one performed on a labelled data set of abstracts created from human judgements. We need to use human judgements since, as discussed near the start of this report, there no objective measures of conceptual density or element interactivity and as such human judgements are the only baseline available to compare the model with. For the collection of documents, we could gather a number of snippets from various textbooks that consist of a few sections. The reason for choosing snippets that contain is that they are short, self-contained, expository documents. And if we are to get human judgements then it will be a lot easier and a lot less time consuming to use abstracts as apposed to long documents such as textbooks. Once a collection of abstracts have been created we could group abstracts into pairs and get a panel of human judges to judge which document appears to be more conceptually dense.  Then, we could compare the output of the model against the human judgements and see how well it mimics the human judgements.
 
 \subsection{Feature Importance Analysis}
 From the process described in Section \ref{sec:evaluation_of_the_model} we would create a labelled data set. From this we could train a machine learning algorithm such as a simple linear regression or random forest. Then through feature importance analysis we could investigate which features out of all of the extracted features (from text and the graph structure) are the most salient in regards to conceptual density. And with a large enough data set, we could simply extract as many features as possible, regardless of whether or not they seem relevant to conceptual density, and then use this feature importance analysis to filter out the unimportant features in a principled way.
@@ -545,47 +526,47 @@ In this report I have explored a graph-based approach to quantifying conceptual 
 \bibliography{report}
 
 
-% Activate the appendix
-% from now on sections are numerated with capital letters
-\appendix
+% % Activate the appendix
+% % from now on sections are numerated with capital letters
+% \appendix
 
-% \renewcommand{\thesection}{Appendix \Alph{section}}
+% % \renewcommand{\thesection}{Appendix \Alph{section}}
 
-\section{Implementation Details}
-\begin{itemize}
-    \item Parsing Unstructured Text
+% \section{Implementation Details}
+% \begin{itemize}
+%     \item Parsing Unstructured Text
     
-    \begin{itemize}
-        \item Normalisation Techniques
-        \item Sentence and Word Tokenisation
-        \item POS Tagging
-        \item Regex Chunking
-        \item Constituency Trees
-    \end{itemize}
-\end{itemize}
+%     \begin{itemize}
+%         \item Normalisation Techniques
+%         \item Sentence and Word Tokenisation
+%         \item POS Tagging
+%         \item Regex Chunking
+%         \item Constituency Trees
+%     \end{itemize}
+% \end{itemize}
 
-\subsection{Relevant NLP Methods?}
-\begin{itemize}
-    \item Parts of Speech Tagging
-    \item Constituency Parsing/Chunking
-    \item Dependency Parsing
-\end{itemize}
+% \subsection{Relevant NLP Methods?}
+% \begin{itemize}
+%     \item Parts of Speech Tagging
+%     \item Constituency Parsing/Chunking
+%     \item Dependency Parsing
+% \end{itemize}
 
-\subsection{Relevant Graph Analysis Techniques?}
-\begin{itemize}
-    \item Minimum cut
-\end{itemize}
+% \subsection{Relevant Graph Analysis Techniques?}
+% \begin{itemize}
+%     \item Minimum cut
+% \end{itemize}
 
-% \section{Synthesised Text Corpus}
-% We created a small corpus of hand-crafted text documents. These can be separated into three main groups: one group where the text is as simple as possible and is minimally conceptually dense; one group where ideas are dependent on the ones preceding it; and one final group where an attempt was made to make the most entangled mess possible. The idea is that each of these groups of texts will have characteristics that we believe will lead to low, medium, and high conceptual density respectively, purposefully inserted.
+% % \section{Synthesised Text Corpus}
+% % We created a small corpus of hand-crafted text documents. These can be separated into three main groups: one group where the text is as simple as possible and is minimally conceptually dense; one group where ideas are dependent on the ones preceding it; and one final group where an attempt was made to make the most entangled mess possible. The idea is that each of these groups of texts will have characteristics that we believe will lead to low, medium, and high conceptual density respectively, purposefully inserted.
 
-\section{Supplementary Figures} \label{sec:supplementary figures}
+% \section{Supplementary Figures} \label{sec:supplementary figures}
 
-\begin{sidewaysfigure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/bottleneck.png}
-    \caption{An example of a graph built from unstructured text using simple co-occurrence. Notice that the graph is densely connected, and that it also forms the sort of hourglass structure mentioned in Section \ref{sec:bottlenecks}}
-    \label{fig:bottleneck example}
-\end{sidewaysfigure}
+% \begin{sidewaysfigure}
+%     \centering
+%     \includegraphics[width=\linewidth]{reports/technical_report/latex/figures/bottleneck.png}
+%     \caption{An example of a graph built from unstructured text using simple co-occurrence. Notice that the graph is densely connected, and that it also forms the sort of hourglass structure mentioned in Section \ref{sec:bottlenecks}}
+%     \label{fig:bottleneck example}
+% \end{sidewaysfigure}
 
 \end{document}
