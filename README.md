@@ -27,4 +27,14 @@ The report for this project is currently hosted in [this GitHub repository](http
     $ python setup.py
     ```
 
-3.  [Install GraphViz](https://graphviz.gitlab.io/download/) if you want to visualise the generated graph structures.
+3.  Install [GraphViz](https://graphviz.gitlab.io/download/) if you want to visualise the generated graph structures.
+
+4.  Run the main script to start quantifying conceptual density!
+    ```shell
+    $ python -m conceptual_density corpora/bread.xml
+    ```
+
+    To see the help message type:
+    ```shell
+    $ python -m conceptual_density --help
+    ```
