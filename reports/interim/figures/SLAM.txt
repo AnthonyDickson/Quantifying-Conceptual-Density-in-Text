@@ -1,2 +1,0 @@
-SLAM
-For example, in computer vision there is a technique called SLAM (Simultaneous localisation and mapping) where an agent with some sort of camera moves around in an 3D environment and the SLAM algorithm builds up a 3D map of the environment and estimates the location of the agent using just the camera feed. The algorithm typically starts with no map and no idea where it is. The algorithm must use the map to estimate the agent's location in the world and it must use the agent's location to create an accurate map of the world.
