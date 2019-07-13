@@ -3,11 +3,10 @@ A project looking at quantifying the complexity of the underlying knowledge doma
 A document is placed on a spectrum ranging from sparse (concepts are mostly independent) to dense (concepts are tightly integrated).
 
 This repo contains code that attempts to perform the quantification of this idea of conceptual density.
-The main approaches are:
- - A co-occurrence graph
- - A graph encoding the relationships between concepts focusing on sections and section headers.
- 
-The report for this project is currently hosted in [this GitHub repository](https://github.com/eight0153/Quantifying-Conceptual-Density-in-Text).
+The main approach is to build up a mind-map like graph structure and derive a score from the graph structure.
+
+The original aims and objectives can be found [here](https://github.com/eight0153/cosc480/blob/master/reports/aims/aims.pdf).
+The main report can be found [here](https://github.com/eight0153/cosc480/blob/master/reports/technical_report/latex/report.pdf).
 
 # Getting Started
 1.  Set up your python environment.
