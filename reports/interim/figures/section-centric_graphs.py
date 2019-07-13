@@ -1,4 +1,4 @@
-from conceptual_density.concept_graph import ConceptGraph
+from qcd.concept_graph import ConceptGraph
 
 if __name__ == '__main__':
     filename = 'bread-concepts_marked.xml'

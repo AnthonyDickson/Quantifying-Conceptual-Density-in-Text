@@ -1,5 +1,5 @@
-from conceptual_density.concept_graph import ConceptGraph
-from conceptual_density.parser import XMLSectionParser
+from qcd.concept_graph import ConceptGraph
+from qcd.parser import XMLSectionParser
 
 if __name__ == '__main__':
     parser = XMLSectionParser(annotate_edges=False)
