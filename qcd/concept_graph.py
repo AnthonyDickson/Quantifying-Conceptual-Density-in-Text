@@ -1,3 +1,5 @@
+"""This file implements two main components: a 'concept graph' and a parser for building up a concept graph."""
+
 from collections import defaultdict
 from math import log2
 from typing import Type, Set, Dict, Optional, List, Tuple
@@ -696,6 +698,7 @@ class ConceptGraph:
 
         return self.mean_weighted_outdegree + n_cycles + avg_cycle_length
 
+    # TODO: Add debug rendering mode that shows more info such as edge and node frequency
     def render(self, filename='concept_graph', view=True):
         """Render the graph using GraphViz.
 
