@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import plac
 import spacy
 
-from conceptual_density.concept_graph import Parser, ConceptGraph
+from qcd.concept_graph import Parser, ConceptGraph
 
 
 class XMLSectionParser(Parser):

@@ -175,8 +175,8 @@ class Text2Graph:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Parse text documents in the given directory and assign a rough score '
                                                  'for each document\'s conceptual density.')
-    parser.add_argument('-c', '--corpora', type=str, default='corpora/',
-                        help='The directory where the text corpora are located.')
+    parser.add_argument('-d', '--documents', type=str, default='documents/',
+                        help='The directory where the text documents are located.')
     args = parser.parse_args()
 
     for path, dirs, files in os.walk(args.corpora):

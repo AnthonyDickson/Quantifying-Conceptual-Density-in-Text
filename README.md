@@ -31,10 +31,10 @@ The report for this project is currently hosted in [this GitHub repository](http
 
 4.  Run the main script to start quantifying conceptual density!
     ```shell
-    $ python -m conceptual_density corpora/bread.xml
+    $ python -m qcd corpora/bread.xml
     ```
 
     To see the help message type:
     ```shell
-    $ python -m conceptual_density --help
+    $ python -m qcd --help
     ```

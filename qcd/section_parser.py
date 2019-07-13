@@ -1,6 +1,6 @@
 import argparse
 
-from conceptual_density.concept_graph import ConceptGraph
+from qcd.concept_graph import ConceptGraph
 
 # TODO: Fix bugs with single letter entities
 # TODO: Add option for simple noun phrase chunker (just a string of adjectives and nouns terminated by a noun).
