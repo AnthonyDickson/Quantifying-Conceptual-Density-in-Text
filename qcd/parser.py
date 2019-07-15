@@ -1,6 +1,7 @@
 import sys
 import xml.etree.ElementTree as ET
 
+import neuralcoref
 import plac
 import spacy
 
@@ -13,14 +14,16 @@ class XMLSectionParser(Parser):
     Expects XML documents to have section tags containing a 'title' tag and a 'text' tag around the text.
     """
 
-    def __init__(self, annotate_edges=True):
+    def __init__(self, annotate_edges=True, resolve_coreferences=False):
         """Create a parser for XML documents.
 
         :param annotate_edges: Whether or not to annotate edges with a relationship type.
+        :param resolve_coreferences: Whether or not to resolve coreferences.
         """
 
         super().__init__()
 
+        self.resolve_coreferences = resolve_coreferences
         self.annotate_edges = annotate_edges
 
     @staticmethod
@@ -37,8 +40,6 @@ class XMLSectionParser(Parser):
         return result
 
     def parse(self, filename, graph, implicit_references=True):
-        nlp = spacy.load('en')
-
         try:
             tree = ET.parse(filename)
         except ET.ParseError as e:
@@ -49,6 +50,14 @@ class XMLSectionParser(Parser):
             exit(2)
 
         root = tree.getroot()
+
+        if self.resolve_coreferences:
+            nlp_ = spacy.load('en')
+            neuralcoref.add_to_pipe(nlp_)
+            nlp = lambda text: nlp_(nlp_(text)._.coref_resolved)
+        else:
+            nlp_ = spacy.load('en')
+            nlp = lambda text: nlp_(text)
 
         for section in root.findall('section'):
             section_title = section.find('title').text
@@ -158,30 +167,41 @@ class XMLSectionParser(Parser):
 
 
 @plac.annotations(
-    file=plac.Annotation("The file to parse. Must be a XML formatted file.", type=str),
-    no_implicit_references=plac.Annotation('Flag indicating to not add implicit references.', kind='flag', abbrev='i'),
-    no_reference_marking=plac.Annotation('Flag indicating to not mark reference types.', kind='flag', abbrev='m'),
-    no_edge_annotation=plac.Annotation('Flag indicating to not annotate edges with relation types.', kind='flag',
-                                       abbrev='a'),
-    no_summary=plac.Annotation('Flag indicating to not print the graph summary.', kind='flag', abbrev='s'),
-    no_graph_rendering=plac.Annotation('Flag indicating to not render (visualise) the graph structure.', kind='flag',
-                                       abbrev='r')
+    file=
+    plac.Annotation("The file to parse. Must be a XML formatted file.", type=str),
 
+    disable_coreference_resolution=
+    plac.Annotation('Flag indicating to not use coreference resolution.', kind='flag', abbrev='c'),
+
+    disable_implicit_references=
+    plac.Annotation('Flag indicating to not add implicit references.', kind='flag', abbrev='i'),
+
+    disable_edge_annotation=
+    plac.Annotation('Flag indicating to not annotate edges with relation types.', kind='flag', abbrev='a'),
+
+    disable_reference_marking=
+    plac.Annotation('Flag indicating to not mark reference types.', kind='flag', abbrev='m'),
+
+    disable_summary=
+    plac.Annotation('Flag indicating to not print the graph summary.', kind='flag', abbrev='s'),
+
+    disable_graph_rendering=
+    plac.Annotation('Flag indicating to not render (visualise) the graph structure.', kind='flag', abbrev='r')
 )
-def main(file, no_implicit_references=False, no_reference_marking=False, no_edge_annotation=False, no_summary=False,
-         no_graph_rendering=False):
+def main(file, disable_coreference_resolution=False, disable_implicit_references=False, disable_edge_annotation=False,
+         disable_reference_marking=False, disable_summary=False, disable_graph_rendering=False):
     """Parse a text document and produce a score relating to conceptual density."""
-    graph = ConceptGraph(parser=XMLSectionParser(not no_edge_annotation),
-                         implicit_references=not no_implicit_references,
-                         mark_references=not no_reference_marking)
+    graph = ConceptGraph(parser=XMLSectionParser(not disable_edge_annotation, not disable_coreference_resolution),
+                         implicit_references=not disable_implicit_references,
+                         mark_references=not disable_reference_marking)
     graph.parse(file)
 
-    if not no_summary:
+    if not disable_summary:
         graph.print_summary()
 
     print('Score: %.2f' % graph.score())
 
-    if not no_graph_rendering:
+    if not disable_graph_rendering:
         graph.render()
 
 
