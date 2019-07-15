@@ -319,10 +319,12 @@ class ConceptGraph:
         self.forward_references: Set[Edge] = set()
         # Set of backward references
         self.backward_references: Set[Edge] = set()
+        # TODO: Rename this and related stuff to 'a_priori_concepts'
+        # TODO: Change this to a set of nodes rather than edges.
         # Set of external references (edges)
         self.external_entities: Set[Edge] = set()
         # Set of shared entities (nodes)
-        self.shared_entities: Set[Node] = set()
+        self.shared_entities: Set[Node] = set()  # TODO: Rename this and related stuff to 'emerging_concepts'
         # Set of self-referential loops
         self.cycles: List[List[Node]] = list()
         # Set of disjointed_subgraphs
@@ -330,7 +332,7 @@ class ConceptGraph:
 
         ## Parse Options ##
         self.parser: Parser = parser if parser else XMLSectionParser()
-        self.implicit_references: bool = implicit_references
+        self.implicit_references: bool = implicit_references  # TODO: Move the `implicit_references` attribute to the parser
         self.mark_references: bool = mark_references
 
         ## Misc ##
@@ -578,12 +580,12 @@ class ConceptGraph:
                     tail_section = self.section_index[tail]
                     referencing_sections.add(tail_section)
 
-                if len(referencing_sections) == 1 and len(referencing_sections.intersection([section])) == 1:
+                if len(referencing_sections) == 1:
                     for tail in self.adjacency_index[node]:
                         the_edge = self.get_edge(tail, node)
                         the_edge.weight *= 0.5
                         self.external_entities.add(the_edge)
-                elif node != section:
+                else:
                     self.shared_entities.add(node)
 
     def mark_edges(self):
@@ -694,10 +696,7 @@ class ConceptGraph:
 
         :return: The score for the graph as a non-negative scalar.
         """
-        n_cycles = len(self.cycles)
-        avg_cycle_length = self.mean_cycle_length
-
-        return self.mean_weighted_outdegree + n_cycles + avg_cycle_length
+        return self.mean_outdegree
 
     # TODO: Add debug rendering mode that shows more info such as edge and node frequency
     def render(self, filename='concept_graph', view=True):
