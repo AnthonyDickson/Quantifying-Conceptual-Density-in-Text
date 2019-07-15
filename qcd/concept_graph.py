@@ -610,7 +610,8 @@ class ConceptGraph:
                 self._mark_edge(prev, curr, BackwardEdge)
             elif curr_i > prev_i:
                 self._mark_edge(prev, curr, ForwardEdge)
-        elif curr not in visited:
+
+        if curr not in visited:
             # Otherwise we continue the depth-first traversal
             visited.add(curr)
 
