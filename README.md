@@ -28,7 +28,12 @@ The main report can be found [here](https://github.com/eight0153/cosc480/blob/ma
 
 3.  Install [GraphViz](https://graphviz.gitlab.io/download/) if you want to visualise the generated graph structures.
 
-4.  Run the main script to start quantifying conceptual density!
+4.  Install [Java SE](https://www.oracle.com/technetwork/java/javase/overview/index.html) 1.8+
+
+5.  Download the Standford [CoreNLP](https://stanfordnlp.github.io/CoreNLP/) package and extract the contents to a
+    directory called `stanford-corenlp` in the root directory of this project.
+
+6.  Run the main script to start quantifying conceptual density!
     ```shell
     $ python -m qcd docs/bread.xml
     ```

@@ -9,3 +9,4 @@ dependencies:
       - spacy==2.1
       - neuralcoref
       - plac==0.9.6
+      - stanfordnlp
