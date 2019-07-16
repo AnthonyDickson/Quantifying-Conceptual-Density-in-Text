@@ -279,7 +279,7 @@ class BackwardEdge(Edge):
 
 
 class ImplicitEdge(Edge):
-    def __init__(self, tail: Node, head: Node, weight: float = 0.5):
+    def __init__(self, tail: Node, head: Node, weight: float = 1.0):
         super().__init__(tail, head, weight)
 
 
@@ -357,7 +357,7 @@ class ConceptGraph:
 
     @property
     def mean_weighted_outdegree(self):
-        return sum([edge.log_weighted_frequency for edge in self.edges]) / len(self.nodes)
+        return sum([edge.weight for edge in self.edges]) / len(self.nodes)
 
     @property
     def mean_weighted_section_outdegree(self):
@@ -368,7 +368,7 @@ class ConceptGraph:
 
             for tail in self.section_listings[section]:
                 for head in self.adjacency_list[tail]:
-                    section_degree += self.get_edge(tail, head).log_weighted_frequency
+                    section_degree += self.get_edge(tail, head).weight
 
             section_degree /= len(self.section_listings[section])
             avg_degree += section_degree
@@ -583,8 +583,9 @@ class ConceptGraph:
                 if len(referencing_sections) == 1:
                     for tail in self.adjacency_index[node]:
                         the_edge = self.get_edge(tail, node)
-                        the_edge.weight *= 0.5
-                        self.external_entities.add(the_edge)
+                        the_edge.weight = 0.5
+
+                    self.external_entities.add(node)
                 else:
                     self.shared_entities.add(node)
 
@@ -696,7 +697,7 @@ class ConceptGraph:
 
         :return: The score for the graph as a non-negative scalar.
         """
-        return self.mean_outdegree
+        return self.mean_weighted_outdegree
 
     # TODO: Add debug rendering mode that shows more info such as edge and node frequency
     def render(self, filename='concept_graph', view=True):
