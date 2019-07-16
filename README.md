@@ -30,7 +30,7 @@ The main report can be found [here](https://github.com/eight0153/cosc480/blob/ma
 
 4.  Run the main script to start quantifying conceptual density!
     ```shell
-    $ python -m qcd corpora/bread.xml
+    $ python -m qcd docs/bread.xml
     ```
 
     To see the help message type:
