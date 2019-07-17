@@ -165,7 +165,7 @@ class Parser:
         """
         for implicit_entity, context in self.permutations(pos_tags):
             graph.add_node(implicit_entity, section)
-            graph.add_edge(context, implicit_entity, ImplicitEdge)
+            graph.add_edge(context, implicit_entity, ImplicitReference)
 
 
 class XMLSectionParser(Parser):
@@ -258,7 +258,7 @@ class Edge:
                label=self.label)
 
 
-class ForwardEdge(Edge):
+class ForwardReference(Edge):
     """An edge that references a node in a section that comes after the section
     that the tail node is in."""
 
@@ -268,7 +268,7 @@ class ForwardEdge(Edge):
         self.colour = 'blue'
 
 
-class BackwardEdge(Edge):
+class BackwardReference(Edge):
     """An edge that references a node in a section that comes before the section
     that the tail node is in."""
 
@@ -278,7 +278,8 @@ class BackwardEdge(Edge):
         self.colour = 'red'
 
 
-class ImplicitEdge(Edge):
+# TODO: Get rid of this somehow? Maybe?
+class ImplicitReference(Edge):
     def __init__(self, tail: Node, head: Node, weight: float = 1.0):
         super().__init__(tail, head, weight)
 
@@ -319,12 +320,10 @@ class ConceptGraph:
         self.forward_references: Set[Edge] = set()
         # Set of backward references
         self.backward_references: Set[Edge] = set()
-        # TODO: Rename this and related stuff to 'a_priori_concepts'
-        # TODO: Change this to a set of nodes rather than edges.
-        # Set of external references (edges)
-        self.external_entities: Set[Edge] = set()
-        # Set of shared entities (nodes)
-        self.shared_entities: Set[Node] = set()  # TODO: Rename this and related stuff to 'emerging_concepts'
+        # Set of a priori concepts (nodes)
+        self.a_priori_concepts: Set[Node] = set()
+        # Set of emerging entities (nodes)
+        self.emerging_concepts: Set[Node] = set()
         # Set of self-referential loops
         self.cycles: List[List[Node]] = list()
         # Set of disjointed_subgraphs
@@ -539,7 +538,7 @@ class ConceptGraph:
             for child in self.adjacency_list[node]:
                 edge = self.get_edge(node, child)
 
-                if isinstance(edge, ImplicitEdge):
+                if isinstance(edge, ImplicitReference):
                     child_section = self.section_index[child]
                     node_section = self.section_index[node]
 
@@ -585,9 +584,9 @@ class ConceptGraph:
                         the_edge = self.get_edge(tail, node)
                         the_edge.weight = 0.5
 
-                    self.external_entities.add(node)
+                    self.a_priori_concepts.add(node)
                 else:
-                    self.shared_entities.add(node)
+                    self.emerging_concepts.add(node)
 
     def mark_edges(self):
         """Colour edges as either forward or backward edges."""
@@ -610,9 +609,9 @@ class ConceptGraph:
             prev_i = self.sections.index(self.section_index[prev])
 
             if curr_i < prev_i:
-                self._mark_edge(prev, curr, BackwardEdge)
+                self._mark_edge(prev, curr, BackwardReference)
             elif curr_i > prev_i:
-                self._mark_edge(prev, curr, ForwardEdge)
+                self._mark_edge(prev, curr, ForwardReference)
 
         if curr not in visited:
             # Otherwise we continue the depth-first traversal
@@ -638,9 +637,9 @@ class ConceptGraph:
         new_edge.style = edge.style
         new_edge.frequency = edge.frequency
 
-        if isinstance(new_edge, ForwardEdge):
+        if isinstance(new_edge, ForwardReference):
             self.forward_references.add(new_edge)
-        elif isinstance(new_edge, BackwardEdge):
+        elif isinstance(new_edge, BackwardReference):
             self.backward_references.add(new_edge)
 
     def find_cycles(self) -> List[List[Node]]:
@@ -682,8 +681,8 @@ class ConceptGraph:
         print(sep)
         print('Forward References:', len(self.forward_references))
         print('Backward References:', len(self.backward_references))
-        print('Self-contained References:', len(self.external_entities))
-        print('Shared Entities:', len(self.shared_entities))
+        print('A Priori Concepts:', len(self.a_priori_concepts))
+        print('Emerging Concepts:', len(self.emerging_concepts))
 
         if len(self.cycles) > 0:
             print(sep)
