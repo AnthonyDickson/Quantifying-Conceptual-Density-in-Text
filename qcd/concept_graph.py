@@ -572,12 +572,11 @@ class ConceptGraph:
                 self.section_listings[new_section].add(node)
 
     def _categorise_nodes(self):
-        """Categorise nodes in the graph into 'self-contained' and 'shared' entities.
+        """Categorise nodes in the graph into 'a priori' and 'emerging' concepts.
 
-        Nodes that are only referenced from one section represent 'self-contained references',
-        all other nodes represent 'shared entities'.
+        Nodes that are only referenced from one section represent 'a priori references',
+        all other nodes represent 'emerging concepts'.
         """
-        # TODO: Change self_contained_references to external entities (edges to nodes)?
         for section in self.sections:
             for node in self.section_listings[section]:
                 referencing_sections = set()
