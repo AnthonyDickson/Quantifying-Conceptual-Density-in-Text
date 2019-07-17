@@ -1,4 +1,18 @@
-from stanza.nlp.corenlp import CoreNLPClient
+from nltk.tree import Tree
+
+from stanza.nlp.corenlp import CoreNLPClient as CoreNLPClientBase
+
+
+class CoreNLPClient(CoreNLPClientBase):
+    def annotate(self, text, properties=None):
+        # Fix bug where AnnotatedDocument objects built from a ProtoBuf buffer would be missing the `parse` attribute.
+        properties = {
+            'annotators': ','.join(properties or client.default_annotators),
+            'outputFormat': 'json'
+        }
+
+        return client._request(text, properties).json(strict=False)
+
 
 if __name__ == '__main__':
     # example text
@@ -16,10 +30,12 @@ if __name__ == '__main__':
     print('---')
     print('connecting to CoreNLP Server...')
     client = CoreNLPClient(server='http://localhost:9000',
-                           default_annotators=['ssplit', 'tokenize', 'pos', 'parse', 'depparse', 'openie'])
+                           default_annotators="tokenize,ssplit,pos,lemma,parse,natlog,depparse,openie".split(','))
 
-    ann = client.annotate(text)
+    annotation = client.annotate(text)
 
-    for sentence in ann.sentence:
-        for triple in sentence.openieTriple:
-            print((triple.subject, triple.relation, triple.object))
+    for sentence in annotation['sentences']:
+        Tree.fromstring(sentence['parse']).pretty_print()
+
+        for triple in sentence['openie']:
+            print((triple['subject'], triple['relation'], triple['object']))
