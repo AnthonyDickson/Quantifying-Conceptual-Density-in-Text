@@ -27,13 +27,34 @@ The main report can be found [here](https://github.com/eight0153/cosc480/blob/ma
     ```
 
 3.  Install [GraphViz](https://graphviz.gitlab.io/download/) if you want to visualise the generated graph structures.
+    Skip to step 7. if you are not planning on running scripts that use CoreNLP.
 
 4.  Install [Java SE](https://www.oracle.com/technetwork/java/javase/overview/index.html) 1.8+
 
-5.  Download the Standford [CoreNLP](https://stanfordnlp.github.io/CoreNLP/) package and extract the contents to a
-    directory called `stanford-corenlp` in the root directory of this project.
+5.  Download the Standford [CoreNLP](https://stanfordnlp.github.io/CoreNLP/) package and extract the contents somewhere.
+    Then add the path to where you extracted the files to the environment variable `CORENLP_HOME`:
+    ```shell
+    $ export CORENLP_HOME=path/to/corenlp
+    ```
+    This sets the environment variable for the current shell.
+    
+    To make this environment variable more permanent run:
+    ```shell
+    $ echo 'export CORENLP_HOME=path/to/corenlp"' >> ~/.bashrc
+    ```
+    These changes will take effect when you next login.
 
-6.  Run the main script to start quantifying conceptual density!
+6.  Start up the CoreNLP server:
+    ```shell
+    $ bash corenlp_server/run.sh
+    ```
+    
+    To see the help message type:
+    ```shell
+    $ bash corenlp_server/run.sh -h
+    ```    
+
+7.  Run the main script to start quantifying conceptual density!
     ```shell
     $ python -m qcd docs/bread.xml
     ```

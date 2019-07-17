@@ -1,11 +1,6 @@
-import os
-
-from stanfordnlp.server import CoreNLPClient
+from stanza.nlp.corenlp import CoreNLPClient
 
 if __name__ == '__main__':
-    # This should be set elsewhere, probably
-    os.environ["CORENLP_HOME"] = "stanford-corenlp"
-
     # example text
     print('---')
     print('input text')
@@ -19,14 +14,12 @@ if __name__ == '__main__':
 
     # set up the client
     print('---')
-    print('starting up Java Stanford CoreNLP Server...')
+    print('connecting to CoreNLP Server...')
+    client = CoreNLPClient(server='http://localhost:9000',
+                           default_annotators=['ssplit', 'tokenize', 'pos', 'parse', 'depparse', 'openie'])
 
-    # set up the client
-    with CoreNLPClient(annotators=['tokenize', 'ssplit', 'pos', 'parse', 'depparse', 'openie'],
-                       timeout=30000, memory='2G') as client:
-        # submit the request to the server
-        ann = client.annotate(text)
+    ann = client.annotate(text)
 
-        for sentence in ann.sentence:
-            for triple in sentence.openieTriple:
-                print((triple.subject, triple.relation, triple.object))
+    for sentence in ann.sentence:
+        for triple in sentence.openieTriple:
+            print((triple.subject, triple.relation, triple.object))
