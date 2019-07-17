@@ -226,6 +226,13 @@ class Edge:
     def __hash__(self):
         return hash(self.tail + self.head)
 
+    def __str__(self):
+        class_ = self.__class__.__name__
+        return '%s(%s, %s, %.2f)' % (class_, self.tail, self.head, self.weight)
+
+    def __repr__(self):
+        return str(self)
+
     @property
     def weighted_frequency(self):
         """The weighted frequency of the edge."""
