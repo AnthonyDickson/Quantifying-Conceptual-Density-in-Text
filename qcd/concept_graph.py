@@ -3,204 +3,16 @@
 from collections import defaultdict
 from math import log2
 from typing import Type, Set, Dict, Optional, List, Tuple
-from xml.etree import ElementTree as ET
 
 import graphviz
 import networkx as nx
-import nltk
+
+from qcd.graph import Node, DirectedEdgeI, GraphI
+from qcd.parser import ParserI
 
 
-class Parser:
-    def __init__(self):
-        """Create a parser."""
-        self.grammar = r"""
-            NBAR:
-                {<DT>?<NN.*|JJ>*<NN.*>} # Nouns and Adjectives, terminated with Nouns
-
-            NP:
-                {<NBAR>(<IN|CC><NBAR>)*}  # Above, connected with in/of/etc...
-        """
-        self.chunker = nltk.RegexpParser(self.grammar)
-        self.lemmatizer = nltk.WordNetLemmatizer()
-
-    def parse(self, filename: str, graph: 'ConceptGraph', implicit_references: bool = True):
-        """Parse a file and build up a graph structure.
-
-        :param filename: The file to parse.
-        :param graph: The graph instance to add the nodes and edges to.
-        :param implicit_references: Whether or not to add implicit references to the graph.
-        """
-        raise NotImplementedError
-
-    def get_tagged(self, phrase: str) -> List[Tuple[str, str]]:
-        """Normalise and tag a string.
-
-        :param phrase: The string to process.
-        :return: List of token, tag pairs.
-        """
-        phrase = phrase.lower()
-        tags = nltk.pos_tag(nltk.word_tokenize(phrase))
-        tags = [(self.lemmatizer.lemmatize(token), tag) for token, tag in tags]
-
-        # Drop leading determiner
-        if tags[0][1] == 'DT':
-            return tags[1:]
-        else:
-            return tags
-
-    def permutations(self, tagged_phrase: List[Tuple[str, str]]) -> Tuple[str, str]:
-        """Generate variations of a POS (part of speech) tagged phrase.
-
-        Variations generated are:
-        - The entire phrase itself
-        - nbar phrases (sequences of adjectives and/or nouns, terminated by a noun)
-        - noun chunks (sequences of one or more nouns)
-
-        Variations are yielded alongside a 'context', which represents the phrase that the variation was generated from.
-
-        As an example, consider the sentence 'Zeus is the sky and thunder god in ancient Greek religion.' and the POS tagged
-         phrase `[('Zeus', 'NNP'), ('is', 'VBZ'), ('the', 'DT'), ('sky', 'NN'), ('and', 'CC'), ('thunder', 'NN'),
-         ('god', 'NN'), ('in', 'IN'), ('ancient', 'JJ'), ('Greek', 'JJ'), ('religion', 'NN'), ('.', '.')]`.
-        The noun phrases we can expect are 'Zeus', 'sky and thunder god in ancient Greek religion'. For the second noun
-        phrase we can expect the nbar phrases 'sky and thunder god' and 'ancient Greek religion'. These two nbar phrases
-        would be yield with the noun phrase as the context.
-
-        :param tagged_phrase: List of 2-tuples containing a POS tag and a token.
-        :return: Yields 2-tuples containing a variation of `tagged_phrase` and the context it appears in.
-        """
-        context = ' '.join([token for token, tag in tagged_phrase])
-        tree = self.chunker.parse(tagged_phrase)
-
-        for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
-            chunk = list(st)
-
-            if chunk[0][1] == 'DT':
-                chunk = chunk[1:]
-
-            nbar = ' '.join([token for token, tag in chunk])
-            yield nbar, context
-
-            chunk = []
-
-            for token, tag in st:
-                if tag.startswith('NN') or tag in {'JJ', 'CC', 'IN'}:
-                    chunk.append((token, tag))
-                elif chunk:
-                    yield from self._process_np_chunk(chunk, nbar)
-
-                    chunk = []
-
-            if chunk:
-                yield from self._process_np_chunk(chunk, nbar)
-
-    @staticmethod
-    def _process_np_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
-        """Generate variations of a NP (noun phrase) chunk.
-
-        :param chunk: List of 2-tuples containing a POS tag and a token.
-        :param context: The parent phrase that the chunk originates from.
-        """
-        np = ' '.join([token for token, tag in chunk])
-        yield np, context
-
-        nbar_chunk = []
-
-        for token, tag in chunk:
-            if tag.startswith('NN') or tag in {'JJ'}:
-                nbar_chunk.append((token, tag))
-            elif nbar_chunk:
-                yield from Parser.process_nbar_chunk(nbar_chunk, np)
-
-                nbar_chunk = []
-
-        if nbar_chunk:
-            yield from Parser.process_nbar_chunk(nbar_chunk, np)
-
-    @staticmethod
-    def process_nbar_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
-        """Generate variations of a NBAR chunk.
-
-        :param chunk: List of 2-tuples containing a POS tag and a token.
-        :param context: The parent phrase that the chunk originates from.
-        """
-        nbar = ' '.join([token for token, tag in chunk])
-        yield nbar, context
-
-        noun_chunk = []
-
-        for token, tag in chunk:
-            if tag.startswith('NN'):
-                noun_chunk.append((token, tag))
-            elif tag == 'JJ':
-                yield token, nbar
-            elif noun_chunk:
-                yield from Parser.process_noun_chunk(noun_chunk, nbar)
-
-                noun_chunk = []
-
-        if noun_chunk:
-            yield from Parser.process_noun_chunk(noun_chunk, nbar)
-
-    @staticmethod
-    def process_noun_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
-        """Generate variations of a noun chunk.
-
-        :param chunk: List of 2-tuples containing a POS tag and a token.
-        :param context: The parent phrase that the chunk originates from.
-        """
-        noun_chunk = ' '.join([token for token, tag in chunk])
-        yield noun_chunk, context
-
-        for token, _ in chunk:
-            yield token, noun_chunk
-
-    def add_implicit_references(self, pos_tags: List[Tuple[str, str]], section: str, graph: 'ConceptGraph'):
-        """Derive nodes and edges from a POS tagged phrase.
-
-        See `permutations()` for details on what kind of nodes and edges are derived.
-
-        :param pos_tags: A phrase as a list of token, tag pairs.
-        :param section: The section that the phrase appears in.
-        :param graph: The graph to add the derived nodes and edges to.
-        """
-        for implicit_entity, context in self.permutations(pos_tags):
-            graph.add_node(implicit_entity, section)
-            graph.add_edge(context, implicit_entity, ImplicitReference)
-
-
-class XMLSectionParser(Parser):
-    """Parser for XML documents.
-
-    Expects XML documents to have section tags containing a title tag and entity tags around the concepts.
-    """
-
-    def parse(self, filename: str, graph: 'ConceptGraph', implicit_references=True):
-        tree = ET.parse(filename)
-        root = tree.getroot()
-
-        for section in root.findall('section'):
-            section_title = section.find('title').text
-            section_title = section_title.lower()
-            section_title = ' '.join(map(self.lemmatizer.lemmatize, nltk.word_tokenize(section_title)))
-
-            graph.add_node(section_title, section_title)
-
-            for concept_element in section.findall('concept'):
-                tags = self.get_tagged(concept_element.text)
-                concept = ' '.join([token for token, _ in tags])
-
-                graph.add_node(concept, section_title)
-                graph.add_edge(section_title, concept)
-
-                if implicit_references:
-                    self.add_implicit_references(tags, section_title, graph)
-
-
-Node = str
-
-
-class Edge:
-    """A connection between two nodes in a graph."""
+class DirectedEdge(DirectedEdgeI):
+    """The base class representing a connection between two nodes in a graph."""
 
     def __init__(self, tail: Node, head: Node, weight: float = 1):
         """Create an edge between two nodes.
@@ -211,27 +23,39 @@ class Edge:
         :param weight: The weighting of edge frequency (how often the edge is
                        added to, or appears in, a graph.
         """
-        self.tail = tail
-        self.head = head
-        self.weight = weight
-        self.frequency = 1  # the number of the times this edge occurs
+        self._tail: Node = tail
+        self._head: Node = head
+        self.weight: float = weight
+        self.frequency: int = 1  # the number of the times this edge occurs
 
-        self.colour = 'black'
-        self.style = 'solid'
-        self.label = ''
+        self.colour: str = 'black'
+        self.style: str = 'solid'
+        self.label: str = ''
 
-    def __eq__(self, other):
-        return self.tail == other.tail and self.head == other.head
+    def __eq__(self, other: 'DirectedEdge'):
+        return self._tail == other._tail and self._head == other._head
 
     def __hash__(self):
-        return hash(self.tail + self.head)
+        return hash(self._tail + self._head)
 
     def __str__(self):
         class_ = self.__class__.__name__
-        return '%s(%s, %s, %.2f)' % (class_, self.tail, self.head, self.weight)
+        return '%s(%s, %s, %.2f)' % (class_, self._tail, self._head, self.weight)
 
     def __repr__(self):
         return str(self)
+
+    @property
+    def nodes(self) -> Tuple[Node, Node]:
+        return self._tail, self._head
+
+    @property
+    def tail(self) -> Node:
+        return self._tail
+
+    @property
+    def head(self) -> Node:
+        return self._head
 
     @property
     def weighted_frequency(self):
@@ -258,14 +82,14 @@ class Edge:
         :param g: The graphviz graph instance.
         :param colour: The colour to render the edge. If None then the edge's colour attribute is used.
         """
-        g.edge(self.tail, self.head,
+        g.edge(self._tail, self._head,
                penwidth=str(self.log_weighted_frequency),
                color=colour if colour else self.colour,
                style=self.style,
                label=self.label)
 
 
-class ForwardReference(Edge):
+class ForwardReference(DirectedEdge):
     """An edge that references a node in a section that comes after the section
     that the tail node is in."""
 
@@ -275,7 +99,7 @@ class ForwardReference(Edge):
         self.colour = 'blue'
 
 
-class BackwardReference(Edge):
+class BackwardReference(DirectedEdge):
     """An edge that references a node in a section that comes before the section
     that the tail node is in."""
 
@@ -286,18 +110,17 @@ class BackwardReference(Edge):
 
 
 # TODO: Get rid of this somehow? Maybe?
-class ImplicitReference(Edge):
+class ImplicitReference(DirectedEdge):
     def __init__(self, tail: Node, head: Node, weight: float = 1.0):
         super().__init__(tail, head, weight)
 
 
-class ConceptGraph:
+class ConceptGraph(GraphI):
     # TODO: Add 'dirty' flag to indicate the graph has been changed since postprocessing() was last called.
-    def __init__(self, parser: Parser = None, implicit_references=True, mark_references=True):
+    def __init__(self, parser: ParserI, mark_references=True):
         """Create an empty graph.
 
-        :param parser_type: The type of parser to use.
-        :param implicit_references: Whether or not to include implicit references during parsing.
+        :param parser: The parser to use.
         :param mark_references: Whether or not to mark forward and backward references after parsing.
         """
         # The set of all nodes (vertices) in the graph.
@@ -319,14 +142,14 @@ class ConceptGraph:
         # Maps head to tail nodes
         self.adjacency_index: Dict[str: Set[Node]] = defaultdict(set)
         # The set of all edges in the graph
-        self.edges: Set[Edge] = set()
+        self.edges: Set[DirectedEdge] = set()
         # Maps (tail, head) pairs to edge instance
-        self.edge_index: Dict[Tuple[str, str], Optional[Edge]] = defaultdict(lambda: None)
+        self.edge_index: Dict[Tuple[str, str], Optional[DirectedEdge]] = defaultdict(lambda: None)
 
         # Set of forward references
-        self.forward_references: Set[Edge] = set()
+        self.forward_references: Set[DirectedEdge] = set()
         # Set of backward references
-        self.backward_references: Set[Edge] = set()
+        self.backward_references: Set[DirectedEdge] = set()
         # Set of a priori concepts (nodes)
         self.a_priori_concepts: Set[Node] = set()
         # Set of emerging entities (nodes)
@@ -337,8 +160,7 @@ class ConceptGraph:
         self.subgraphs: List[Set[Node]] = list()
 
         ## Parse Options ##
-        self.parser: Parser = parser if parser else XMLSectionParser()
-        self.implicit_references: bool = implicit_references  # TODO: Move the `implicit_references` attribute to the parser
+        self.parser: ParserI = parser
         self.mark_references: bool = mark_references
 
         ## Misc ##
@@ -423,7 +245,7 @@ class ConceptGraph:
 
         self.update_section_count(node, section)
 
-    def add_edge(self, tail: str, head: str, edge_type: Type[Edge] = Edge) -> Optional[Edge]:
+    def add_edge(self, tail: str, head: str, edge_type: Type[DirectedEdge] = DirectedEdge) -> Optional[DirectedEdge]:
         """Add an edge between two nodes to the graph.
 
         :param tail: The node that the edge originates from.
@@ -471,7 +293,7 @@ class ConceptGraph:
             # non-existent edge, probably
             pass
 
-    def get_edge(self, tail: str, head: str) -> Edge:
+    def get_edge(self, tail: str, head: str) -> DirectedEdge:
         """Get the edge that connects the nodes corresponding to `tail` and `head`.
 
         :param tail: The name of the node that the edge originates from.
@@ -480,7 +302,7 @@ class ConceptGraph:
         """
         return self.edge_index[(tail, head)]
 
-    def set_edge(self, edge: Edge) -> Edge:
+    def set_edge(self, edge: DirectedEdge) -> DirectedEdge:
         """Set (delete and add) an edge in the graph.
 
         The edge that is deleted will be the edge that has the same tail and
@@ -501,12 +323,12 @@ class ConceptGraph:
         """
         self.section_counts[node][section] += 1
 
-    def parse(self, filename):
+    def parse(self, filename: str):
         """Parse a XML document and build up a graph structure.
 
         :param filename: The XML file to parse.
         """
-        self.parser.parse(filename, self, self.implicit_references)
+        self.parser.parse(filename, self)
         self.postprocessing()
 
     def postprocessing(self):
@@ -626,7 +448,7 @@ class ConceptGraph:
             for child in self.adjacency_list[curr]:
                 self._mark_edges(child, curr, visited)
 
-    def _mark_edge(self, tail: Node, head: Node, edge_type: Type[Edge] = Edge):
+    def _mark_edge(self, tail: Node, head: Node, edge_type: Type[DirectedEdge] = DirectedEdge):
         """Mark an edge.
 
         :param tail: The node from which the edge originates from, or points

@@ -4,7 +4,7 @@ import statistics
 import plac
 
 from qcd.concept_graph import ConceptGraph
-from qcd.parser import XMLSectionParser
+from qcd.xml_parser import XMLParser
 
 
 @plac.annotations(
@@ -21,8 +21,7 @@ from qcd.parser import XMLSectionParser
 def main(file, no_implicit_references=False, no_reference_marking=False, no_edge_annotation=False, no_summary=False,
          no_graph_rendering=False):
     """Run an experiment testing how ordering of sections affects the scoring of conceptual density for a given document."""
-    graph = ConceptGraph(parser=XMLSectionParser(not no_edge_annotation),
-                         implicit_references=not no_implicit_references,
+    graph = ConceptGraph(parser=XMLParser(not no_edge_annotation, not no_implicit_references),
                          mark_references=not no_reference_marking)
     graph.parse(file)
 
