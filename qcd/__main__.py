@@ -1,5 +1,5 @@
 import sys
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree
 
 import plac
 
@@ -41,7 +41,7 @@ def main(file, disable_coreference_resolution=False, disable_implicit_references
 
     try:
         graph.parse(file)
-    except ET.ParseError as e:
+    except ElementTree.ParseError as e:
         print('Could not parse the file. \n%s.' % e.msg.capitalize(), file=sys.stderr)
         exit(1)
     except FileNotFoundError as e:

@@ -2,7 +2,7 @@ import os
 import sys
 import time
 
-from stanfordnlp.server.client import ShouldRetryException
+import stanfordnlp
 from stanfordnlp.server import CoreNLPClient
 
 if __name__ == '__main__':
@@ -27,7 +27,7 @@ if __name__ == '__main__':
                     break
                 else:
                     time.sleep(1)
-            except ShouldRetryException:
+            except stanfordnlp.server.client.ShouldRetryException:
                 time.sleep(1)
         else:
             print('Timed out after %d seconds.' % timeout, file=sys.stderr)

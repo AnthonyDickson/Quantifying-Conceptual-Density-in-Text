@@ -10,7 +10,8 @@ class Text2Graph:
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.hyphenated_word = re.compile(r'^[a-z]+([/-][a-z]+)+$')
         # Grammar from:
-        # S. N. Kim, T. Baldwin, and M.-Y. Kan. Evaluating n-gram based evaluation metrics for automatic keyphrase extraction.
+        # S. N. Kim, T. Baldwin, and M.-Y. Kan. Evaluating n-gram based evaluation metrics for automatic keyphrase
+        # extraction.
         # Technical report, University of Melbourne, Melbourne 2010.
         self.grammar = r"""
             NBAR:
@@ -27,7 +28,7 @@ class Text2Graph:
         self.doc_length = 0
 
     def is_valid_token(self, t):
-        return (t.isalnum() or re.match(self.hyphenated_word, t))
+        return t.isalnum() or re.match(self.hyphenated_word, t)
 
     def add_token(self, token, context):
         for other in context:
@@ -93,7 +94,6 @@ class Text2Graph:
         text = self.text.lower()
         text = Text2Graph.remove_hyphenation(text)
         sentences = nltk.sent_tokenize(text)
-        positions = dict()
 
         for i, sent in enumerate(sentences):
             tokens = nltk.word_tokenize(sent)
@@ -137,9 +137,8 @@ if __name__ == '__main__':
 
     for node in t2g.graph:
         for other in t2g.graph[node]:
-                if {node, other} not in processed_edges:
-                        g.edge(node, other)
-                        processed_edges.append({node, other})
+            if {node, other} not in processed_edges:
+                g.edge(node, other)
+                processed_edges.append({node, other})
 
     g.render('bottleneck', format='png')
-

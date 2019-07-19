@@ -16,7 +16,7 @@ if __name__ == '__main__':
             """
     chunker = nltk.RegexpParser(grammar)
 
-    pattern = re.compile(r"^(\d(\.\d)*\s+)?[A-Z]\w*(\s(\&|\w+))*$", flags=re.MULTILINE)
+    pattern = re.compile(r"^(\d(\.\d)*\s+)?[A-Z]\w*(\s(&|\w+))*$", flags=re.MULTILINE)
 
     sections = []
 

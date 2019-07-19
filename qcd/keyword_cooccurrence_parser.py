@@ -11,7 +11,8 @@ class Text2Graph:
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.hyphenated_word = re.compile(r'^[a-z]+([/-][a-z]+)+$')
         # Grammar from:
-        # S. N. Kim, T. Baldwin, and M.-Y. Kan. Evaluating n-gram based evaluation metrics for automatic keyphrase extraction.
+        # S. N. Kim, T. Baldwin, and M.-Y. Kan. Evaluating n-gram based evaluation metrics for automatic keyphrase
+        # extraction.
         # Technical report, University of Melbourne, Melbourne 2010.
         self.grammar = r"""
             NBAR:
@@ -29,7 +30,7 @@ class Text2Graph:
         self.doc_length = 0
 
     def is_valid_token(self, t):
-        return (t.isalnum() or re.match(self.hyphenated_word, t)) \
+        return t.isalnum() or re.match(self.hyphenated_word, t) \
             # and t not in self.stopwords
 
     def add_token(self, token, context):
@@ -135,11 +136,11 @@ class Text2Graph:
         """A fairly arbitrary scoring metric that attempts to measure the 'density' of a given document based on it's
         term co-occurrence graph.
         """
-        N = len(self.graph)
-        res = N
+        n = len(self.graph)
+        res = n
 
         for node in self.graph:
-            res += sum(self.graph[node].values()) / N
+            res += sum(self.graph[node].values()) / n
 
         return res
 

@@ -3,7 +3,7 @@
 # Check we are in the correct directory
 cwd=${PWD##*/} # the last part of the path to the working directory
 
-if [ $cwd == "src" ]; then
+if [[ ${cwd} == "src" ]]; then
     echo "ERROR: Wrong directory." 1>&2
     echo "Do not call this script from within the src/ directory." 1>&2
     echo "Change directory to the parent directory." 1>&2
@@ -18,16 +18,16 @@ input="src/documents.txt"
 
 while IFS= read -r file
 do
-    ln -sf ../../../docs/$file $file
+    ln -sf ../../../docs/${file} ${file}
 done < "$input"
 
 # Add root directory to python path
-export PYTHONPATH=$PYTHONPATH:$(realpath ../../../)
+export PYTHONPATH=${PYTHONPATH}:$(realpath ../../../)
 
 # Run all of the scripts in figures/src
 for script in src/*.py; do
 	echo "Running '$script'..."
-	python $script
+	python ${script}
 done
 
 # Delete all intermediate files (i.e. anything but .png files).

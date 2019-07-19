@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree
 
 import neuralcoref
 import nltk
@@ -40,35 +40,27 @@ class XMLParser(ParserI):
                {<NBAR>(<IN|CC><NBAR>)*}  # Above, connected with in/of/etc...
        """
 
-    @staticmethod
-    def filter_spans(spans):
-        # Filter a sequence of spans so they don't contain overlaps
-        get_sort_key = lambda span: (span.end - span.start, span.start)
-        sorted_spans = sorted(spans, key=get_sort_key, reverse=True)
-        result = []
-        seen_tokens = set()
-        for span in sorted_spans:
-            if span.start not in seen_tokens and span.end - 1 not in seen_tokens:
-                result.append(span)
-                seen_tokens.update(range(span.start, span.end))
-        return result
-
     def parse(self, filename: str, graph: ConceptGraph):
         """Parse a file and build up a graph structure.
 
         :param filename: The file to parse.
         :param graph: The graph instance to add the nodes and edges to.
         """
-        tree = ET.parse(filename)
+        tree = ElementTree.parse(filename)
         root = tree.getroot()
 
         if self.resolve_coreferences:
             nlp_ = spacy.load('en')
             neuralcoref.add_to_pipe(nlp_)
-            nlp = lambda text: nlp_(nlp_(text)._.coref_resolved)
+
+            def nlp(text: str):
+                # noinspection PyProtectedMember
+                return nlp_(nlp_(text)._.coref_resolved)
         else:
             nlp_ = spacy.load('en')
-            nlp = lambda text: nlp_(text)
+
+            def nlp(text: str):
+                return nlp_(text)
 
         for section in root.findall('section'):
             section_title = section.find('title').text
@@ -108,16 +100,28 @@ class XMLParser(ParserI):
                     if self.implicit_references:
                         self.add_implicit_references(tags, section_title, graph)
 
-    # TODO: Handle cases where no subject found (e.g. subordinate clauses).
-    # TODO: Handle subjects that have more than one actor (e.g. two things joined by 'and').
+    # noinspection PyProtectedMember
+    @staticmethod
+    def filter_spans(spans):
+        # Filter a sequence of spans so they don't contain overlaps
+        sorted_spans = sorted(spans, key=lambda span: (span.end - span.start, span.start), reverse=True)
+        result = []
+        seen_tokens = set()
+        for span in sorted_spans:
+            if span.start not in seen_tokens and span.end - 1 not in seen_tokens:
+                result.append(span)
+                seen_tokens.update(range(span.start, span.end))
+        return result
 
-    def chunk(self, doc):
+    @staticmethod
+    def chunk(doc):
         """Chunk the doc into noun chunks.
 
         :param doc: The document to chunk
         """
         spans = list(doc.noun_chunks)
         spans = XMLParser.filter_spans(spans)
+
         with doc.retokenize() as retokenizer:
             for span in spans:
                 retokenizer.merge(span)
@@ -139,6 +143,8 @@ class XMLParser(ParserI):
             return tags
 
     def get_subject(self, sent) -> str:
+        # TODO: Handle cases where no subject found (e.g. subordinate clauses).
+        # TODO: Handle subjects that have more than one actor (e.g. two things joined by 'and').
         subject = [w for w in sent.root.lefts if w.dep_.startswith('nsubj')]
 
         if subject:
@@ -217,8 +223,8 @@ class XMLParser(ParserI):
 
         Variations are yielded alongside a 'context', which represents the phrase that the variation was generated from.
 
-        As an example, consider the sentence 'Zeus is the sky and thunder god in ancient Greek religion.' and the POS tagged
-         phrase `[('Zeus', 'NNP'), ('is', 'VBZ'), ('the', 'DT'), ('sky', 'NN'), ('and', 'CC'), ('thunder', 'NN'),
+        As an example, consider the sentence 'Zeus is the sky and thunder god in ancient Greek religion.' and the POS
+        tagged phrase `[('Zeus', 'NNP'), ('is', 'VBZ'), ('the', 'DT'), ('sky', 'NN'), ('and', 'CC'), ('thunder', 'NN'),
          ('god', 'NN'), ('in', 'IN'), ('ancient', 'JJ'), ('Greek', 'JJ'), ('religion', 'NN'), ('.', '.')]`.
         The noun phrases we can expect are 'Zeus', 'sky and thunder god in ancient Greek religion'. For the second noun
         phrase we can expect the nbar phrases 'sky and thunder god' and 'ancient Greek religion'. These two nbar phrases

@@ -159,11 +159,11 @@ class ConceptGraph(GraphI):
         # Set of disjointed_subgraphs
         self.subgraphs: List[Set[Node]] = list()
 
-        ## Parse Options ##
+        # Parse Options #
         self.parser: ParserI = parser
         self.mark_references: bool = mark_references
 
-        ## Misc ##
+        # Misc #
         self.nx: Optional[nx.DiGraph] = None
 
     @property
@@ -347,11 +347,11 @@ class ConceptGraph(GraphI):
 
         :return: The graph as an NetworkX graph.
         """
-        G = nx.DiGraph()
-        G.add_nodes_from([node for node in self.nodes])
-        G.add_edges_from([(edge.tail, edge.head) for edge in self.edges])
+        g = nx.DiGraph()
+        g.add_nodes_from([node for node in self.nodes])
+        g.add_edges_from([(edge.tail, edge.head) for edge in self.edges])
 
-        return G
+        return g
 
     def _reassign_implicit_entities(self):
         """Correct the sections for entities derived from a main section node.
