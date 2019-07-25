@@ -25,7 +25,7 @@ if __name__ == '__main__':
     print('')
 
     # text = "Bread is a staple food prepared from a dough of wheat flour and water, usually by baking."
-    with open('docs/bread.txt', 'r') as f:
+    with open('documents/bread.txt', 'r') as f:
         text = f.read()
 
     nlp = spacy.load('en')

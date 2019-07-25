@@ -3,7 +3,7 @@ import nltk
 if __name__ == '__main__':
     import re
 
-    with open('docs/Sweller2011_Chapter_TheElementInteractivityEffect.txt', 'r') as f:
+    with open('documents/Sweller2011_Chapter_TheElementInteractivityEffect.txt', 'r') as f:
         text = f.read()
 
     """Create a parser."""
