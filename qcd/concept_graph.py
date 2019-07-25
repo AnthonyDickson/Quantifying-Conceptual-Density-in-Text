@@ -2,12 +2,12 @@
 
 from collections import defaultdict
 from math import log2
-from typing import Type, Set, Dict, Optional, List, Tuple
+from typing import Type, Set, Dict, Optional, List, Tuple, NewType, Union
 
 import graphviz
 import networkx as nx
 
-from qcd.graph import Node, DirectedEdgeI, GraphI
+from qcd.graph import Node, DirectedEdgeI, GraphI, Section
 from qcd.parser import ParserI
 
 
@@ -28,9 +28,9 @@ class DirectedEdge(DirectedEdgeI):
         self.weight: float = weight
         self.frequency: int = 1  # the number of the times this edge occurs
 
-        self.colour: str = 'black'
-        self.style: str = 'solid'
-        self.label: str = ''
+        self._colour: str = 'black'
+        self._style: str = 'solid'
+        self._label: str = ''
 
     def __eq__(self, other: 'DirectedEdge'):
         return self._tail == other._tail and self._head == other._head
@@ -40,7 +40,7 @@ class DirectedEdge(DirectedEdgeI):
 
     def __str__(self):
         class_ = self.__class__.__name__
-        return '%s(%s, %s, %.2f)' % (class_, self._tail, self._head, self.weight)
+        return '%s(\'%s\', \'%s\', %.2f)' % (class_, self._tail, self._head, self.weight)
 
     def __repr__(self):
         return str(self)
@@ -56,6 +56,30 @@ class DirectedEdge(DirectedEdgeI):
     @property
     def head(self) -> Node:
         return self._head
+
+    @property
+    def colour(self) -> str:
+        return self._colour
+
+    @colour.setter
+    def colour(self, value: str):
+        self._colour = value
+
+    @property
+    def style(self) -> str:
+        return self._style
+
+    @style.setter
+    def style(self, value: str):
+        self._style = value
+
+    @property
+    def label(self) -> str:
+        return self._label
+
+    @label.setter
+    def label(self, value: str):
+        self._label = value
 
     @property
     def weighted_frequency(self):
@@ -89,22 +113,55 @@ class DirectedEdge(DirectedEdgeI):
                label=self.label)
 
 
-class ForwardReference(DirectedEdge):
+Relation = NewType('Relation', str)
+
+
+class RelationalEdge(DirectedEdge):
+    def __init__(self, tail: Node, head: Node, relation: Relation = '', weight: float = 1.0):
+        super().__init__(tail, head)
+
+        self._relation = relation
+
+    @property
+    def label(self) -> str:
+        # NOTE: The parent class's label property which has both a setter and getter, by overriding just the getter here
+        #       the property is turned into a read-only property (i.e. no setter is inherited from the parent class).
+        return self.relation
+
+    @property
+    def relation(self) -> Relation:
+        return self._relation
+
+    def __eq__(self, other: Union[DirectedEdge, 'RelationalEdge']):
+        if isinstance(other, RelationalEdge):
+            return super(RelationalEdge, self).__eq__(other) and self.relation == other.relation
+        else:
+            return super(RelationalEdge, self).__eq__(other)
+
+    def __hash__(self):
+        return hash(self._tail + self._head + self.relation)
+
+    def __str__(self):
+        class_ = self.__class__.__name__
+        return '%s(\'%s\', \'%s\', \'%s\', %.2f)' % (class_, self._tail, self._head, self.relation, self.weight)
+
+
+class ForwardReference(RelationalEdge):
     """An edge that references a node in a section that comes after the section
     that the tail node is in."""
 
     def __init__(self, tail: Node, head: Node, weight: float = 2.0):
-        super().__init__(tail, head, weight)
+        super().__init__(tail, head, weight=weight)
 
         self.colour = 'blue'
 
 
-class BackwardReference(DirectedEdge):
+class BackwardReference(RelationalEdge):
     """An edge that references a node in a section that comes before the section
     that the tail node is in."""
 
     def __init__(self, tail: Node, head: Node, weight: float = 1.5):
-        super().__init__(tail, head, weight)
+        super().__init__(tail, head, weight=weight)
 
         self.colour = 'red'
 
@@ -112,7 +169,7 @@ class BackwardReference(DirectedEdge):
 # TODO: Get rid of this somehow? Maybe?
 class ImplicitReference(DirectedEdge):
     def __init__(self, tail: Node, head: Node, weight: float = 1.0):
-        super().__init__(tail, head, weight)
+        super().__init__(tail, head, weight=weight)
 
 
 class ConceptGraph(GraphI):
@@ -127,24 +184,24 @@ class ConceptGraph(GraphI):
         self.nodes: Set[Node] = set()
 
         # Maps section to nodes found in that section.
-        self.section_listings: Dict[str, Set[Node]] = defaultdict(set)
+        self.section_listings: Dict[Section, Set[Node]] = defaultdict(set)
         # Maps node names to sections:
-        self.section_index: Dict[str, Optional[str]] = defaultdict(lambda: None)
+        self.section_index: Dict[Node, Optional[Section]] = defaultdict(lambda: None)
         # Set of sections nodes (the main concept of a given section).
         self.section_nodes: Set[Node] = set()
         # List of sections used to record order that sections are introduced.
-        self.sections: List[str] = list()
+        self.sections: List[Section] = list()
         # Maps nodes to the frequency they appear in each section.
-        self.section_counts: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        self.section_counts: Dict[Node, Dict[Section, int]] = defaultdict(lambda: defaultdict(int))
 
         # Maps tail to head nodes
-        self.adjacency_list: Dict[str, Set[Node]] = defaultdict(set)
+        self.adjacency_list: Dict[Node, Set[Node]] = defaultdict(set)
         # Maps head to tail nodes
-        self.adjacency_index: Dict[str: Set[Node]] = defaultdict(set)
+        self.adjacency_index: Dict[Node: Set[Node]] = defaultdict(set)
         # The set of all edges in the graph
         self.edges: Set[DirectedEdge] = set()
         # Maps (tail, head) pairs to edge instance
-        self.edge_index: Dict[Tuple[str, str], Optional[DirectedEdge]] = defaultdict(lambda: None)
+        self.edge_index: Dict[Tuple[Node, Node], Optional[DirectedEdge]] = defaultdict(lambda: None)
 
         # Set of forward references
         self.forward_references: Set[DirectedEdge] = set()
@@ -219,7 +276,7 @@ class ConceptGraph(GraphI):
         else:
             return 0
 
-    def add_node(self, node: Node, section: str):
+    def add_node(self, node: Node, section: Section):
         """Add a node to the graph.
 
         :param node: The node to add.
@@ -245,7 +302,8 @@ class ConceptGraph(GraphI):
 
         self.update_section_count(node, section)
 
-    def add_edge(self, tail: str, head: str, edge_type: Type[DirectedEdge] = DirectedEdge) -> Optional[DirectedEdge]:
+    def add_edge(self, tail: Node = None, head: Node = None, edge_type: Type[DirectedEdge] = DirectedEdge,
+                 edge: DirectedEdge = None) -> Optional[DirectedEdge]:
         """Add an edge between two nodes to the graph.
 
         :param tail: The node that the edge originates from.
@@ -253,28 +311,46 @@ class ConceptGraph(GraphI):
         :param edge_type: The type of edge to be created.
         :return: The edge instance, possibly None.
         """
-        # Ignore spurious edges, a concept cannot be defined in terms of itself
-        if tail == head:
-            return None
+        if edge is None:
+            assert tail is not None and head is not None, \
+                'The parameters `head` and `tail` must both be set if no edge instance is given.'
+
+            # Ignore spurious edges, a concept cannot be defined directly in terms of itself
+            if tail == head:
+                return None
+
+            edge = edge_type(tail, head)
+        else:
+            tail = edge.tail
+            head = edge.head
 
         assert tail in self.nodes and head in self.nodes, 'Both nodes in the edge must exist within the graph.'
 
-        the_edge = edge_type(tail, head)
-
-        if the_edge in self.edges:
+        if edge in self.edges:
             # Duplicate edges only increase a count so each edge is only
             # rendered once.
-            the_edge = self.get_edge(the_edge.tail, the_edge.head)
-            the_edge.frequency += 1
-
-            return the_edge
+            edge = self.get_edge(edge.tail, edge.head)
+            edge.frequency += 1
         else:
             self.adjacency_list[tail].add(head)
             self.adjacency_index[head].add(tail)
-            self.edges.add(the_edge)
-            self.edge_index[(tail, head)] = the_edge
+            self.edges.add(edge)
+            self.edge_index[(tail, head)] = edge
 
-        return the_edge
+        return edge
+
+    def add_relation(self, subject: Node, relation: Relation, object_: Node, section: Section):
+        """Add a relation between two concepts to the graph.
+        This is shorthand for adding the both of the concepts as nodes and adding an edge between those nodes.
+
+        :param subject: The subject of the relation.
+        :param relation: The verb of the relation.
+        :param object_: The object of the relation.
+        :param section: The section that the concepts appear in.
+        """
+        self.add_node(subject, section)
+        self.add_node(object_, section)
+        self.add_edge(edge=RelationalEdge(subject, object_, relation=relation))
 
     def remove_edge(self, tail: Node, head: Node):
         """Remove an edge from the graph.
@@ -293,7 +369,7 @@ class ConceptGraph(GraphI):
             # non-existent edge, probably
             pass
 
-    def get_edge(self, tail: str, head: str) -> DirectedEdge:
+    def get_edge(self, tail: Node, head: Node) -> DirectedEdge:
         """Get the edge that connects the nodes corresponding to `tail` and `head`.
 
         :param tail: The name of the node that the edge originates from.
@@ -315,7 +391,7 @@ class ConceptGraph(GraphI):
 
         return self.add_edge(edge.tail, edge.head, type(edge))
 
-    def update_section_count(self, node: str, section: str):
+    def update_section_count(self, node: Node, section: Section):
         """Update the count of times a node appears in a given section by one.
 
         :param node: The node.

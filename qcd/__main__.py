@@ -1,15 +1,19 @@
 import sys
+from datetime import datetime
 from xml.etree import ElementTree
 
 import plac
 
 from qcd.concept_graph import ConceptGraph
-from qcd.xml_parser import XMLParser
+from qcd.xml_parser import XMLParser, XMLOpenIEParser
 
 
 @plac.annotations(
     file=
     plac.Annotation("The file to parse. Must be a XML formatted file.", type=str),
+
+    use_openie_parser=
+    plac.Annotation('Flag indicating to use the OpenIE version of the parser.', kind='flag', abbrev='o'),
 
     disable_coreference_resolution=
     plac.Annotation('Flag indicating to not use coreference resolution.', kind='flag', abbrev='c'),
@@ -32,15 +36,24 @@ from qcd.xml_parser import XMLParser
     debug_mode=
     plac.Annotation('Flag indicating to enable debug mode.', kind='flag', abbrev='d')
 )
-def main(file, disable_coreference_resolution=False, disable_implicit_references=False, disable_edge_annotation=False,
-         disable_reference_marking=False, disable_summary=False, disable_graph_rendering=False, debug_mode=False):
+def main(file, use_openie_parser=False, disable_coreference_resolution=False, disable_implicit_references=False,
+         disable_edge_annotation=False, disable_reference_marking=False, disable_summary=False,
+         disable_graph_rendering=False, debug_mode=False):
     """Parse a text document and produce a score relating to conceptual density."""
-    parser = XMLParser(not disable_edge_annotation, not disable_implicit_references,
-                       not disable_coreference_resolution)
+    parser_type = XMLOpenIEParser if use_openie_parser else XMLParser
+
+    parser = parser_type(not disable_edge_annotation, not disable_implicit_references,
+                         not disable_coreference_resolution)
     graph = ConceptGraph(parser=parser, mark_references=not disable_reference_marking)
 
     try:
+        start = datetime.now()
+
         graph.parse(file)
+
+        delta = datetime.now() - start
+
+        print('Document parsed in: %s' % delta)
     except ElementTree.ParseError as e:
         print('Could not parse the file. \n%s.' % e.msg.capitalize(), file=sys.stderr)
         exit(1)

@@ -7,6 +7,8 @@ import spacy
 from spacy.tokens.span import Span
 
 from qcd.concept_graph import ImplicitReference, ConceptGraph
+from qcd.corenlp import CustomCoreNLPClient
+from qcd.graph import Node, Section
 from qcd.parser import ParserI
 
 
@@ -66,6 +68,9 @@ class XMLParser(ParserI):
             section_title = section.find('title').text
             section_title = section_title.lower()
 
+            if section_title == 'references':
+                continue
+
             section_text = section.find('text').text
             section_text = section_text.lower()
 
@@ -79,7 +84,7 @@ class XMLParser(ParserI):
                 parse_tree = self.chunker.parse(nltk.Tree('S', children=tags))
 
                 # Find the subject of the sentence
-                subject = self.get_subject(sent)
+                subject = Node(self.get_subject(sent))
 
                 graph.add_node(subject, section_title)
 
@@ -92,7 +97,7 @@ class XMLParser(ParserI):
                     if tags[0][1] == 'DT':
                         tags = tags[1:]
 
-                    entity = ' '.join([token for token, tag in tags])
+                    entity = Node(' '.join([token for token, tag in tags]))
 
                     graph.add_node(entity, section_title)
                     graph.add_edge(subject, entity)
@@ -157,7 +162,7 @@ class XMLParser(ParserI):
 
         return str(subject)
 
-    def add_gerund_phrase(self, subject: str, section: str, sentence: Span, graph: ConceptGraph):
+    def add_gerund_phrase(self, subject: Node, section: Section, sentence: Span, graph: ConceptGraph):
         """Add gerund (verb) phrases to the graph.
 
         For gerunds without an object, just the verb is added to the graph.
@@ -171,7 +176,7 @@ class XMLParser(ParserI):
         :param graph: The graph to add the gerund phrase to.
         """
         for gerund in filter(lambda token: token.tag_ == 'VBG', sentence):
-            verb = str(gerund)
+            verb = Node(gerund.text)
 
             # TODO: Add edge between gerund and object
             # TODO: Remove redundant edge between subject and object since that relation is represented
@@ -182,7 +187,7 @@ class XMLParser(ParserI):
             for right in gerund.rights:
                 if 'obj' in right.dep_:
                     if self.annotate_edges:
-                        object_ = str(right)
+                        object_ = Node(right)
                         graph.add_node(object_, section)
 
                         the_edge = graph.add_edge(subject, object_)
@@ -200,7 +205,7 @@ class XMLParser(ParserI):
                 graph.add_node(verb, section)
                 graph.add_edge(subject, verb)
 
-    def add_implicit_references(self, pos_tags: List[Tuple[str, str]], section: str, graph: ConceptGraph):
+    def add_implicit_references(self, pos_tags: List[Tuple[str, str]], section: Section, graph: ConceptGraph):
         """Derive nodes and edges from a POS tagged phrase.
 
         See `permutations()` for details on what kind of nodes and edges are derived.
@@ -318,3 +323,96 @@ class XMLParser(ParserI):
 
         for token, _ in chunk:
             yield token, noun_chunk
+
+
+class XMLOpenIEParser(XMLParser):
+    def __init__(self, annotate_edges: bool = True, implicit_references: bool = True,
+                 resolve_coreferences: bool = False):
+        """Create a parser for XML documents.
+
+        :param annotate_edges: Whether or not to annotate edges with a relationship type.
+        :param implicit_references: Whether or not to add implicit references to the graph during parsing.
+        :param resolve_coreferences: Whether or not to resolve coreferences.
+        """
+        super().__init__(annotate_edges, implicit_references, resolve_coreferences)
+
+        print('connecting to CoreNLP Server...')
+        self.client = CustomCoreNLPClient(server='http://localhost:9000',
+                                          default_annotators="tokenize,ssplit,pos,lemma,parse,natlog,depparse,openie".split(
+                                              ','))
+
+    def parse(self, filename: str, graph: ConceptGraph):
+        """Parse a file and build up a graph structure.
+
+        :param filename: The file to parse.
+        :param graph: The graph instance to add the nodes and edges to.
+        """
+        tree = ElementTree.parse(filename)
+        root = tree.getroot()
+
+        if self.resolve_coreferences:
+            nlp_ = spacy.load('en')
+            neuralcoref.add_to_pipe(nlp_)
+
+            def nlp(text: str):
+                # noinspection PyProtectedMember
+                return nlp_(nlp_(text)._.coref_resolved)
+        else:
+            nlp_ = spacy.load('en')
+
+            def nlp(text: str):
+                return nlp_(text)
+
+        for section in root.findall('section'):
+            section_title = section.find('title').text
+            section_title = section_title.lower()
+
+            if section_title == 'references':
+                continue
+
+            section_text = section.find('text').text
+            section_text = section_text.lower()
+
+            span = nlp(section_text)
+            # self.chunk(span)
+
+            for sent in span.sents:
+                s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, span)]))
+
+                # TODO: Use spacy tags instead, more accurate.
+                # TODO: Use CoreNLP parse tree
+                annotation = self.client.annotate(s.text)
+
+                for sentence in annotation['sentences']:
+                    for triple in sentence['openie']:
+                        subject, relation, object_ = triple['subject'], triple['relation'], triple['object']
+
+                        if self.filter_triple(subject, relation, object_):
+                            graph.add_relation(subject, relation, object_, section_title)
+
+                            self.add_implicit_references([(token.text, token.tag_) for token in nlp(object_)],
+                                                         section_title, graph)
+
+    def filter_triple(self, subject: str, relation: str, object_: str) -> bool:
+        # annotation = self.client.annotate(object_)
+        # parse_tree = nltk.Tree.fromstring(annotation['sentences'][0]['parse'])
+        # child_nodes = [child for child in parse_tree[0]]
+        #
+        # if len(child_nodes) > 2:
+        #     return False
+        #
+        # for node in child_nodes:
+        #     if node.height() > 5:
+        #         return False
+        #
+        #     if node.label() == 'VP':
+        #         for child in node:
+        #             if child.label() in {'NP', 'PP', 'VBG'}:
+        #                 break
+        #         else:
+        #             return False
+        #
+        #     if node.height() > 2 and node.label() not in {'NP', 'VP', 'PP'}:
+        #         return False
+
+        return True
