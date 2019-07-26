@@ -1,3 +1,5 @@
+import warnings
+from abc import ABC
 from typing import List, Tuple
 from xml.etree import ElementTree
 
@@ -8,11 +10,25 @@ from spacy.tokens.span import Span
 
 from qcd.concept_graph import ImplicitReference, ConceptGraph
 from qcd.corenlp import CustomCoreNLPClient
-from qcd.graph import Node, Section
+from qcd.graph import Node, Section, GraphI
 from qcd.parser import ParserI
 
 
-class XMLParser(ParserI):
+class ParserABC(ParserI, ABC):
+    def __init__(self, annotate_edges: bool = True, implicit_references: bool = True,
+                 resolve_coreferences: bool = False):
+        """Create a parser for XML documents.
+
+        :param annotate_edges: Whether or not to annotate edges with a relationship type.
+        :param implicit_references: Whether or not to add implicit references to the graph during parsing.
+        :param resolve_coreferences: Whether or not to resolve coreferences.
+        """
+        self.resolve_coreferences: bool = resolve_coreferences
+        self.implicit_references: bool = implicit_references
+        self.annotate_edges: bool = annotate_edges
+
+
+class XMLParser(ParserABC):
     """Parser for XML documents.
 
     Expects XML documents to have 'section' tags containing a 'title' tag and a 'text' tag around the text.
@@ -26,12 +42,10 @@ class XMLParser(ParserI):
         :param implicit_references: Whether or not to add implicit references to the graph during parsing.
         :param resolve_coreferences: Whether or not to resolve coreferences.
         """
+        super().__init__(annotate_edges, implicit_references, resolve_coreferences)
+
         self.chunker: nltk.RegexpParser = nltk.RegexpParser(self.get_grammar())
         self.lemmatizer: nltk.WordNetLemmatizer = nltk.WordNetLemmatizer()
-
-        self.resolve_coreferences: bool = resolve_coreferences
-        self.implicit_references: bool = implicit_references
-        self.annotate_edges: bool = annotate_edges
 
     def get_grammar(self) -> str:
         return r"""
@@ -75,14 +89,13 @@ class XMLParser(ParserI):
             section_text = section_text.lower()
 
             span = nlp(section_text)
-            self.chunk(span)
 
             for sent in span.sents:
-                # TODO: Use spacy tags instead, more accurate.
                 # TODO: Use CoreNLP parse tree
-                tags = self.get_tagged(str(sent))
+                tags = self.get_tagged(sent)
                 parse_tree = self.chunker.parse(nltk.Tree('S', children=tags))
 
+                # TODO: Does the sentence need to be noun chunked?
                 # Find the subject of the sentence
                 subject = Node(self.get_subject(sent))
 
@@ -105,41 +118,13 @@ class XMLParser(ParserI):
                     if self.implicit_references:
                         self.add_implicit_references(tags, section_title, graph)
 
-    # noinspection PyProtectedMember
-    @staticmethod
-    def filter_spans(spans):
-        # Filter a sequence of spans so they don't contain overlaps
-        sorted_spans = sorted(spans, key=lambda span: (span.end - span.start, span.start), reverse=True)
-        result = []
-        seen_tokens = set()
-        for span in sorted_spans:
-            if span.start not in seen_tokens and span.end - 1 not in seen_tokens:
-                result.append(span)
-                seen_tokens.update(range(span.start, span.end))
-        return result
-
-    @staticmethod
-    def chunk(doc):
-        """Chunk the doc into noun chunks.
-
-        :param doc: The document to chunk
-        """
-        spans = list(doc.noun_chunks)
-        spans = XMLParser.filter_spans(spans)
-
-        with doc.retokenize() as retokenizer:
-            for span in spans:
-                retokenizer.merge(span)
-
-    def get_tagged(self, phrase: str) -> List[Tuple[str, str]]:
+    def get_tagged(self, phrase: Span) -> List[Tuple[str, str]]:
         """Normalise and tag a string.
 
         :param phrase: The string to process.
         :return: List of token, tag pairs.
         """
-        phrase = phrase.lower()
-        tags = nltk.pos_tag(nltk.word_tokenize(phrase))
-        tags = [(self.lemmatizer.lemmatize(token), tag) for token, tag in tags]
+        tags = [(token.lemma_, token.tag_) for token in phrase]
 
         # Drop leading determiner
         if tags[0][1] == 'DT':
@@ -325,21 +310,33 @@ class XMLParser(ParserI):
             yield token, noun_chunk
 
 
-class XMLOpenIEParser(XMLParser):
-    def __init__(self, annotate_edges: bool = True, implicit_references: bool = True,
-                 resolve_coreferences: bool = False):
+class CoreNLPParserABC(ParserABC, ABC):
+    """A parser for XML documents that uses a CoreNLP server for NLP."""
+
+    def __init__(self, annotate_edges: bool = True, implicit_references: bool = False,
+                 resolve_coreferences: bool = False, server_url: str = 'http://localhost:9000'):
         """Create a parser for XML documents.
 
         :param annotate_edges: Whether or not to annotate edges with a relationship type.
         :param implicit_references: Whether or not to add implicit references to the graph during parsing.
         :param resolve_coreferences: Whether or not to resolve coreferences.
+        :param server_url: The URL to the CoreNLP server to use for NLP queries.
         """
         super().__init__(annotate_edges, implicit_references, resolve_coreferences)
 
-        print('connecting to CoreNLP Server...')
-        self.client = CustomCoreNLPClient(server='http://localhost:9000',
-                                          default_annotators="tokenize,ssplit,pos,lemma,parse,natlog,depparse,openie".split(
-                                              ','))
+        if implicit_references:
+            warnings.warn('\'%s\' does not support implicit references. '
+                          'Set the paramater \'implicit_references\' to False to hide this warning.'
+                          % self.__class__.__name__)
+
+        self.annotations = "tokenize,ssplit,pos,lemma,parse,natlog,depparse,openie".split(',')
+        self.client = CustomCoreNLPClient(server=server_url,
+                                          default_annotators=self.annotations)
+
+
+class OpenIEParser(CoreNLPParserABC):
+    def get_grammar(self) -> str:
+        raise NotImplementedError('This parser does not define its own grammar.')
 
     def parse(self, filename: str, graph: ConceptGraph):
         """Parse a file and build up a graph structure.
@@ -377,10 +374,8 @@ class XMLOpenIEParser(XMLParser):
             # self.chunk(span)
 
             for sent in span.sents:
-                s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, span)]))
+                s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
 
-                # TODO: Use spacy tags instead, more accurate.
-                # TODO: Use CoreNLP parse tree
                 annotation = self.client.annotate(s.text)
 
                 for sentence in annotation['sentences']:
@@ -389,9 +384,6 @@ class XMLOpenIEParser(XMLParser):
 
                         if self.filter_triple(subject, relation, object_):
                             graph.add_relation(subject, relation, object_, section_title)
-
-                            self.add_implicit_references([(token.text, token.tag_) for token in nlp(object_)],
-                                                         section_title, graph)
 
     def filter_triple(self, subject: str, relation: str, object_: str) -> bool:
         # annotation = self.client.annotate(object_)
@@ -416,3 +408,46 @@ class XMLOpenIEParser(XMLParser):
         #         return False
 
         return True
+
+
+class CoreNLPParser(CoreNLPParserABC):
+    def get_grammar(self) -> str:
+        raise NotImplementedError('This parser does not define its own grammar.')
+
+    def parse(self, filename: str, graph: GraphI):
+        raise NotImplementedError
+
+        tree = ElementTree.parse(filename)
+        root = tree.getroot()
+
+        if self.resolve_coreferences:
+            nlp_ = spacy.load('en')
+            neuralcoref.add_to_pipe(nlp_)
+
+            def nlp(text: str):
+                # noinspection PyProtectedMember
+                return nlp_(nlp_(text)._.coref_resolved)
+        else:
+            nlp_ = spacy.load('en')
+
+            def nlp(text: str):
+                return nlp_(text)
+
+        for section in root.findall('section'):
+            section_title = section.find('title').text
+            section_title = section_title.lower()
+
+            if section_title == 'references':
+                continue
+
+            section_text = section.find('text').text
+            section_text = section_text.lower()
+
+            for sent in nltk.sent_tokenize(section_text):
+                sent = nlp(sent)
+                s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
+
+                annotation = self.client.annotate(s.text)
+
+                for sentence in annotation['sentences']:
+                    parse_tree = nltk.Tree.fromstring(sentence['parse'])
