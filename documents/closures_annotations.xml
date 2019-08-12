@@ -23,45 +23,106 @@
             <concept type="a priori">subtraction</concept>
             <concept type="a priori">zero</concept>
             <concept type="emerging">closed under addition, subtraction and multiplication</concept>
-            <concept type="a priori">a set</concept>
+            <concept type="a priori">set</concept>
             <concept type="emerging">closed under a collection of operations</concept>
             <concept type="emerging">closed under each of the operation individually</concept>
         </annotations>
     </section>
-    <!--    <section>-->
-    <!--        <title>Contents</title>-->
-    <!--        <text>-->
-    <!--            Basic properties-->
-    <!--            Closed sets-->
-    <!--            Examples-->
-    <!--            Closure operator-->
-    <!--            Binary relation closures-->
-    <!--            See also-->
-    <!--            Notes-->
-    <!--            References-->
-    <!--        </text>-->
-    <!--    </section>-->
-    <!--    <section>-->
-    <!--        <title>Basic properties</title>-->
-    <!--        <text>-->
-    <!--            A set that is closed under an operation or collection of operations is said to satisfy a closure property.-->
-    <!--            Often a closure property is introduced as an axiom, which is then usually called the axiom of closure.-->
-    <!--            Modern set-theoretic definitions usually define operations as maps between sets, so adding closure to a-->
-    <!--            structure as an axiom is superfluous; however in practice operations are often defined initially on a-->
-    <!--            superset of the set in question and a closure proof is required to establish that the operation applied to-->
-    <!--            pairs from that set only produces members of that set. For example, the set of even integers is closed under-->
-    <!--            addition, but the set of odd integers is not. When a set S is not closed under some operations, one can-->
-    <!--            usually find the smallest set containing S that is closed. This smallest closed set is called the closure of-->
-    <!--            S (with respect to these operations). For example, the closure under subtraction of the set of natural-->
-    <!--            numbers, viewed as a subset of the real numbers, is the set of integers. An important example is that of-->
-    <!--            topological closure. The notion of closure is generalized by Galois connection, and further by monads.-->
-    <!--            The set S must be a subset of a closed set in order for the closure operator to be defined. In the preceding-->
-    <!--            example, it is important that the reals are closed under subtraction; in the domain of the natural numbers-->
-    <!--            subtraction is not always defined. The two uses of the word "closure" should not be confused. The former-->
-    <!--            usage refers to the property of being closed, and the latter refers to the smallest closed set containing-->
-    <!--            one that may not be closed. In short, the closure of a set satisfies a closure property.-->
-    <!--        </text>-->
-    <!--    </section>-->
+    <section>
+        <title>Contents</title>
+        <text>
+            Basic properties
+            Closed sets
+            Examples
+            Closure operator
+            Binary relation closures
+            See also
+            Notes
+            References
+        </text>
+        <annotations>
+            <concept type="emerging" reference="forward">Closed sets</concept>
+            <concept type="emerging" reference="forward">Closure operator</concept>
+            <concept type="emerging" reference="forward">Binary relation closures</concept>
+        </annotations>
+    </section>
+    <section>
+        <title>Basic properties</title>
+        <text>
+            A set that is closed under an operation or collection of operations is said to satisfy a closure property.
+            Often a closure property is introduced as an axiom, which is then usually called the axiom of closure.
+            Modern set-theoretic definitions usually define operations as maps between sets, so adding closure to a
+            structure as an axiom is superfluous; however in practice operations are often defined initially on a
+            superset of the set in question and a closure proof is required to establish that the operation applied to
+            pairs from that set only produces members of that set. For example, the set of even integers is closed under
+            addition, but the set of odd integers is not. When a set S is not closed under some operations, one can
+            usually find the smallest set containing S that is closed. This smallest closed set is called the closure of
+            S (with respect to these operations). For example, the closure under subtraction of the set of natural
+            numbers, viewed as a subset of the real numbers, is the set of integers. An important example is that of
+            topological closure. The notion of closure is generalized by Galois connection, and further by monads.
+            The set S must be a subset of a closed set in order for the closure operator to be defined. In the preceding
+            example, it is important that the reals are closed under subtraction; in the domain of the natural numbers
+            subtraction is not always defined. The two uses of the word "closure" should not be confused. The former
+            usage refers to the property of being closed, and the latter refers to the smallest closed set containing
+            one that may not be closed. In short, the closure of a set satisfies a closure property.
+        </text>
+        <annotations>
+            <concept type="a priori">set</concept>
+            <concept type="emerging" reference="backward">closed</concept>
+            <concept type="a priori">operation</concept>
+            <concept type="a priori">collection of operations</concept>
+            <concept type="emerging">satisfy a closure property</concept>
+            <concept type="emerging">closure property</concept>
+            <concept type="a priori">axiom</concept>
+            <concept type="emerging">axiom of closure</concept>
+            <concept type="a priori">Modern set-theoretic definitions</concept>
+            <concept type="a priori">operations</concept>
+            <concept type="a priori">maps between sets</concept>
+            <concept type="emerging" reference="forward">closure</concept>
+            <concept type="a priori">axiom</concept>
+            <concept type="a priori">operations</concept>
+            <concept type="a priori">superset of the set</concept>
+            <concept type="emerging">closure proof</concept>
+            <concept type="a priori">the operation</concept>
+            <concept type="a priori">set</concept>
+            <concept type="a priori">members of that set</concept>
+            <concept type="a priori">set of even integers</concept>
+            <concept type="emerging" reference="backward">closed under addition</concept>
+
+            <concept type="a priori">set</concept>
+            <concept type="emerging" reference="backward">closed under some operations</concept>
+            <concept type="a priori">set containing S</concept>
+            <concept type="emerging" reference="backward">closed</concept>
+            <concept type="emerging" reference="backward">closed set</concept>
+            <concept type="emerging">closure of S</concept>
+            <concept type="emerging">closure</concept>
+            <concept type="a priori">subtraction</concept>
+            <concept type="a priori">set of natural numbers</concept>
+            <concept type="a priori">subset of the real numbers</concept>
+            <concept type="a priori">set of integers</concept>
+            <concept type="emerging">topological closure</concept>
+            <concept type="emerging">closure</concept>
+            <concept type="a priori">Galois connection</concept>
+            <concept type="a priori">monads</concept>
+
+            <concept type="a priori">set</concept>
+            <concept type="a priori">subset</concept>
+            <concept type="emerging" reference="backward">a closed set</concept>
+            <concept type="emerging" reference="forward">the closure operator</concept>
+            <concept type="a priori">reals</concept>
+            <concept type="emerging" reference="backward">closed</concept>
+            <concept type="a priori">subtraction</concept>
+            <concept type="a priori">domain of the natural numbers</concept>
+            <concept type="a priori">subtraction</concept>
+
+            <concept type="emerging">closure</concept>
+            <concept type="emerging" reference="backward">property of being closed</concept>
+            <concept type="emerging" reference="backward">closed set</concept>
+            <concept type="emerging" reference="backward">closed</concept>
+            <concept type="emerging">closure</concept>
+            <concept type="emerging">closure property</concept>
+        </annotations>
+    </section>
     <!--    <section>-->
     <!--        <title>Closed sets</title>-->
     <!--        <text>-->
