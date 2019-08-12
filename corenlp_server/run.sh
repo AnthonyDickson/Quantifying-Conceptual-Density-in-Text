@@ -28,7 +28,7 @@ where:
                         for more details.
 "
 
-while getopts ':ht:j::e' option; do
+while getopts ':ha:m:p:s:t:' option; do
   case "$option" in
     h) echo "$usage"
        exit
