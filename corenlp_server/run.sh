@@ -62,4 +62,4 @@ then
     exit 1
 fi
 
-java -Xmx${maxMemory}G -cp "${CORENLP_HOME}/*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port ${port} -timeout ${timeout} -threads ${threads} -maxCharLength ${maxCharLength} -serverProperties ${serverProperties} -preload ${preloadList}
+java -Xmx"${maxMemory}"G -cp "${CORENLP_HOME}/*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port "${port}" -timeout ${timeout} -threads "${threads}" -maxCharLength ${maxCharLength} -serverProperties "${serverProperties}" -preload "${preloadList}"
