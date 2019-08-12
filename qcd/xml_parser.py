@@ -172,7 +172,7 @@ class XMLParser(ParserABC):
             for right in gerund.rights:
                 if 'obj' in right.dep_:
                     if self.annotate_edges:
-                        object_ = Node(right)
+                        object_ = Node(right.text)
                         graph.add_node(object_, section)
 
                         the_edge = graph.add_edge(subject, object_)
