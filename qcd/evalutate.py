@@ -57,14 +57,22 @@ def main(filename: str):
 
     print('%-20s |    p |    r |   f1 |' % 'Variable')
     print('-' * 43)
-    print('%-20s | %4.2f | %4.2f | %4.2f |' % (
-    'A Priori Concepts', *precision_recall_f1(a_priori_concepts, graph.a_priori_concepts)))
-    print('%-20s | %4.2f | %4.2f | %4.2f |' % (
-    'Emerging Concepts', *precision_recall_f1(emerging_concepts, graph.emerging_concepts)))
-    print('%-20s | %4.2f | %4.2f | %4.2f |' % (
-    'Forward References', *precision_recall_f1(forward_references, graph.forward_references)))
-    print('%-20s | %4.2f | %4.2f | %4.2f |' % (
-    'Backward References', *precision_recall_f1(backward_references, graph.backward_references)))
+    print('%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('A Priori Concepts', *precision_recall_f1(a_priori_concepts, graph.a_priori_concepts)))
+    print('%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Emerging Concepts', *precision_recall_f1(emerging_concepts, graph.emerging_concepts)))
+    print('%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Forward References', *precision_recall_f1(forward_references, graph.forward_references)))
+    print('%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Backward References', *precision_recall_f1(backward_references, graph.backward_references)))
+
+    print('-' * 43)
+    print('%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Concepts Overall', *precision_recall_f1(a_priori_concepts.union(emerging_concepts),
+                                                      graph.a_priori_concepts.union(graph.emerging_concepts))))
+    print('%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('References Overall', *precision_recall_f1(forward_references.union(backward_references),
+                                                        graph.forward_references.union(graph.backward_references))))
 
 
 def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, float]:
