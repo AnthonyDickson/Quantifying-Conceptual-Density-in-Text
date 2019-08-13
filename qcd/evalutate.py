@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 from typing import Tuple
 
 import plac
+import spacy
 
 from qcd.concept_graph import ConceptGraph
 from qcd.xml_parser import XMLParser
@@ -21,6 +22,7 @@ def main(filename: str):
     emerging_concepts = set()
     forward_references = set()
     backward_references = set()
+    nlp = spacy.load('en')
 
     for section in root.findall('section'):
         annotations = section.find('annotations')
@@ -30,6 +32,8 @@ def main(filename: str):
                 concept_type = annotation.get('type')
                 reference_type = annotation.get('reference')
                 concept = annotation.text.lower()
+                concept = nlp(concept)
+                concept = ' '.join([token.lemma_ for token in concept])
 
                 if concept_type == 'a priori':
                     a_priori_concepts.add(concept)

@@ -123,28 +123,90 @@
             <concept type="emerging">closure property</concept>
         </annotations>
     </section>
-    <!--    <section>-->
-    <!--        <title>Closed sets</title>-->
-    <!--        <text>-->
-    <!--            A set is closed under an operation if the operation returns a member of the set when evaluated on members of-->
-    <!--            the set. Sometimes the requirement that the operation be valued in a set is explicitly stated, in which case-->
-    <!--            it is known as the axiom of closure. For example, one may define a group as a set with a binary product-->
-    <!--            operator obeying several axioms, including an axiom that the product of any two elements of the group is-->
-    <!--            again an element. However the modern definition of an operation makes this axiom superfluous; an n-ary-->
-    <!--            operation on S is just a subset of S n+1. By its very definition, an operator on a set cannot have values-->
-    <!--            outside the set. Nevertheless, the closure property of an operator on a set still has some utility. Closure-->
-    <!--            on a set does not necessarily imply closure on all subsets. Thus a subgroup of a group is a subset on which-->
-    <!--            the binary product and the unary operation of inversion satisfy the closure axiom. An operation of a-->
-    <!--            different sort is that of finding the limit points of a subset of a topological space. A set that is closed-->
-    <!--            under this operation is usually referred to as a closed set in the context of topology. Without any further-->
-    <!--            qualification, the phrase usually means closed in this sense. Closed intervals like [1,2] = {x : 1 ≤ x ≤ 2}-->
-    <!--            are closed in this sense. A subset of a partially ordered set is a downward closed set (also called a lower-->
-    <!--            set) if for every element of the subset, all smaller elements are also in the subset. This applies for-->
-    <!--            example to the real intervals (−∞, p) and (−∞, p], and for an ordinal number p represented as interval [0,-->
-    <!--            p). Every downward closed set of ordinal numbers is itself an ordinal number. Upward closed sets (also-->
-    <!--            called upper sets) are defined similarly.-->
-    <!--        </text>-->
-    <!--    </section>-->
+    <section>
+        <title>Closed sets</title>
+        <text>
+            A set is closed under an operation if the operation returns a member of the set when evaluated on members of
+            the set. Sometimes the requirement that the operation be valued in a set is explicitly stated, in which case
+            it is known as the axiom of closure. For example, one may define a group as a set with a binary product
+            operator obeying several axioms, including an axiom that the product of any two elements of the group is
+            again an element. However the modern definition of an operation makes this axiom superfluous; an n-ary
+            operation on S is just a subset of S n+1. By its very definition, an operator on a set cannot have values
+            outside the set. Nevertheless, the closure property of an operator on a set still has some utility. Closure
+            on a set does not necessarily imply closure on all subsets. Thus a subgroup of a group is a subset on which
+            the binary product and the unary operation of inversion satisfy the closure axiom. An operation of a
+            different sort is that of finding the limit points of a subset of a topological space. A set that is closed
+            under this operation is usually referred to as a closed set in the context of topology. Without any further
+            qualification, the phrase usually means closed in this sense. Closed intervals like [1,2] = {x : 1 ≤ x ≤ 2}
+            are closed in this sense. A subset of a partially ordered set is a downward closed set (also called a lower
+            set) if for every element of the subset, all smaller elements are also in the subset. This applies for
+            example to the real intervals (−∞, p) and (−∞, p], and for an ordinal number p represented as interval [0,
+            p). Every downward closed set of ordinal numbers is itself an ordinal number. Upward closed sets (also
+            called upper sets) are defined similarly.
+        </text>
+        <annotations>
+            <concept type="emerging" reference="backward">Closed set</concept>
+            <concept type="a priori">set</concept>
+            <concept type="emerging" reference="backward">closed</concept>
+            <concept type="a priori">operation</concept>
+            <concept type="a priori">member of the set</concept>
+            <concept type="a priori">evaluated</concept>
+            <concept type="a priori">members of the set</concept>
+            <concept type="a priori">operation</concept>
+            <concept type="a priori">valued</concept>
+            <concept type="a priori">set</concept>
+            <concept type="emerging">axiom of closure</concept>
+            <concept type="emerging">group</concept>
+            <concept type="a priori">binary product operator</concept>
+            <concept type="a priori">axioms</concept>
+            <concept type="a priori">axiom</concept>
+            <concept type="a priori">product of any two element</concept>
+            <concept type="emerging">group</concept>
+            <concept type="a priori">element</concept>
+            <concept type="a priori">modern definition of an operation</concept>
+            <concept type="a priori">axiom</concept>
+            <concept type="a priori">n-ary operation</concept>
+            <concept type="a priori">subset</concept>
+            <concept type="a priori">operator on a set</concept>
+            <concept type="a priori">values</concept>
+            <concept type="a priori">outside the set</concept>
+
+            <concept type="emerging" reference="backward">closure property</concept>
+            <concept type="a priori">operator</concept>
+            <concept type="emerging" reference="backward">closure on a set</concept>
+            <concept type="emerging" reference="backward">closure on all sets</concept>
+            <concept type="emerging">subgroup</concept>
+            <concept type="emerging">group</concept>
+            <concept type="a priori">subset</concept>
+            <concept type="a priori">binary product</concept>
+            <concept type="a priori">unary operation</concept>
+            <concept type="a priori">inversion</concept>
+            <concept type="emerging">closure axiom</concept>
+
+            <concept type="a priori">operation</concept>
+            <concept type="a priori">limit points</concept>
+            <concept type="a priori">subset</concept>
+            <concept type="a priori">topological sense</concept>
+            <concept type="a priori">set</concept>
+            <concept type="emerging" reference="backward">closed</concept>
+            <concept type="a priori">closed intervals</concept>
+            <concept type="emerging" reference="backward">closed</concept>
+
+            <concept type="a priori">subset</concept>
+            <concept type="a priori">partially ordered set</concept>
+            <concept type="emerging">downward closed set</concept>
+            <concept type="emerging">lower set</concept>
+            <concept type="a priori">element of the subset</concept>
+            <concept type="a priori">smaller elements</concept>
+            <concept type="a priori">in the subset</concept>
+            <concept type="a priori">real intervals</concept>
+            <concept type="a priori">ordinal number</concept>
+            <concept type="a priori">interval</concept>
+            <concept type="emerging">downward closed set</concept>
+            <concept type="emerging">upward closed sets</concept>
+            <concept type="emerging">upper sets</concept>
+        </annotations>
+    </section>
     <!--    <section>-->
     <!--        <title>Examples</title>-->
     <!--        <text>-->
