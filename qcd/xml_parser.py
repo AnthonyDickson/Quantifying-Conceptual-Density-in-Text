@@ -466,11 +466,19 @@ class CoreNLPParser(CoreNLPParserABC):
                     # parse_tree.pretty_print()
 
                     for subject, verb, object_ in self.parse_the_parse_tree(parse_tree):
-                        graph.add_relation(Node(' '.join(subject)), Relation(' '.join(verb)), Node(' '.join(object_)),
+                        subject_tags = list(
+                            filter(lambda token_tag: token_tag[1] not in {'DET', 'DT'}, nltk.pos_tag(subject)))
+                        object_tags = list(
+                            filter(lambda token_tag: token_tag[1] not in {'DET', 'DT'}, nltk.pos_tag(object_)))
+
+                        subject = ' '.join([token for token, tag in subject_tags])
+                        object_ = ' '.join([token for token, tag in object_tags])
+
+                        graph.add_relation(Node(subject), Relation(' '.join(verb)), Node(object_),
                                            Section(section_title))
 
-                        self.add_implicit_references(nltk.pos_tag(subject), Section(section_title), graph)
-                        self.add_implicit_references(nltk.pos_tag(object_), Section(section_title), graph)
+                        self.add_implicit_references(subject_tags, Section(section_title), graph)
+                        self.add_implicit_references(object_tags, Section(section_title), graph)
 
     def parse_the_parse_tree(self, parse_tree):
         s = parse_tree[0]
