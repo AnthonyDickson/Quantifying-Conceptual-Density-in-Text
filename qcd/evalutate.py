@@ -44,39 +44,48 @@ def main(filename: str):
                     forward_references.add(concept)
                 elif reference_type == 'backward':
                     backward_references.add(concept)
-    #
-    # print('A Priori Concepts:', a_priori_concepts)
-    # print('Emerging Concepts:', emerging_concepts)
-    # print('Forward References:', forward_references)
-    # print('Backward References:', backward_references)
 
     parser = XMLParser()
     graph = ConceptGraph(parser)
     graph.parse(filename)
-    #
-    # print('A Priori Concepts:', graph.a_priori_concepts)
-    # print('Emerging Concepts:', graph.emerging_concepts)
-    # print('Forward References:', graph.forward_references)
-    # print('Backward References:', graph.backward_references)
 
-    print('%-20s |    p |    r |   f1 |' % 'Variable')
-    print('-' * 43)
-    print('%-20s | %4.2f | %4.2f | %4.2f |'
+    # Get tail of edges since they represent the thing that is making a forward/backward reference
+    graph_forward_references = {edge.tail for edge in graph.forward_references}
+    graph_backward_references = {edge.tail for edge in graph.backward_references}
+
+    concepts_precision, concepts_recall, concepts_f1 = \
+        precision_recall_f1(a_priori_concepts.union(emerging_concepts),
+                            graph.a_priori_concepts.union(graph.emerging_concepts))
+    references_precision, references_recall, references_f1 = \
+        precision_recall_f1(forward_references.union(backward_references),
+                            graph_forward_references.union(graph_backward_references))
+
+    print('#' + '=' * 42 + '#')
+    print('|%-20s |    p |    r |   f1 |' % 'Variable')
+    print('|' + '-' * 21 + '|' + '-' * 6 + '|' + '-' * 6 + '|' + '-' * 6 + '|')
+    print('|%-20s | %4.2f | %4.2f | %4.2f |'
           % ('A Priori Concepts', *precision_recall_f1(a_priori_concepts, graph.a_priori_concepts)))
-    print('%-20s | %4.2f | %4.2f | %4.2f |'
+    print('|%-20s | %4.2f | %4.2f | %4.2f |'
           % ('Emerging Concepts', *precision_recall_f1(emerging_concepts, graph.emerging_concepts)))
-    print('%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Forward References', *precision_recall_f1(forward_references, graph.forward_references)))
-    print('%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Backward References', *precision_recall_f1(backward_references, graph.backward_references)))
+    print('|' + ' - ' * 7 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|')
+    print('|%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Concepts Overall', concepts_precision, concepts_recall, concepts_f1))
 
-    print('-' * 43)
-    print('%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Concepts Overall', *precision_recall_f1(a_priori_concepts.union(emerging_concepts),
-                                                      graph.a_priori_concepts.union(graph.emerging_concepts))))
-    print('%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('References Overall', *precision_recall_f1(forward_references.union(backward_references),
-                                                        graph.forward_references.union(graph.backward_references))))
+    print('|' + '-' * 21 + '|' + '-' * 6 + '|' + '-' * 6 + '|' + '-' * 6 + '|')
+    print('|%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Forward References', *precision_recall_f1(forward_references, graph_forward_references)))
+    print('|%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Backward References', *precision_recall_f1(backward_references, graph_backward_references)))
+    print('|' + ' - ' * 7 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|')
+    print('|%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('References Overall', references_precision, references_recall, references_f1))
+    print('|' + '-' * 21 + '|' + '-' * 6 + '|' + '-' * 6 + '|' + '-' * 6 + '|')
+    print('|%-20s | %4.2f | %4.2f | %4.2f |'
+          % ('Overall Average',
+             0.5 * (concepts_precision + references_precision),
+             0.5 * (concepts_recall + references_recall),
+             0.5 * (concepts_f1 + references_f1)))
+    print('#' + '=' * 42 + '#')
 
 
 def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, float]:
@@ -91,7 +100,7 @@ def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, flo
 
     true_positive_rate = len(target.intersection(prediction)) / len(target) if len(target) > 0 else float('nan')
     false_negative_rate = 1 - true_positive_rate
-    false_positive_rate = len(prediction.difference(target)) if len(target) > 0 else float('nan')
+    false_positive_rate = len(prediction.difference(target)) / len(prediction) if len(target) > 0 else float('nan')
 
     precision = true_positive_rate / (true_positive_rate + false_positive_rate + eps)
     recall = true_positive_rate / (true_positive_rate + false_negative_rate + eps)
