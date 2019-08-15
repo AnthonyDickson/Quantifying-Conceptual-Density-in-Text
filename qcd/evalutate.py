@@ -1,11 +1,12 @@
 import xml.etree.ElementTree as ET
 from typing import Tuple
 
+import pandas as pd
 import plac
 import spacy
 
 from qcd.concept_graph import ConceptGraph
-from qcd.xml_parser import XMLParser
+from qcd.xml_parser import XMLParser, CoreNLPParser
 
 
 # noinspection PyStringFormat
@@ -13,6 +14,8 @@ from qcd.xml_parser import XMLParser
     filename=plac.Annotation('The annotated file to evaluate the model with.')
 )
 def main(filename: str):
+    pd.set_option('precision', 2)
+
     with open(filename, 'r') as f:
         tree = ET.parse(f)
 
@@ -45,7 +48,20 @@ def main(filename: str):
                 elif reference_type == 'backward':
                     backward_references.add(concept)
 
-    parser = XMLParser()
+    for parser in [XMLParser(), CoreNLPParser()]:
+        evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forward_references, backward_references)
+
+
+def evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forward_references, backward_references):
+    """Evaluate a parsing algorithm on a file given a set of ground truth labels.
+
+    :param filename: The path to an annotated XML file.
+    :param parser: The parser instance to use and evaluate.
+    :param a_priori_concepts: The ground truth set of a priori concepts in the document.
+    :param emerging_concepts: The ground truth set of emerging concepts in the document.
+    :param forward_references: The ground truth set of forward references in the document.
+    :param backward_references: The ground truth set of a backward references in the document.
+    """
     graph = ConceptGraph(parser)
     graph.parse(filename)
 
@@ -56,36 +72,27 @@ def main(filename: str):
     concepts_precision, concepts_recall, concepts_f1 = \
         precision_recall_f1(a_priori_concepts.union(emerging_concepts),
                             graph.a_priori_concepts.union(graph.emerging_concepts))
+
     references_precision, references_recall, references_f1 = \
         precision_recall_f1(forward_references.union(backward_references),
                             graph_forward_references.union(graph_backward_references))
+    results = {
+        'A Priori Concepts': [*precision_recall_f1(a_priori_concepts, graph.a_priori_concepts)],
+        'Emerging Concepts': [*precision_recall_f1(emerging_concepts, graph.emerging_concepts)],
+        'Concepts Overall': [concepts_precision, concepts_recall, concepts_f1],
+        'Forward References': [*precision_recall_f1(forward_references, graph_forward_references)],
+        'Backward References': [*precision_recall_f1(backward_references, graph_backward_references)],
+        'References Overall': [references_precision, references_recall, references_f1],
+        'Overall Average': [0.5 * (concepts_precision + references_precision),
+                            0.5 * (concepts_recall + references_recall),
+                            0.5 * (concepts_f1 + references_f1)],
+    }
 
-    print('#' + '=' * 42 + '#')
-    print('|%-20s |    p |    r |   f1 |' % 'Variable')
-    print('|' + '-' * 21 + '|' + '-' * 6 + '|' + '-' * 6 + '|' + '-' * 6 + '|')
-    print('|%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('A Priori Concepts', *precision_recall_f1(a_priori_concepts, graph.a_priori_concepts)))
-    print('|%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Emerging Concepts', *precision_recall_f1(emerging_concepts, graph.emerging_concepts)))
-    print('|' + ' - ' * 7 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|')
-    print('|%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Concepts Overall', concepts_precision, concepts_recall, concepts_f1))
+    metrics_df = pd.DataFrame.from_dict(results, orient='index', columns=['precision', 'recall', 'f1'])
 
-    print('|' + '-' * 21 + '|' + '-' * 6 + '|' + '-' * 6 + '|' + '-' * 6 + '|')
-    print('|%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Forward References', *precision_recall_f1(forward_references, graph_forward_references)))
-    print('|%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Backward References', *precision_recall_f1(backward_references, graph_backward_references)))
-    print('|' + ' - ' * 7 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|' + ' - ' * 2 + '|')
-    print('|%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('References Overall', references_precision, references_recall, references_f1))
-    print('|' + '-' * 21 + '|' + '-' * 6 + '|' + '-' * 6 + '|' + '-' * 6 + '|')
-    print('|%-20s | %4.2f | %4.2f | %4.2f |'
-          % ('Overall Average',
-             0.5 * (concepts_precision + references_precision),
-             0.5 * (concepts_recall + references_recall),
-             0.5 * (concepts_f1 + references_f1)))
-    print('#' + '=' * 42 + '#')
+    print('Results for: %s' % parser.__class__.__name__)
+    print(metrics_df)
+    print()
 
 
 def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, float]:
