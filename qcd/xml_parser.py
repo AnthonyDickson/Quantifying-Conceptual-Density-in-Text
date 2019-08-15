@@ -505,6 +505,7 @@ class CoreNLPParser(CoreNLPParserABC):
                     if verb[1].label() == 'VP':
                         has_appositive_phrase = False
                         phrase_verb = None
+                        previous_object = None
 
                         # check constituent parts of the VP for multiple objects (appositions I think)
                         for phrase in verb[1]:
@@ -520,7 +521,9 @@ class CoreNLPParser(CoreNLPParserABC):
                                         yield subject.leaves(), main_verb.leaves() + \
                                               [phrase.leaves()[0]], phrase.leaves()[1:]
                                     else:
-                                        yield subject.leaves(), main_verb.leaves(), phrase.leaves()
+                                        # NP Appositives should be related to the object of the previous VP
+                                        subject_ = next(previous_object.subtrees(lambda st: st.label() == 'NP'))
+                                        yield subject_.leaves(), main_verb.leaves(), phrase.leaves()
                                 else:
                                     if phrase.label() == 'PP':
                                         # move the preposition to the relation for PPs
@@ -528,6 +531,8 @@ class CoreNLPParser(CoreNLPParserABC):
                                               [phrase.leaves()[0]], phrase.leaves()[1:]
                                     else:
                                         yield subject.leaves(), phrase_verb.leaves(), phrase.leaves()
+
+                                    previous_object = phrase
                             elif phrase.label() in {',', '.'}:
                                 # punctuation in the middle of a VP probably indicates that the following
                                 # parts are appositive phrases
