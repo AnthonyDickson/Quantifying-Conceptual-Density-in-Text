@@ -27,6 +27,125 @@ class ParserABC(ParserI, ABC):
         self.implicit_references: bool = implicit_references
         self.annotate_edges: bool = annotate_edges
 
+    def add_implicit_references(self, pos_tags: List[Tuple[str, str]], section: Section, graph: ConceptGraph):
+        """Derive nodes and edges from a POS tagged phrase.
+
+        See `permutations()` for details on what kind of nodes and edges are derived.
+
+        :param pos_tags: A phrase as a list of token, tag pairs.
+        :param section: The section that the phrase appears in.
+        :param graph: The graph to add the derived nodes and edges to.
+        """
+        for implicit_entity, context in self.permutations(pos_tags):
+            graph.add_node(implicit_entity, section)
+            graph.add_edge(context, implicit_entity, ImplicitReference)
+
+    def permutations(self, tagged_phrase: List[Tuple[str, str]]) -> Tuple[str, str]:
+        """Generate variations of a POS (part of speech) tagged phrase.
+
+        Variations generated are:
+        - The entire phrase itself
+        - nbar phrases (sequences of adjectives and/or nouns, terminated by a noun)
+        - noun chunks (sequences of one or more nouns)
+
+        Variations are yielded alongside a 'context', which represents the phrase that the variation was generated from.
+
+        As an example, consider the sentence 'Zeus is the sky and thunder god in ancient Greek religion.' and the POS
+        tagged phrase `[('Zeus', 'NNP'), ('is', 'VBZ'), ('the', 'DT'), ('sky', 'NN'), ('and', 'CC'), ('thunder', 'NN'),
+         ('god', 'NN'), ('in', 'IN'), ('ancient', 'JJ'), ('Greek', 'JJ'), ('religion', 'NN'), ('.', '.')]`.
+        The noun phrases we can expect are 'Zeus', 'sky and thunder god in ancient Greek religion'. For the second noun
+        phrase we can expect the nbar phrases 'sky and thunder god' and 'ancient Greek religion'. These two nbar phrases
+        would be yield with the noun phrase as the context.
+
+        :param tagged_phrase: List of 2-tuples containing a POS tag and a token.
+        :return: Yields 2-tuples containing a variation of `tagged_phrase` and the context it appears in.
+        """
+        context = ' '.join([token for token, tag in tagged_phrase])
+        tree = self.chunker.parse(nltk.Tree('S', tagged_phrase))
+
+        for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
+            chunk = list(st)
+
+            if chunk[0][1] == 'DT':
+                chunk = chunk[1:]
+
+            nbar = ' '.join([token for token, tag in chunk])
+            yield nbar, context
+
+            chunk = []
+
+            for token, tag in st:
+                if tag.startswith('NN') or tag in {'JJ', 'CC', 'IN'}:
+                    chunk.append((token, tag))
+                elif chunk:
+                    yield from self._process_np_chunk(chunk, nbar)
+
+                    chunk = []
+
+            if chunk:
+                yield from self._process_np_chunk(chunk, nbar)
+
+    @staticmethod
+    def _process_np_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
+        """Generate variations of a NP (noun phrase) chunk.
+
+        :param chunk: List of 2-tuples containing a POS tag and a token.
+        :param context: The parent phrase that the chunk originates from.
+        """
+        np = ' '.join([token for token, tag in chunk])
+        yield np, context
+
+        nbar_chunk = []
+
+        for token, tag in chunk:
+            if tag.startswith('NN') or tag in {'JJ'}:
+                nbar_chunk.append((token, tag))
+            elif nbar_chunk:
+                yield from XMLParser.process_nbar_chunk(nbar_chunk, np)
+
+                nbar_chunk = []
+
+        if nbar_chunk:
+            yield from XMLParser.process_nbar_chunk(nbar_chunk, np)
+
+    @staticmethod
+    def process_nbar_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
+        """Generate variations of a NBAR chunk.
+
+        :param chunk: List of 2-tuples containing a POS tag and a token.
+        :param context: The parent phrase that the chunk originates from.
+        """
+        nbar = ' '.join([token for token, tag in chunk])
+        yield nbar, context
+
+        noun_chunk = []
+
+        for token, tag in chunk:
+            if tag.startswith('NN'):
+                noun_chunk.append((token, tag))
+            elif tag == 'JJ':
+                yield token, nbar
+            elif noun_chunk:
+                yield from XMLParser.process_noun_chunk(noun_chunk, nbar)
+
+                noun_chunk = []
+
+        if noun_chunk:
+            yield from XMLParser.process_noun_chunk(noun_chunk, nbar)
+
+    @staticmethod
+    def process_noun_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
+        """Generate variations of a noun chunk.
+
+        :param chunk: List of 2-tuples containing a POS tag and a token.
+        :param context: The parent phrase that the chunk originates from.
+        """
+        noun_chunk = ' '.join([token for token, tag in chunk])
+        yield noun_chunk, context
+
+        for token, _ in chunk:
+            yield token, noun_chunk
+
 
 class XMLParser(ParserABC):
     """Parser for XML documents.
@@ -190,125 +309,6 @@ class XMLParser(ParserABC):
                 graph.add_node(verb, section)
                 graph.add_edge(subject, verb)
 
-    def add_implicit_references(self, pos_tags: List[Tuple[str, str]], section: Section, graph: ConceptGraph):
-        """Derive nodes and edges from a POS tagged phrase.
-
-        See `permutations()` for details on what kind of nodes and edges are derived.
-
-        :param pos_tags: A phrase as a list of token, tag pairs.
-        :param section: The section that the phrase appears in.
-        :param graph: The graph to add the derived nodes and edges to.
-        """
-        for implicit_entity, context in self.permutations(pos_tags):
-            graph.add_node(implicit_entity, section)
-            graph.add_edge(context, implicit_entity, ImplicitReference)
-
-    def permutations(self, tagged_phrase: List[Tuple[str, str]]) -> Tuple[str, str]:
-        """Generate variations of a POS (part of speech) tagged phrase.
-
-        Variations generated are:
-        - The entire phrase itself
-        - nbar phrases (sequences of adjectives and/or nouns, terminated by a noun)
-        - noun chunks (sequences of one or more nouns)
-
-        Variations are yielded alongside a 'context', which represents the phrase that the variation was generated from.
-
-        As an example, consider the sentence 'Zeus is the sky and thunder god in ancient Greek religion.' and the POS
-        tagged phrase `[('Zeus', 'NNP'), ('is', 'VBZ'), ('the', 'DT'), ('sky', 'NN'), ('and', 'CC'), ('thunder', 'NN'),
-         ('god', 'NN'), ('in', 'IN'), ('ancient', 'JJ'), ('Greek', 'JJ'), ('religion', 'NN'), ('.', '.')]`.
-        The noun phrases we can expect are 'Zeus', 'sky and thunder god in ancient Greek religion'. For the second noun
-        phrase we can expect the nbar phrases 'sky and thunder god' and 'ancient Greek religion'. These two nbar phrases
-        would be yield with the noun phrase as the context.
-
-        :param tagged_phrase: List of 2-tuples containing a POS tag and a token.
-        :return: Yields 2-tuples containing a variation of `tagged_phrase` and the context it appears in.
-        """
-        context = ' '.join([token for token, tag in tagged_phrase])
-        tree = self.chunker.parse(nltk.Tree('S', tagged_phrase))
-
-        for st in tree.subtrees(filter=lambda t: t.label() == 'NBAR'):
-            chunk = list(st)
-
-            if chunk[0][1] == 'DT':
-                chunk = chunk[1:]
-
-            nbar = ' '.join([token for token, tag in chunk])
-            yield nbar, context
-
-            chunk = []
-
-            for token, tag in st:
-                if tag.startswith('NN') or tag in {'JJ', 'CC', 'IN'}:
-                    chunk.append((token, tag))
-                elif chunk:
-                    yield from self._process_np_chunk(chunk, nbar)
-
-                    chunk = []
-
-            if chunk:
-                yield from self._process_np_chunk(chunk, nbar)
-
-    @staticmethod
-    def _process_np_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
-        """Generate variations of a NP (noun phrase) chunk.
-
-        :param chunk: List of 2-tuples containing a POS tag and a token.
-        :param context: The parent phrase that the chunk originates from.
-        """
-        np = ' '.join([token for token, tag in chunk])
-        yield np, context
-
-        nbar_chunk = []
-
-        for token, tag in chunk:
-            if tag.startswith('NN') or tag in {'JJ'}:
-                nbar_chunk.append((token, tag))
-            elif nbar_chunk:
-                yield from XMLParser.process_nbar_chunk(nbar_chunk, np)
-
-                nbar_chunk = []
-
-        if nbar_chunk:
-            yield from XMLParser.process_nbar_chunk(nbar_chunk, np)
-
-    @staticmethod
-    def process_nbar_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
-        """Generate variations of a NBAR chunk.
-
-        :param chunk: List of 2-tuples containing a POS tag and a token.
-        :param context: The parent phrase that the chunk originates from.
-        """
-        nbar = ' '.join([token for token, tag in chunk])
-        yield nbar, context
-
-        noun_chunk = []
-
-        for token, tag in chunk:
-            if tag.startswith('NN'):
-                noun_chunk.append((token, tag))
-            elif tag == 'JJ':
-                yield token, nbar
-            elif noun_chunk:
-                yield from XMLParser.process_noun_chunk(noun_chunk, nbar)
-
-                noun_chunk = []
-
-        if noun_chunk:
-            yield from XMLParser.process_noun_chunk(noun_chunk, nbar)
-
-    @staticmethod
-    def process_noun_chunk(chunk: List[Tuple[str, str]], context: str) -> Tuple[str, str]:
-        """Generate variations of a noun chunk.
-
-        :param chunk: List of 2-tuples containing a POS tag and a token.
-        :param context: The parent phrase that the chunk originates from.
-        """
-        noun_chunk = ' '.join([token for token, tag in chunk])
-        yield noun_chunk, context
-
-        for token, _ in chunk:
-            yield token, noun_chunk
-
 
 class CoreNLPParserABC(ParserABC, ABC):
     """A parser for XML documents that uses a CoreNLP server for NLP."""
@@ -411,8 +411,21 @@ class OpenIEParser(CoreNLPParserABC):
 
 
 class CoreNLPParser(CoreNLPParserABC):
+    def __init__(self, annotate_edges: bool = True, implicit_references: bool = False,
+                 resolve_coreferences: bool = False, server_url: str = 'http://localhost:9000'):
+        super().__init__(annotate_edges, implicit_references, resolve_coreferences, server_url)
+
+        self.chunker: nltk.RegexpParser = nltk.RegexpParser(self.get_grammar())
+        self.lemmatizer: nltk.WordNetLemmatizer = nltk.WordNetLemmatizer()
+
     def get_grammar(self) -> str:
-        raise NotImplementedError('This parser does not define its own grammar.')
+        return r"""
+           NBAR:
+               {<DT>?<NN.*|JJ>*<NN.*>} # Nouns and Adjectives, terminated with Nouns
+
+           NP:
+               {<NBAR>(<IN|CC><NBAR>)*}  # Above, connected with in/of/etc...
+       """
 
     def parse(self, filename: str, graph: ConceptGraph):
         tree = ElementTree.parse(filename)
@@ -456,12 +469,20 @@ class CoreNLPParser(CoreNLPParserABC):
                         graph.add_relation(Node(' '.join(subject)), Relation(' '.join(verb)), Node(' '.join(object_)),
                                            Section(section_title))
 
+                        self.add_implicit_references(nltk.pos_tag(subject), Section(section_title), graph)
+                        self.add_implicit_references(nltk.pos_tag(object_), Section(section_title), graph)
+
     def parse_the_parse_tree(self, parse_tree):
         s = parse_tree[0]
         subject = None
         verb = None
         object_ = None
         modifying_phrase = None
+
+        # TODO: Fix the case where the parse tree is shallow, i.e. no phrases were identified. Preprocess input into
+        #  the CoreNLP server? Try work with what is given?
+        if parse_tree.height() == 3:
+            return
 
         for i in range(len(s)):
             if not subject and s[i].label() == 'NP':
@@ -470,22 +491,16 @@ class CoreNLPParser(CoreNLPParserABC):
             elif not verb and s[i].label().startswith('VB'):
                 # If the verb is not in its own VP then get the verb, will also have to get the object too.
                 verb = s[i]
-
-                if verb[0] != 'is':
-                    break
             elif not verb and s[i].label() == 'VP':
                 # Verb phrases contain the verb plus the object.
 
                 verb = s[i]
 
                 # vp[0] is the pos tag and the verb of the VP
-                if verb[0][0] != 'is':
-                    break
-                else:
-                    main_verb = verb[0]
+                main_verb = verb[0]
 
                 # vp[1] is the phrase that directly follows the verb of the VP, i.e. the object
-                if verb[1].label() in {'NP', 'VP', 'ADJP'}:
+                if len(verb) > 1 and verb[1].label() in {'NP', 'VP', 'ADJP'}:
                     # Verb phrases may have more stuff nested in them
                     if verb[1].label() == 'VP':
                         has_appositive_phrase = False
