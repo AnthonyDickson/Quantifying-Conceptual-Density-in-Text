@@ -8,9 +8,9 @@ import nltk
 import spacy
 from spacy.tokens.span import Span
 
-from qcd.concept_graph import ImplicitReference, ConceptGraph
+from qcd.concept_graph import ImplicitReference, ConceptGraph, Relation
 from qcd.corenlp import CustomCoreNLPClient
-from qcd.graph import Node, Section, GraphI
+from qcd.graph import Node, Section
 from qcd.parser import ParserI
 
 
@@ -414,9 +414,7 @@ class CoreNLPParser(CoreNLPParserABC):
     def get_grammar(self) -> str:
         raise NotImplementedError('This parser does not define its own grammar.')
 
-    def parse(self, filename: str, graph: GraphI):
-        raise NotImplementedError
-
+    def parse(self, filename: str, graph: ConceptGraph):
         tree = ElementTree.parse(filename)
         root = tree.getroot()
 
@@ -444,10 +442,101 @@ class CoreNLPParser(CoreNLPParserABC):
             section_text = section_text.lower()
 
             for sent in nltk.sent_tokenize(section_text):
-                sent = nlp(sent)
-                s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
+                sent = sent.strip()
+                # sent = nlp(sent)
+                # sent = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
 
-                annotation = self.client.annotate(s.text)
+                annotation = self.client.annotate(sent)
 
                 for sentence in annotation['sentences']:
                     parse_tree = nltk.Tree.fromstring(sentence['parse'])
+                    # parse_tree.pretty_print()
+
+                    for subject, verb, object_ in self.parse_the_parse_tree(parse_tree):
+                        graph.add_relation(Node(' '.join(subject)), Relation(' '.join(verb)), Node(' '.join(object_)),
+                                           Section(section_title))
+
+    def parse_the_parse_tree(self, parse_tree):
+        s = parse_tree[0]
+        subject = None
+        verb = None
+        object_ = None
+        modifying_phrase = None
+
+        for i in range(len(s)):
+            if not subject and s[i].label() == 'NP':
+                subject = s[i]
+            # Look for main verb phrase
+            elif not verb and s[i].label().startswith('VB'):
+                # If the verb is not in its own VP then get the verb, will also have to get the object too.
+                verb = s[i]
+
+                if verb[0] != 'is':
+                    break
+            elif not verb and s[i].label() == 'VP':
+                # Verb phrases contain the verb plus the object.
+
+                verb = s[i]
+
+                # vp[0] is the pos tag and the verb of the VP
+                if verb[0][0] != 'is':
+                    break
+                else:
+                    main_verb = verb[0]
+
+                # vp[1] is the phrase that directly follows the verb of the VP, i.e. the object
+                if verb[1].label() in {'NP', 'VP', 'ADJP'}:
+                    # Verb phrases may have more stuff nested in them
+                    if verb[1].label() == 'VP':
+                        has_appositive_phrase = False
+                        phrase_verb = None
+
+                        # check constituent parts of the VP for multiple objects (appositions I think)
+                        for phrase in verb[1]:
+                            if phrase.label().startswith('VB'):
+                                phrase_verb = phrase
+                            elif phrase.label() in {'NP', 'PP'}:
+                                if has_appositive_phrase:
+                                    # appositives tend to be related to the main verb, not the appositive VP, so use
+                                    # main verb here
+
+                                    if phrase.label() == 'PP':
+                                        # move the preposition to the relation for PPs
+                                        yield subject.leaves(), main_verb.leaves() + \
+                                              [phrase.leaves()[0]], phrase.leaves()[1:]
+                                    else:
+                                        yield subject.leaves(), main_verb.leaves(), phrase.leaves()
+                                else:
+                                    if phrase.label() == 'PP':
+                                        # move the preposition to the relation for PPs
+                                        yield subject.leaves(), phrase_verb.leaves() + \
+                                              [phrase.leaves()[0]], phrase.leaves()[1:]
+                                    else:
+                                        yield subject.leaves(), phrase_verb.leaves(), phrase.leaves()
+                            elif phrase.label() in {',', '.'}:
+                                # punctuation in the middle of a VP probably indicates that the following
+                                # parts are appositive phrases
+                                has_appositive_phrase = True
+                    else:
+                        object_ = verb[1]
+                        verb = verb[0]
+                else:
+                    break
+
+            elif verb and s[i].label() in {'NP', 'PP', 'ADJP'}:
+                object_ = s[i]
+            elif verb and s[i].label() == 'VP':
+                # modifying verb phrase
+                modifying_phrase = s[i]
+
+                for phrase in modifying_phrase:
+                    if phrase.label() in {'NP', 'VP'}:
+                        yield subject.leaves(), modifying_phrase[0].leaves(), phrase.leaves()
+                    elif phrase.label() == 'PP':
+                        # move the preposition to the relation for PPs
+                        yield subject.leaves(), modifying_phrase[0].leaves() + [phrase.leaves()[0]], phrase.leaves()[1:]
+
+                break
+
+        if subject and verb and object_:
+            yield subject.leaves(), verb.leaves(), object_.leaves()
