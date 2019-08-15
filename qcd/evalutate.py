@@ -100,7 +100,7 @@ def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, flo
 
     true_positive_rate = len(target.intersection(prediction)) / len(target) if len(target) > 0 else float('nan')
     false_negative_rate = 1 - true_positive_rate
-    false_positive_rate = len(prediction.difference(target)) / len(prediction) if len(target) > 0 else float('nan')
+    false_positive_rate = len(prediction.difference(target)) / len(prediction) if len(prediction) > 0 else float('nan')
 
     precision = true_positive_rate / (true_positive_rate + false_positive_rate + eps)
     recall = true_positive_rate / (true_positive_rate + false_negative_rate + eps)
