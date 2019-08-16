@@ -1,4 +1,3 @@
-import warnings
 from abc import ABC
 from typing import List, Tuple
 from xml.etree import ElementTree
@@ -324,19 +323,27 @@ class CoreNLPParserABC(ParserABC, ABC):
         """
         super().__init__(annotate_edges, implicit_references, resolve_coreferences)
 
-        if implicit_references:
-            warnings.warn('\'%s\' does not support implicit references. '
-                          'Set the paramater \'implicit_references\' to False to hide this warning.'
-                          % self.__class__.__name__)
-
         self.annotations = "tokenize,ssplit,pos,lemma,parse,natlog,depparse,openie".split(',')
         self.client = CustomCoreNLPClient(server=server_url,
                                           default_annotators=self.annotations)
 
 
 class OpenIEParser(CoreNLPParserABC):
+    def __init__(self, annotate_edges: bool = True, implicit_references: bool = False,
+                 resolve_coreferences: bool = False, server_url: str = 'http://localhost:9000'):
+        super().__init__(annotate_edges, implicit_references, resolve_coreferences, server_url)
+
+        self.chunker: nltk.RegexpParser = nltk.RegexpParser(self.get_grammar())
+        self.lemmatizer: nltk.WordNetLemmatizer = nltk.WordNetLemmatizer()
+
     def get_grammar(self) -> str:
-        raise NotImplementedError('This parser does not define its own grammar.')
+        return r"""
+           NBAR:
+               {<DT>?<NN.*|JJ>*<NN.*>} # Nouns and Adjectives, terminated with Nouns
+
+           NP:
+               {<NBAR>(<IN|CC><NBAR>)*}  # Above, connected with in/of/etc...
+       """
 
     def parse(self, filename: str, graph: ConceptGraph):
         """Parse a file and build up a graph structure.
@@ -376,14 +383,29 @@ class OpenIEParser(CoreNLPParserABC):
             for sent in span.sents:
                 s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
 
-                annotation = self.client.annotate(s.text)
+                if len(s.text.strip()) > 0:
+                    annotation = self.client.annotate(s.text.strip())
 
-                for sentence in annotation['sentences']:
-                    for triple in sentence['openie']:
-                        subject, relation, object_ = triple['subject'], triple['relation'], triple['object']
+                    for sentence in annotation['sentences']:
+                        for triple in sentence['openie']:
+                            subject, relation, object_ = triple['subject'], triple['relation'], triple['object']
 
-                        if self.filter_triple(subject, relation, object_):
-                            graph.add_relation(subject, relation, object_, section_title)
+                            if self.filter_triple(subject, relation, object_):
+                                graph.add_relation(subject, relation, object_, section_title)
+
+                                subject_tags = self.strip_determiners(nltk.pos_tag(nltk.word_tokenize(subject)))
+                                relation_tags = self.strip_determiners(nltk.pos_tag(nltk.word_tokenize(relation)))
+                                object_tags = self.strip_determiners(nltk.pos_tag(nltk.word_tokenize(object_)))
+
+                                subject = ' '.join([token for token, tag in subject_tags])
+                                relation = ' '.join([token for token, tag in relation_tags])
+                                object_ = ' '.join([token for token, tag in object_tags])
+
+                                graph.add_relation(Node(subject), Relation(relation), Node(object_),
+                                                   Section(section_title))
+
+                                self.add_implicit_references(subject_tags, Section(section_title), graph)
+                                self.add_implicit_references(object_tags, Section(section_title), graph)
 
     def filter_triple(self, subject: str, relation: str, object_: str) -> bool:
         # annotation = self.client.annotate(object_)
@@ -408,6 +430,10 @@ class OpenIEParser(CoreNLPParserABC):
         #         return False
 
         return True
+
+    def strip_determiners(self, pos_tags: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
+        return list(filter(lambda token_tag: token_tag[1] not in {'DET', 'DT'}, pos_tags))
+
 
 
 class CoreNLPParser(CoreNLPParserABC):
@@ -456,10 +482,10 @@ class CoreNLPParser(CoreNLPParserABC):
 
             for sent in nltk.sent_tokenize(section_text):
                 sent = sent.strip()
-                # sent = nlp(sent)
-                # sent = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
+                sent = nlp(sent)
+                sent = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
 
-                annotation = self.client.annotate(sent)
+                annotation = self.client.annotate(sent.text)
 
                 for sentence in annotation['sentences']:
                     parse_tree = nltk.Tree.fromstring(sentence['parse'])
