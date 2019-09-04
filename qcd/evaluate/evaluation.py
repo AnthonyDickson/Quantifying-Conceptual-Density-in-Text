@@ -1,55 +1,11 @@
-import xml.etree.ElementTree as ET
 from typing import Tuple
 
 import pandas as pd
-import plac
-import spacy
 
 from qcd.concept_graph import ConceptGraph
-from qcd.xml_parser import XMLParser, CoreNLPParser, OpenIEParser
 
 
 # noinspection PyStringFormat
-@plac.annotations(
-    filename=plac.Annotation('The annotated file to evaluate the model with.')
-)
-def main(filename: str):
-    pd.set_option('precision', 2)
-
-    with open(filename, 'r') as f:
-        tree = ET.parse(f)
-
-    root = tree.getroot()
-
-    a_priori_concepts = set()
-    emerging_concepts = set()
-    forward_references = set()
-    backward_references = set()
-    nlp = spacy.load('en')
-
-    for section in root.findall('section'):
-        annotations = section.find('annotations')
-
-        if annotations:
-            for annotation in annotations:
-                concept_type = annotation.get('type')
-                reference_type = annotation.get('reference')
-                concept = annotation.text.lower()
-                concept = nlp(concept)
-                concept = ' '.join([token.lemma_ for token in concept])
-
-                if concept_type == 'a priori':
-                    a_priori_concepts.add(concept)
-                elif concept_type == 'emerging':
-                    emerging_concepts.add(concept)
-
-                if reference_type == 'forward':
-                    forward_references.add(concept)
-                elif reference_type == 'backward':
-                    backward_references.add(concept)
-
-    for parser in [XMLParser(), CoreNLPParser(), OpenIEParser()]:
-        evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forward_references, backward_references)
 
 
 def evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forward_references, backward_references):
@@ -61,6 +17,8 @@ def evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forw
     :param emerging_concepts: The ground truth set of emerging concepts in the document.
     :param forward_references: The ground truth set of forward references in the document.
     :param backward_references: The ground truth set of a backward references in the document.
+
+    :return: A Pandas DataFrame object containing the metrics calculated for the given parser and ground truth labels.
     """
     graph = ConceptGraph(parser)
     graph.parse(filename)
@@ -73,6 +31,8 @@ def evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forw
         precision_recall_f1(a_priori_concepts.union(emerging_concepts),
                             graph.a_priori_concepts.union(graph.emerging_concepts))
 
+    # TODO: Fix NaNs in precision for forward references in some documents
+    #  (e.g. bread_annotations.xml, closures_annotations.xml)
     references_precision, references_recall, references_f1 = \
         precision_recall_f1(forward_references.union(backward_references),
                             graph_forward_references.union(graph_backward_references))
@@ -93,6 +53,8 @@ def evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forw
     print('Results for: %s' % parser.__class__.__name__)
     print(metrics_df)
     print()
+
+    return metrics_df
 
 
 def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, float]:
@@ -115,6 +77,3 @@ def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, flo
 
     return precision, recall, f1
 
-
-if __name__ == '__main__':
-    plac.call(main)
