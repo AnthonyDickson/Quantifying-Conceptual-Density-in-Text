@@ -9,31 +9,34 @@ from qcd.xml_parser import XMLParser
 
 @plac.annotations(
     file=plac.Annotation("The file to parse. Must be a XML formatted file.", type=str),
-    no_implicit_references=plac.Annotation('Flag indicating to not add implicit references.', kind='flag', abbrev='i'),
-    no_reference_marking=plac.Annotation('Flag indicating to not mark reference types.', kind='flag', abbrev='m'),
-    no_edge_annotation=plac.Annotation('Flag indicating to not annotate edges with relation types.', kind='flag',
-                                       abbrev='a'),
-    no_summary=plac.Annotation('Flag indicating to not print the graph summary.', kind='flag', abbrev='s'),
-    no_graph_rendering=plac.Annotation('Flag indicating to not render (visualise) the graph structure.', kind='flag',
-                                       abbrev='r')
+    disable_implicit_references=plac.Annotation('Flag indicating to not add implicit references.', kind='flag',
+                                                abbrev='i'),
+    disable_reference_marking=plac.Annotation('Flag indicating to not mark reference types.', kind='flag', abbrev='m'),
+    disable_edge_annotation=plac.Annotation('Flag indicating to not annotate edges with relation types.', kind='flag',
+                                            abbrev='a'),
+    disable_summary=plac.Annotation('Flag indicating to not print the graph summary.', kind='flag', abbrev='s'),
+    disable_graph_rendering=plac.Annotation('Flag indicating to not render (visualise) the graph structure.',
+                                            kind='flag',
+                                            abbrev='r')
 
 )
-def main(file, no_implicit_references=False, no_reference_marking=False, no_edge_annotation=False, no_summary=False,
-         no_graph_rendering=False):
+def main(file, disable_implicit_references=False, disable_reference_marking=False, disable_edge_annotation=False,
+         disable_summary=False, disable_graph_rendering=False):
     """Run an experiment testing how ordering of sections affects the scoring of conceptual density for a given
     document.
     """
-    graph = ConceptGraph(parser=XMLParser(not no_edge_annotation, not no_implicit_references),
-                         mark_references=not no_reference_marking)
+
+    graph = ConceptGraph(parser=XMLParser(not disable_edge_annotation, not disable_implicit_references),
+                         mark_references=not disable_reference_marking)
     graph.parse(file)
 
-    if not no_summary:
+    if not disable_summary:
         graph.print_summary()
 
     print('Original Section Ordering: %s' % graph.sections)
     print('Score on Original Ordering: %.2f' % graph.score())
 
-    if not no_graph_rendering:
+    if not disable_graph_rendering:
         graph.render()
 
     scores = []

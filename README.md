@@ -96,5 +96,5 @@ goes like this:
 
 4.  Run the evaluation script on a given document:
     ```bash
-    python -m qcd/evaluate annotations.xml
+    python -m qcd.evaluate annotations.xml
     ```
