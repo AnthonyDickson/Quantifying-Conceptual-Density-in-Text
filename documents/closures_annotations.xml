@@ -1,0 +1,1574 @@
+<?xml version="1.0" ?>
+<document>
+    <section>
+        <title>Closure (mathematics)</title>
+        <text>A set is closed under an operation if performance of that operation on members of the set always produces
+            a member
+            of that set. For example, the positive integers are closed under addition, but not under subtraction: 1 - 2
+            is not a
+            positive integer even though both 1 and 2 are positive integers. Another example is the set containing only
+            zero, which
+            is closed under addition, subtraction and multiplication (because 0 + 0 = 0, 0 - 0 = 0, and 0 × 0 = 0).
+            Similarly, a set is said to be closed under a collection of operations if it is closed under each of the
+            operations
+            individually.
+        </text>
+        <annotations>
+            <concept tag="A PRIORI">A</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">performance</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">members</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">produces</concept>
+            <concept tag="A PRIORI">member</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">positive</concept>
+            <concept tag="A PRIORI">integers</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">addition</concept>
+            <concept tag="A PRIORI">subtraction</concept>
+            <concept tag="A PRIORI">positive</concept>
+            <concept tag="A PRIORI">integer</concept>
+            <concept tag="A PRIORI">positive</concept>
+            <concept tag="A PRIORI">integers</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">zero</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">addition</concept>
+            <concept tag="A PRIORI">subtraction</concept>
+            <concept tag="A PRIORI">multiplication</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">collection</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed under an operation</concept>
+            <concept tag="A PRIORI">performance of that operation on members of the set</concept>
+            <concept tag="A PRIORI">produces</concept>
+            <concept tag="A PRIORI">member of that set</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">positive integers</concept>
+            <concept tag="EMERGING">closed under addition</concept>
+            <concept tag="A PRIORI">subtraction</concept>
+            <concept tag="A PRIORI">positive integer</concept>
+            <concept tag="A PRIORI">positive integers</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">set containing only zero</concept>
+            <concept tag="EMERGING">closed under addition , subtraction and multiplication</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed under a collection of operations</concept>
+            <concept tag="EMERGING">closed under each of the operations individually</concept>
+            <relation tag="ENTITY">set</relation>
+            <relation tag="RELATION">is closed under</relation>
+            <relation tag="ENTITY">operation</relation>
+            <relation tag="ENTITY">performance of that operation on members of the set</relation>
+            <relation tag="RELATION">produces</relation>
+            <relation tag="ENTITY">member of that set</relation>
+            <relation tag="ENTITY">positive integers</relation>
+            <relation tag="RELATION">are closed under</relation>
+            <relation tag="ENTITY">addition</relation>
+            <relation tag="ENTITY">subtraction</relation>
+            <relation tag="ENTITY">1 - 2</relation>
+            <relation tag="RELATION">is not</relation>
+            <relation tag="ENTITY">positive integer</relation>
+            <relation tag="ENTITY">1 and 2</relation>
+            <relation tag="RELATION">are</relation>
+            <relation tag="ENTITY">positive integers</relation>
+            <relation tag="ENTITY">example</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">set containing only zero</relation>
+            <relation tag="RELATION">is closed under</relation>
+            <relation tag="ENTITY">addition , subtraction and multiplication</relation>
+            <relation tag="ENTITY">set</relation>
+            <relation tag="RELATION">is said to be closed under</relation>
+            <relation tag="ENTITY">collection of operations</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is closed under</relation>
+            <relation tag="ENTITY">each of the operations individually</relation>
+        </annotations>
+    </section>
+    <section>
+        <title>Contents</title>
+        <text>Basic properties
+            Closed sets
+            Examples
+            Closure operator
+            Binary relation closures
+            See also
+            Notes
+            References
+        </text>
+        <annotations>
+            <concept tag="EMERGING">Closed</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="EMERGING">Closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">Binary</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="EMERGING">closures</concept>
+            <concept tag="EMERGING">Closed sets</concept>
+            <concept tag="EMERGING">Closure operator</concept>
+            <concept tag="EMERGING">Binary relation closures</concept>
+        </annotations>
+    </section>
+    <section>
+        <title>Basic properties</title>
+        <text>A set that is closed under an operation or collection of operations is said to satisfy a closure property.
+            Often a
+            closure property is introduced as an axiom, which is then usually called the axiom of closure. Modern
+            set-theoretic
+            definitions usually define operations as maps between sets, so adding closure to a structure as an axiom is
+            superfluous;
+            however in practice operations are often defined initially on a superset of the set in question and a
+            closure proof is
+            required to establish that the operation applied to pairs from that set only produces members of that set.
+            For example,
+            the set of even integers is closed under addition, but the set of odd integers is not.
+            When a set S is not closed under some operations, one can usually find the smallest set containing S that is
+            closed.
+            This smallest closed set is called the closure of S (with respect to these operations). For example, the
+            closure under
+            subtraction of the set of natural numbers, viewed as a subset of the real numbers, is the set of integers.
+            An important
+            example is that of topological closure. The notion of closure is generalized by Galois connection, and
+            further by
+            monads.
+            The set S must be a subset of a closed set in order for the closure operator to be defined. In the preceding
+            example, it is
+            important that the reals are closed under subtraction; in the domain of the natural numbers subtraction is
+            not always
+            defined.
+            The two uses of the word &quot;closure&quot; should not be confused. The former usage refers to the property
+            of being closed,
+            and the latter refers to the smallest closed set containing one that may not be closed. In short, the
+            closure of a set
+            satisfies a closure property.
+        </text>
+        <annotations>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <reference tag="BACKWARD">closed</reference>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">collection</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">satisfy</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">property</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">property</concept>
+            <concept tag="A PRIORI">introduced</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="A PRIORI">called</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">Modern</concept>
+            <concept tag="A PRIORI">set-theoretic</concept>
+            <concept tag="A PRIORI">definitions</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">maps</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="A PRIORI">adding</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">structure</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="A PRIORI">superfluous</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">superset</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">question</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">proof</concept>
+            <concept tag="A PRIORI">required</concept>
+            <concept tag="A PRIORI">establish</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">applied</concept>
+            <concept tag="A PRIORI">pairs</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">produces</concept>
+            <concept tag="A PRIORI">members</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">even</concept>
+            <concept tag="A PRIORI">integers</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">addition</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">odd</concept>
+            <concept tag="A PRIORI">integers</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">find</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">closed</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">subtraction</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">natural</concept>
+            <concept tag="A PRIORI">numbers</concept>
+            <concept tag="A PRIORI">viewed</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">real</concept>
+            <concept tag="A PRIORI">numbers</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">integers</concept>
+            <concept tag="A PRIORI">important</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">topological</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">notion</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">generalized</concept>
+            <concept tag="A PRIORI">connection</concept>
+            <concept tag="EMERGING">monads</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">preceding</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">important</concept>
+            <concept tag="A PRIORI">reals</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">subtraction</concept>
+            <concept tag="A PRIORI">domain</concept>
+            <concept tag="A PRIORI">natural</concept>
+            <concept tag="A PRIORI">numbers</concept>
+            <concept tag="A PRIORI">subtraction</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">uses</concept>
+            <concept tag="A PRIORI">word</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">confused</concept>
+            <concept tag="A PRIORI">former</concept>
+            <concept tag="A PRIORI">usage</concept>
+            <concept tag="A PRIORI">refers</concept>
+            <concept tag="A PRIORI">property</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">latter</concept>
+            <concept tag="A PRIORI">refers</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">one</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">satisfies</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">property</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed under an operation or collection of operations</concept>
+            <concept tag="A PRIORI">satisfy</concept>
+            <concept tag="EMERGING">closure property</concept>
+            <concept tag="EMERGING">closure property</concept>
+            <concept tag="A PRIORI">introduced</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="EMERGING">axiom of closure</concept>
+            <concept tag="A PRIORI">Modern set-theoretic definitions</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">maps between sets</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">structure</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="A PRIORI">superfluous</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">superset of the set in question</concept>
+            <concept tag="EMERGING">closure proof</concept>
+            <concept tag="A PRIORI">required</concept>
+            <concept tag="A PRIORI">establish</concept>
+            <concept tag="A PRIORI">operation applied to pairs from that set</concept>
+            <concept tag="A PRIORI">produces</concept>
+            <concept tag="A PRIORI">members of that set</concept>
+            <concept tag="A PRIORI">set of even integers</concept>
+            <concept tag="EMERGING">closed under addition</concept>
+            <concept tag="A PRIORI">set of odd integers</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">not closed under some operations</concept>
+            <concept tag="A PRIORI">one</concept>
+            <concept tag="A PRIORI">find</concept>
+            <concept tag="A PRIORI">smallest set containing</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="EMERGING">smallest closed set</concept>
+            <concept tag="EMERGING">closure of S</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="EMERGING">closure under subtraction of the set of natural numbers</concept>
+            <concept tag="A PRIORI">subset of the real numbers</concept>
+            <concept tag="A PRIORI">set of integers</concept>
+            <concept tag="A PRIORI">important example</concept>
+            <concept tag="EMERGING">topological closure</concept>
+            <concept tag="EMERGING">notion of closure</concept>
+            <concept tag="A PRIORI">generalized</concept>
+            <concept tag="EMERGING">Galois connection</concept>
+            <concept tag="EMERGING">monads</concept>
+            <concept tag="A PRIORI">set S</concept>
+            <concept tag="EMERGING">subset of a closed set</concept>
+            <concept tag="EMERGING">closure operator</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">preceding example</concept>
+            <concept tag="A PRIORI">important</concept>
+            <concept tag="A PRIORI">reals</concept>
+            <concept tag="EMERGING">closed under subtraction</concept>
+            <concept tag="A PRIORI">domain of the natural numbers</concept>
+            <concept tag="A PRIORI">subtraction</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">uses of the word</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">confused</concept>
+            <concept tag="A PRIORI">former usage</concept>
+            <concept tag="A PRIORI">refers</concept>
+            <concept tag="EMERGING">property of being closed</concept>
+            <concept tag="A PRIORI">latter</concept>
+            <concept tag="A PRIORI">refers</concept>
+            <concept tag="EMERGING">closed set containing one that may not be closed</concept>
+            <concept tag="EMERGING">closure of a set</concept>
+            <concept tag="A PRIORI">satisfies</concept>
+            <concept tag="EMERGING">closure property</concept>
+            <relation tag="ENTITY">set that is closed under an operation or collection of operations</relation>
+            <relation tag="RELATION">is said to satisfy</relation>
+            <relation tag="ENTITY">closure property</relation>
+            <relation tag="ENTITY">closure property</relation>
+            <relation tag="RELATION">is introduced as</relation>
+            <relation tag="ENTITY">axiom</relation>
+            <relation tag="RELATION">is then usually called</relation>
+            <relation tag="ENTITY">axiom of closure</relation>
+            <relation tag="ENTITY">Modern set-theoretic definitions</relation>
+            <relation tag="RELATION">define operations as</relation>
+            <relation tag="ENTITY">maps between sets</relation>
+            <relation tag="ENTITY">adding closure to a structure as an axiom</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">superfluous</relation>
+            <relation tag="ENTITY">operations</relation>
+            <relation tag="RELATION">are often defined initially on</relation>
+            <relation tag="ENTITY">superset of the set in question</relation>
+            <relation tag="ENTITY">closure proof</relation>
+            <relation tag="RELATION">is required to establish that</relation>
+            <relation tag="ENTITY">operation applied to pairs from that set only produces members of that set</relation>
+            <relation tag="ENTITY">set of even integers</relation>
+            <relation tag="RELATION">is closed under</relation>
+            <relation tag="ENTITY">addition</relation>
+            <relation tag="ENTITY">set of odd integers</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">not</relation>
+            <relation tag="ENTITY">set S</relation>
+            <relation tag="RELATION">is not closed under</relation>
+            <relation tag="ENTITY">operations</relation>
+            <relation tag="ENTITY">one</relation>
+            <relation tag="RELATION">can usually find</relation>
+            <relation tag="ENTITY">smallest set containing S that is closed</relation>
+            <relation tag="ENTITY">smallest closed set</relation>
+            <relation tag="RELATION">is called</relation>
+            <relation tag="ENTITY">closure of S</relation>
+            <relation tag="ENTITY">closure under subtraction of the set of natural numbers</relation>
+            <relation tag="RELATION">viewed as</relation>
+            <relation tag="ENTITY">subset of the real numbers</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">set of integers</relation>
+            <relation tag="ENTITY">important example</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">topological closure</relation>
+            <relation tag="ENTITY">notion of closure</relation>
+            <relation tag="RELATION">is generalized by</relation>
+            <relation tag="ENTITY">Galois connection</relation>
+            <relation tag="ENTITY">monads</relation>
+            <relation tag="ENTITY">set S</relation>
+            <relation tag="RELATION">must be</relation>
+            <relation tag="ENTITY">subset of a closed set</relation>
+            <relation tag="ENTITY">closure operator</relation>
+            <relation tag="RELATION">be</relation>
+            <relation tag="ENTITY">defined</relation>
+            <relation tag="ENTITY">reals</relation>
+            <relation tag="RELATION">are closed under</relation>
+            <relation tag="ENTITY">subtraction</relation>
+            <relation tag="ENTITY">subtraction</relation>
+            <relation tag="RELATION">is not always</relation>
+            <relation tag="ENTITY">defined</relation>
+            <relation tag="ENTITY">uses of the word &quot; closure &quot;</relation>
+            <relation tag="RELATION">should not be</relation>
+            <relation tag="ENTITY">confused</relation>
+            <relation tag="ENTITY">former usage</relation>
+            <relation tag="RELATION">refers to</relation>
+            <relation tag="ENTITY">property of being closed</relation>
+            <relation tag="ENTITY">latter</relation>
+            <relation tag="RELATION">refers to</relation>
+            <relation tag="ENTITY">smallest closed set containing one that may not be closed</relation>
+            <relation tag="ENTITY">closure of a set</relation>
+            <relation tag="RELATION">satisfies</relation>
+            <relation tag="ENTITY">closure property</relation>
+        </annotations>
+    </section>
+    <section>
+        <title>Closed sets</title>
+        <text>A set is closed under an operation if the operation returns a member of the set when evaluated on members
+            of the set.
+            Sometimes the requirement that the operation be valued in a set is explicitly stated, in which case it is
+            known as the
+            axiom of closure. For example, one may define a group as a set with a binary product operator obeying
+            several
+            axioms, including an axiom that the product of any two elements of the group is again an element. However
+            the
+            modern definition of an operation makes this axiom superfluous; an n-ary operation on S is just a subset of
+            Sn+1. By its
+            very definition, an operator on a set cannot have values outside the set.
+            Nevertheless, the closure property of an operator on a set still has some utility. Closure on a set does not
+            necessarily
+            imply closure on all subsets. Thus a subgroup of a group is a subset on which the binary product and the
+            unary
+            operation of inversion satisfy the closure axiom.
+            An operation of a different sort is that of finding the limit points of a subset of a topological space. A
+            set that is closed
+            under this operation is usually referred to as a closed set in the context of topology. Without any further
+            qualification,
+            the phrase usually means closed in this sense. Closed intervals like [1,2] = {x : 1 ≤ x ≤ 2} are closed in
+            this sense.
+            A subset of a partially ordered set is a downward closed set (also called a lower set) if for every element
+            of the
+            subset, all smaller elements are also in the subset. This applies for example to the real intervals (−∞, p)
+            and (−∞, p],
+            and for an ordinal number p represented as interval [0, p). Every downward closed set of ordinal numbers is
+            itself an
+            ordinal number. Upward closed sets (also called upper sets) are defined similarly.
+        </text>
+        <annotations>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">returns</concept>
+            <concept tag="A PRIORI">member</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">evaluated</concept>
+            <concept tag="A PRIORI">members</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">requirement</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">valued</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">explicitly</concept>
+            <concept tag="A PRIORI">stated</concept>
+            <concept tag="A PRIORI">known</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">one</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="EMERGING">group</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">binary</concept>
+            <concept tag="A PRIORI">product</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">obeying</concept>
+            <concept tag="A PRIORI">axioms</concept>
+            <concept tag="A PRIORI">including</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="A PRIORI">product</concept>
+            <concept tag="A PRIORI">elements</concept>
+            <concept tag="EMERGING">group</concept>
+            <concept tag="A PRIORI">element</concept>
+            <concept tag="A PRIORI">modern</concept>
+            <concept tag="A PRIORI">definition</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="A PRIORI">superfluous</concept>
+            <concept tag="A PRIORI">n-ary operation</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">definition</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">values</concept>
+            <concept tag="A PRIORI">outside</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">property</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">utility</concept>
+            <concept tag="EMERGING">Closure</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">necessarily</concept>
+            <concept tag="A PRIORI">imply</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">subsets</concept>
+            <concept tag="EMERGING">subgroup</concept>
+            <concept tag="EMERGING">a group</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">binary</concept>
+            <concept tag="A PRIORI">product</concept>
+            <concept tag="A PRIORI">unary</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">inversion</concept>
+            <concept tag="A PRIORI">satisfy</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">different</concept>
+            <concept tag="A PRIORI">sort</concept>
+            <concept tag="A PRIORI">finding</concept>
+            <concept tag="A PRIORI">limit</concept>
+            <concept tag="A PRIORI">points</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">topological</concept>
+            <concept tag="A PRIORI">space</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">referred</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">context</concept>
+            <concept tag="A PRIORI">topology</concept>
+            <concept tag="A PRIORI">further</concept>
+            <concept tag="A PRIORI">qualification</concept>
+            <concept tag="A PRIORI">phrase</concept>
+            <concept tag="A PRIORI">means</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">sense</concept>
+            <concept tag="A PRIORI">Closed</concept>
+            <concept tag="A PRIORI">intervals</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">sense</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">partially</concept>
+            <concept tag="A PRIORI">ordered</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">downward</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">lower</concept>
+            <concept tag="EMERGING">set</concept>
+            <concept tag="A PRIORI">element</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">smaller</concept>
+            <concept tag="A PRIORI">elements</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">real</concept>
+            <concept tag="A PRIORI">intervals</concept>
+            <concept tag="A PRIORI">ordinal</concept>
+            <concept tag="A PRIORI">number</concept>
+            <concept tag="A PRIORI">represented</concept>
+            <concept tag="A PRIORI">interval</concept>
+            <concept tag="A PRIORI">downward</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">ordinal</concept>
+            <concept tag="A PRIORI">numbers</concept>
+            <concept tag="A PRIORI">ordinal</concept>
+            <concept tag="A PRIORI">number</concept>
+            <concept tag="A PRIORI">Upward</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="A PRIORI">called</concept>
+            <concept tag="A PRIORI">upper</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">similarly .</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed under an operation</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">returns</concept>
+            <concept tag="A PRIORI">member of the set</concept>
+            <concept tag="A PRIORI">evaluated</concept>
+            <concept tag="A PRIORI">members of the set</concept>
+            <concept tag="A PRIORI">requirement</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">valued in a set</concept>
+            <concept tag="A PRIORI">explicitly stated</concept>
+            <concept tag="A PRIORI">known</concept>
+            <concept tag="EMERGING">axiom of closure</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="EMERGING">group</concept>
+            <concept tag="A PRIORI">set with a binary product operator obeying several axioms</concept>
+            <concept tag="A PRIORI">including</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="EMERGING">product of any two elements of the group</concept>
+            <concept tag="A PRIORI">element</concept>
+            <concept tag="A PRIORI">modern definition</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">axiom</concept>
+            <concept tag="A PRIORI">superfluous</concept>
+            <concept tag="A PRIORI">an n-ary operation on S</concept>
+            <concept tag="A PRIORI">subset of Sn+1</concept>
+            <concept tag="A PRIORI">definition</concept>
+            <concept tag="A PRIORI">operator on a set</concept>
+            <concept tag="A PRIORI">values</concept>
+            <concept tag="A PRIORI">outside the set</concept>
+            <concept tag="EMERGING">closure property of an operator on a set</concept>
+            <concept tag="A PRIORI">utility</concept>
+            <concept tag="EMERGING">Closure on a set</concept>
+            <concept tag="A PRIORI">imply</concept>
+            <concept tag="EMERGING">closure on all subsets</concept>
+            <concept tag="EMERGING">subgroup of a group</concept>
+            <concept tag="A PRIORI">subset on which the binary product and the unary operation of inversion</concept>
+            <concept tag="A PRIORI">satisfy</concept>
+            <concept tag="EMERGING">closure axiom</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">different</concept>
+            <concept tag="A PRIORI">finding</concept>
+            <concept tag="A PRIORI">limit points of a subset of a topological space</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed under this operation</concept>
+            <concept tag="A PRIORI">referred</concept>
+            <concept tag="EMERGING">closed set in the context of topology</concept>
+            <concept tag="A PRIORI">further qualification</concept>
+            <concept tag="A PRIORI">phrase</concept>
+            <concept tag="A PRIORI">means</concept>
+            <concept tag="EMERGING">closed in this sense</concept>
+            <concept tag="A PRIORI">Closed intervals</concept>
+            <concept tag="EMERGING">closed in this sense</concept>
+            <concept tag="A PRIORI">subset of a partially ordered set</concept>
+            <concept tag="EMERGING">downward closed</concept>
+            <concept tag="EMERGING">lower set</concept>
+            <concept tag="A PRIORI">element of the subset</concept>
+            <concept tag="A PRIORI">smaller elements</concept>
+            <concept tag="A PRIORI">in the subset</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">real intervals</concept>
+            <concept tag="A PRIORI">ordinal number p</concept>
+            <concept tag="A PRIORI">represented</concept>
+            <concept tag="A PRIORI">interval [0 , p )</concept>
+            <concept tag="EMERGING">downward closed set of ordinal numbers</concept>
+            <concept tag="A PRIORI">ordinal number</concept>
+            <concept tag="EMERGING">Upward closed sets</concept>
+            <concept tag="EMERGING">upper sets</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">similarly</concept>
+            <relation tag="ENTITY">set</relation>
+            <relation tag="RELATION">is closed under</relation>
+            <relation tag="ENTITY">operation</relation>
+            <relation tag="ENTITY">operation</relation>
+            <relation tag="RELATION">returns</relation>
+            <relation tag="ENTITY">member of the set</relation>
+            <relation tag="RELATION">evaluated on</relation>
+            <relation tag="ENTITY">members of the set</relation>
+            <relation tag="ENTITY">requirement that the operation be valued in a set</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">explicitly stated</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is known as</relation>
+            <relation tag="ENTITY">axiom of closure</relation>
+            <relation tag="ENTITY">one</relation>
+            <relation tag="RELATION">define a group as</relation>
+            <relation tag="ENTITY">set with a binary product operator obeying several axioms</relation>
+            <relation tag="RELATION">including</relation>
+            <relation tag="ENTITY">axiom that the product of any two elements of the group is again an element
+            </relation>
+            <relation tag="ENTITY">modern definition of an operation</relation>
+            <relation tag="RELATION">makes this axiom</relation>
+            <relation tag="ENTITY">superfluous</relation>
+            <relation tag="ENTITY">n-ary operation on S</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">subset of Sn+1</relation>
+            <relation tag="ENTITY">operator on a set</relation>
+            <relation tag="RELATION">cannot have</relation>
+            <relation tag="ENTITY">values outside the set</relation>
+            <relation tag="ENTITY">closure property of an operator on a set</relation>
+            <relation tag="RELATION">has</relation>
+            <relation tag="ENTITY">utility</relation>
+            <relation tag="ENTITY">Closure on a set</relation>
+            <relation tag="RELATION">does not necessarily imply</relation>
+            <relation tag="ENTITY">closure on all subsets</relation>
+            <relation tag="ENTITY">subgroup of a group</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">subset</relation>
+            <relation tag="ENTITY">binary product and the unary operation of inversion</relation>
+            <relation tag="RELATION">satisfy</relation>
+            <relation tag="ENTITY">closure axiom</relation>
+            <relation tag="ENTITY">operation of a different sort</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">finding the limit points of a subset of a topological space</relation>
+            <relation tag="ENTITY">set that is closed under this operation</relation>
+            <relation tag="RELATION">referred to as</relation>
+            <relation tag="ENTITY">closed set in the context of topology</relation>
+            <relation tag="ENTITY">phrase</relation>
+            <relation tag="RELATION">usually means</relation>
+            <relation tag="ENTITY">closed in this sense</relation>
+            <relation tag="ENTITY">Closed intervals</relation>
+            <relation tag="RELATION">are</relation>
+            <relation tag="ENTITY">closed in this sense</relation>
+            <relation tag="ENTITY">subset of a partially ordered set</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">downward closed set</relation>
+            <relation tag="ENTITY">smaller elements</relation>
+            <relation tag="RELATION">are also in</relation>
+            <relation tag="ENTITY">subset</relation>
+            <relation tag="ENTITY">Every downward closed set of ordinal numbers</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">itself an ordinal number</relation>
+        </annotations>
+    </section>
+    <section>
+        <title>Examples</title>
+        <text>In topology and related branches, the relevant operation is taking limits. The topological closure of a
+            set is the
+            corresponding closure operator. The Kuratowski closure axioms characterize this operator.
+            In linear algebra, the linear span of a set X of vectors is the closure of that set; it is the smallest
+            subset of the
+            vector space that includes X and is closed under the operation of linear combination. This subset is a
+            subspace.
+            In matroid theory, the closure of X is the largest superset of X that has the same rank as X.
+            In set theory, the transitive closure of a set.
+            In set theory, the transitive closure of a binary relation.
+            In algebra, the algebraic closure of a field.
+            In commutative algebra, closure operations for ideals, as integral closure and tight closure.
+            In geometry, the convex hull of a set S of points is the smallest convex set of which S is a subset.
+            In formal languages, the Kleene closure of a language can be described as the set of strings that can be
+            made by
+            concatenating zero or more strings from that language.
+            In group theory, the conjugate closure or normal closure of a set of group elements is the smallest normal
+            subgroup containing the set.
+            In mathematical analysis and in probability theory, the closure of a collection of subsets of X under
+            countably
+            many set operations is called the σ-algebra generated by the collection.
+        </text>
+        <annotations>
+            <concept tag="A PRIORI">topology</concept>
+            <concept tag="A PRIORI">related</concept>
+            <concept tag="A PRIORI">branches</concept>
+            <concept tag="A PRIORI">relevant</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">taking</concept>
+            <concept tag="A PRIORI">limits</concept>
+            <concept tag="A PRIORI">topological</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">corresponding</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">axioms</concept>
+            <concept tag="A PRIORI">characterize</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">linear</concept>
+            <concept tag="A PRIORI">algebra</concept>
+            <concept tag="A PRIORI">linear</concept>
+            <concept tag="A PRIORI">span</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">vectors</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">vector</concept>
+            <concept tag="A PRIORI">space</concept>
+            <concept tag="A PRIORI">includes</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">linear</concept>
+            <concept tag="A PRIORI">combination</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="EMERGING">subspace</concept>
+            <concept tag="A PRIORI">matroid</concept>
+            <concept tag="A PRIORI">theory</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">largest</concept>
+            <concept tag="A PRIORI">superset</concept>
+            <concept tag="A PRIORI">same</concept>
+            <concept tag="A PRIORI">rank</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">theory</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">theory</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">binary</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">algebra</concept>
+            <concept tag="A PRIORI">algebraic</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">field</concept>
+            <concept tag="A PRIORI">commutative</concept>
+            <concept tag="A PRIORI">algebra</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">ideals</concept>
+            <concept tag="A PRIORI">integral</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">tight</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">geometry</concept>
+            <concept tag="A PRIORI">convex</concept>
+            <concept tag="A PRIORI">hull</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">points</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">convex</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">formal</concept>
+            <concept tag="A PRIORI">languages</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">language</concept>
+            <concept tag="A PRIORI">described</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">strings</concept>
+            <concept tag="A PRIORI">concatenating</concept>
+            <concept tag="A PRIORI">zero</concept>
+            <concept tag="A PRIORI">more</concept>
+            <concept tag="A PRIORI">strings</concept>
+            <concept tag="A PRIORI">language</concept>
+            <concept tag="EMERGING">group</concept>
+            <concept tag="A PRIORI">theory</concept>
+            <concept tag="A PRIORI">conjugate</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">normal</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">group</concept>
+            <concept tag="A PRIORI">elements</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">normal</concept>
+            <concept tag="EMERGING">subgroup</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">mathematical</concept>
+            <concept tag="A PRIORI">analysis</concept>
+            <concept tag="A PRIORI">probability</concept>
+            <concept tag="A PRIORI">theory</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">collection</concept>
+            <concept tag="A PRIORI">subsets</concept>
+            <concept tag="A PRIORI">countably</concept>
+            <concept tag="A PRIORI">many</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">σ-algebra</concept>
+            <concept tag="A PRIORI">generated</concept>
+            <concept tag="A PRIORI">collection</concept>
+            <concept tag="A PRIORI">topology</concept>
+            <concept tag="A PRIORI">related branches</concept>
+            <concept tag="A PRIORI">relevant operation</concept>
+            <concept tag="A PRIORI">taking limits</concept>
+            <concept tag="EMERGING">topological closure of a set</concept>
+            <concept tag="EMERGING">corresponding closure operator</concept>
+            <concept tag="EMERGING">Kuratowski closure axioms</concept>
+            <concept tag="A PRIORI">characterize</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">In linear algebra</concept>
+            <concept tag="A PRIORI">linear span of a set X of vectors</concept>
+            <concept tag="EMERGING">closure of that set</concept>
+            <concept tag="A PRIORI">smallest subset of the vector space</concept>
+            <concept tag="A PRIORI">includes X</concept>
+            <concept tag="EMERGING">closed under the operation of linear combination</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">subspace</concept>
+            <concept tag="A PRIORI">matroid theory</concept>
+            <concept tag="EMERGING">closure of X</concept>
+            <concept tag="A PRIORI">largest superset of X</concept>
+            <concept tag="A PRIORI">same rank as X</concept>
+            <concept tag="A PRIORI">set theory</concept>
+            <concept tag="EMERGING">transitive closure of a set</concept>
+            <concept tag="A PRIORI">set theory</concept>
+            <concept tag="EMERGING">transitive closure of a binary relation</concept>
+            <concept tag="A PRIORI">algebra</concept>
+            <concept tag="EMERGING">algebraic closure of a field</concept>
+            <concept tag="A PRIORI">commutative algebra</concept>
+            <concept tag="EMERGING">closure operations for ideals</concept>
+            <concept tag="EMERGING">integral closure</concept>
+            <concept tag="EMERGING">tight closure</concept>
+            <concept tag="A PRIORI">geometry</concept>
+            <concept tag="A PRIORI">convex hull of a set S of points</concept>
+            <concept tag="A PRIORI">smallest convex set of which S is a subset</concept>
+            <concept tag="A PRIORI">formal languages</concept>
+            <concept tag="EMERGING">Kleene closure of a language</concept>
+            <concept tag="A PRIORI">described</concept>
+            <concept tag="A PRIORI">set of strings</concept>
+            <concept tag="A PRIORI">concatenating zero or more strings from that language</concept>
+            <concept tag="EMERGING">group theory</concept>
+            <concept tag="EMERGING">conjugate closure or normal closure of a set of group elements</concept>
+            <concept tag="EMERGING">smallest normal subgroup containing the set</concept>
+            <concept tag="A PRIORI">mathematical analysis</concept>
+            <concept tag="A PRIORI">probability theory</concept>
+            <concept tag="EMERGING">closure of a collection of subsets of X under countably many set operations
+            </concept>
+            <concept tag="A PRIORI">σ-algebra generated by the collection</concept>
+            <relation tag="ENTITY">relevant operation</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">taking limits</relation>
+            <relation tag="ENTITY">topological closure of a set</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">corresponding closure operator</relation>
+            <relation tag="ENTITY">Kuratowski closure axioms</relation>
+            <relation tag="RELATION">characterize</relation>
+            <relation tag="ENTITY">operator</relation>
+            <relation tag="ENTITY">linear span of a set X of vectors</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">closure of that set</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">smallest subset of the vector space</relation>
+            <relation tag="RELATION">includes</relation>
+            <relation tag="ENTITY">X</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">closed under the operation of linear combination</relation>
+            <relation tag="ENTITY">subset</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">subspace</relation>
+            <relation tag="ENTITY">closure of X</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">largest superset of X that has the same rank as X</relation>
+            <relation tag="ENTITY">convex hull of a set S of points</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">smallest convex set of which S is a subset</relation>
+            <relation tag="ENTITY">Kleene closure of a language</relation>
+            <relation tag="RELATION">can be described as</relation>
+            <relation tag="ENTITY">set of strings</relation>
+            <relation tag="RELATION">made by</relation>
+            <relation tag="ENTITY">concatenating zero or more strings from that language</relation>
+            <relation tag="ENTITY">conjugate closure or normal closure of a set of group elements</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">smallest normal subgroup containing the set</relation>
+            <relation tag="ENTITY">closure of a collection of subsets of X under countably many set operations
+            </relation>
+            <relation tag="RELATION">is called</relation>
+            <relation tag="ENTITY">σ-algebra generated by the collection</relation>
+        </annotations>
+    </section>
+    <section>
+        <title>Closure operator</title>
+        <text>Given an operation on a set X, one can define the closure C(S) of a subset S of X to be the smallest
+            subset closed under
+            that operation that contains S as a subset, if any such subsets exist. Consequently, C(S) is the
+            intersection of all closed
+            sets containing S. For example, the closure of a subset of a group is the subgroup generated by that set.
+            The closure of sets with respect to some operation defines a closure operator on the subsets of X. The
+            closed sets
+            can be determined from the closure operator; a set is closed if it is equal to its own closure. Typical
+            structural
+            properties of all closure operations are: [1]
+            The closure is increasing or extensive: the closure of an object contains the object.
+            The closure is idempotent: the closure of the closure equals the closure.
+            The closure is monotone, that is, if X is contained in Y, then also C(X) is contained in C(Y).
+            An object that is its own closure is called closed. By idempotency, an object is closed if and only if it is
+            the closure of
+            some object.
+            These three properties define an abstract closure operator. Typically, an abstract closure acts on the class
+            of all
+            subsets of a set.
+            If X is contained in a set closed under the operation then every subset of X has a closure.
+        </text>
+        <annotations>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">one</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">contains</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="A PRIORI">subsets</concept>
+            <concept tag="A PRIORI">intersection</concept>
+            <concept tag="A PRIORI">all</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="EMERGING">group</concept>
+            <concept tag="EMERGING">subgroup</concept>
+            <concept tag="A PRIORI">generated</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">defines</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">subsets</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="A PRIORI">determined</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">equal</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">Typical</concept>
+            <concept tag="A PRIORI">structural</concept>
+            <concept tag="A PRIORI">properties</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">increasing</concept>
+            <concept tag="A PRIORI">extensive</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">object</concept>
+            <concept tag="A PRIORI">contains</concept>
+            <concept tag="A PRIORI">object</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">idempotent</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">equals</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">monotone</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">object</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">idempotency</concept>
+            <concept tag="A PRIORI">object</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">object</concept>
+            <concept tag="A PRIORI">properties</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="A PRIORI">abstract</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">abstract</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">acts</concept>
+            <concept tag="A PRIORI">class</concept>
+            <concept tag="A PRIORI">subsets</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">subset</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operation on a set X</concept>
+            <concept tag="A PRIORI">one</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="EMERGING">closure C ( S ) of a subset S of X</concept>
+            <concept tag="EMERGING">smallest subset closed under that operation that contains S as a subset</concept>
+            <concept tag="A PRIORI">subsets</concept>
+            <concept tag="A PRIORI">exist</concept>
+            <concept tag="EMERGING">intersection of all closed sets containing S</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="EMERGING">closure of a subset of a group</concept>
+            <concept tag="EMERGING">subgroup generated by that set</concept>
+            <concept tag="EMERGING">closure of sets with respect to some operation</concept>
+            <concept tag="A PRIORI">defines</concept>
+            <concept tag="EMERGING">closure operator on the subsets of X</concept>
+            <concept tag="EMERGING">closed sets</concept>
+            <concept tag="A PRIORI">determined</concept>
+            <concept tag="EMERGING">closure operator</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">equal to</concept>
+            <concept tag="EMERGING">own closure</concept>
+            <concept tag="EMERGING">Typical structural properties of all closure operations</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">increasing</concept>
+            <concept tag="A PRIORI">extensive</concept>
+            <concept tag="EMERGING">closure of an object</concept>
+            <concept tag="A PRIORI">contains</concept>
+            <concept tag="EMERGING">object</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">idempotent</concept>
+            <concept tag="EMERGING">closure of the closure</concept>
+            <concept tag="A PRIORI">equals</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">monotone</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">object</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">idempotency</concept>
+            <concept tag="A PRIORI">object</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="EMERGING">closure of some object</concept>
+            <concept tag="A PRIORI">three properties</concept>
+            <concept tag="A PRIORI">define</concept>
+            <concept tag="EMERGING">abstract closure operator</concept>
+            <concept tag="EMERGING">abstract closure</concept>
+            <concept tag="A PRIORI">class of all subsets of a set</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="EMERGING">set closed under the operation</concept>
+            <concept tag="A PRIORI">subset of X</concept>
+            <concept tag="EMERGING">closure</concept>
+            <relation tag="ENTITY">one</relation>
+            <relation tag="RELATION">can define</relation>
+            <relation tag="ENTITY">closure C ( S ) of a subset S of X</relation>
+            <relation tag="RELATION">to be</relation>
+            <relation tag="ENTITY">smallest subset closed under that operation that contains S as a subset</relation>
+            <relation tag="ENTITY">C ( S )</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">intersection of all closed sets containing S</relation>
+            <relation tag="ENTITY">closure of a subset of a group</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">subgroup generated by that set</relation>
+            <relation tag="ENTITY">closure of sets with respect to some operation</relation>
+            <relation tag="RELATION">defines</relation>
+            <relation tag="ENTITY">closure operator on the subsets of X</relation>
+            <relation tag="ENTITY">closed sets</relation>
+            <relation tag="RELATION">can be determined from</relation>
+            <relation tag="ENTITY">closure operator</relation>
+            <relation tag="ENTITY">set</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">closed</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is equal to</relation>
+            <relation tag="ENTITY">own closure</relation>
+            <relation tag="ENTITY">closure</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">increasing or extensive</relation>
+            <relation tag="ENTITY">closure of an object</relation>
+            <relation tag="RELATION">contains</relation>
+            <relation tag="ENTITY">object</relation>
+            <relation tag="ENTITY">closure</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">idempotent</relation>
+            <relation tag="ENTITY">closure of the closure</relation>
+            <relation tag="RELATION">equals</relation>
+            <relation tag="ENTITY">closure</relation>
+            <relation tag="ENTITY">closure</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">monotone</relation>
+            <relation tag="ENTITY">X</relation>
+            <relation tag="RELATION">is contained in</relation>
+            <relation tag="ENTITY">Y</relation>
+            <relation tag="ENTITY">C ( X )</relation>
+            <relation tag="RELATION">is contained in</relation>
+            <relation tag="ENTITY">C ( Y )</relation>
+            <relation tag="ENTITY">object that is its own closure</relation>
+            <relation tag="RELATION">is called</relation>
+            <relation tag="ENTITY">object</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">closed</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">closure of some object</relation>
+            <relation tag="ENTITY">three properties</relation>
+            <relation tag="RELATION">define</relation>
+            <relation tag="ENTITY">abstract closure operator</relation>
+            <relation tag="ENTITY">an abstract closure</relation>
+            <relation tag="RELATION">acts on</relation>
+            <relation tag="ENTITY">class of all subsets of a set</relation>
+            <relation tag="ENTITY">X</relation>
+            <relation tag="RELATION">is contained in</relation>
+            <relation tag="ENTITY">set closed under the operation</relation>
+            <relation tag="ENTITY">every subset of X</relation>
+            <relation tag="RELATION">has</relation>
+            <relation tag="ENTITY">closure</relation>
+        </annotations>
+    </section>
+    <section>
+        <title>Binary relation closures</title>
+        <text>Consider first homogeneous relations R ⊆ A × A. If a relation S satisfies aSb ⇒ bSa, then it is a
+            symmetric relation. An
+            arbitrary homogeneous relation R may not be symmetric but it is always contained in some symmetric relation:
+            R ⊆ S.
+            The operation of finding the smallest such S corresponds to a closure operator called symmetric closure.
+            A transitive relation T satisfies aTb ∧ bTc ⇒ aTc. An arbitrary homogeneous relation R may not be transitive
+            but it is
+            always contained in some transitive relation: R ⊆ T. The operation of finding the smallest such T
+            corresponds to a
+            closure operator called transitive closure.
+            Among heterogeneous relations there are properties of difunctionality and contact which lead to difunctional
+            closure and contact closure.[2] The presence of these closure operators in binary relations leads to
+            topology since
+            open-set axioms may be replaced by Kuratowski closure axioms. Thus each property P, symmetry, transitivity,
+            difunctionality, or contact corresponds to a relational topology.[3]
+            In the theory of rewriting systems, one often uses more wordy notions such as the reflexive transitive
+            closure R*—
+            the smallest preorder containing R, or the reflexive transitive symmetric closure R≡—the smallest
+            equivalence
+            relation containing R, and therefore also known as the equivalence closure. When considering a particular
+            term
+            algebra, an equivalence relation that is compatible with all operations of the algebra [note 1] is called a
+            congruence
+            relation. The congruence closure of R is defined as the smallest congruence relation containing R.
+            For arbitrary P and R, the P closure of R need not exist. In the above examples, these exist because
+            reflexivity,
+            transitivity and symmetry are closed under arbitrary intersections. In such cases, the P closure can be
+            directly defined
+            as the intersection of all sets with property P containing R.[4]
+            Some important particular closures can be constructively obtained as follows:
+            clref(R) = R ∪ { ⟨x,x⟩ : x ∈ S } is the reflexive closure of R,
+            clsym(R) = R ∪ { ⟨y,x⟩ : ⟨x,y⟩ ∈ R } is its symmetric closure,
+            cltrn(R) = R ∪ { ⟨x1,xn⟩ : n &gt;1 ∧ ⟨x1,x2⟩, ..., ⟨xn-1,xn⟩ ∈ R } is its transitive closure,
+            clemb,Σ(R) = R ∪ { ⟨f(x1,…,xi-1,xi,xi+1,…,xn), f(x1,…,xi-1,y,xi+1,…,xn)⟩ : ⟨xi,y⟩ ∈ R ∧ f ∈ Σ n-ary ∧ 1 ≤ i
+            ≤ n ∧ x1,...,xn ∈
+            S } is its embedding closure with respect to a given set Σ of operations on S, each with a fixed arity.
+            The relation R is said to have closure under some clxxx, if R = clxxx(R); for example R is called symmetric
+            if R =
+            clsym(R).
+            Any of these four closures preserves symmetry, i.e., if R is symmetric, so is any clxxx(R). [note 2]
+            Similarly, all four
+            preserve reflexivity. Moreover, cltrn preserves closure under clemb,Σ for arbitrary Σ. As a consequence, the
+            equivalence
+            closure of an arbitrary binary relation R can be obtained as cltrn(clsym(clref(R))), and the congruence
+            closure with
+            respect to some Σ can be obtained as cltrn(clemb,Σ(clsym(clref(R)))). In the latter case, the nesting order
+            does matter; e.g.
+            if S is the set of terms over Σ = { a, b, c, f } and R = { ⟨a,b⟩, ⟨f(b),c⟩ }, then the pair ⟨f(a),c⟩ is
+            contained in the
+            congruence closure cltrn(clemb,Σ(clsym(clref(R)))) of R, but not in the relation
+            clemb,Σ(cltrn(clsym(clref(R)))).
+        </text>
+        <annotations>
+            <concept tag="A PRIORI">first</concept>
+            <concept tag="A PRIORI">homogeneous</concept>
+            <concept tag="A PRIORI">relations</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">satisfies</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">arbitrary</concept>
+            <concept tag="A PRIORI">homogeneous</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">finding</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">corresponds</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">satisfies</concept>
+            <concept tag="A PRIORI">arbitrary</concept>
+            <concept tag="A PRIORI">homogeneous</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">finding</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">corresponds</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operator</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">heterogeneous</concept>
+            <concept tag="A PRIORI">relations</concept>
+            <concept tag="A PRIORI">properties</concept>
+            <concept tag="A PRIORI">difunctionality</concept>
+            <concept tag="A PRIORI">contact</concept>
+            <concept tag="A PRIORI">difunctional</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">contact</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">presence</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">operators</concept>
+            <concept tag="A PRIORI">binary</concept>
+            <concept tag="A PRIORI">relations</concept>
+            <concept tag="A PRIORI">topology</concept>
+            <concept tag="A PRIORI">open-set</concept>
+            <concept tag="A PRIORI">axioms</concept>
+            <concept tag="A PRIORI">replaced</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">axioms</concept>
+            <concept tag="A PRIORI">property</concept>
+            <concept tag="A PRIORI">symmetry</concept>
+            <concept tag="A PRIORI">transitivity</concept>
+            <concept tag="A PRIORI">difunctionality</concept>
+            <concept tag="A PRIORI">contact</concept>
+            <concept tag="A PRIORI">corresponds</concept>
+            <concept tag="A PRIORI">relational</concept>
+            <concept tag="A PRIORI">topology</concept>
+            <concept tag="A PRIORI">theory</concept>
+            <concept tag="A PRIORI">rewriting</concept>
+            <concept tag="A PRIORI">systems</concept>
+            <concept tag="A PRIORI">one</concept>
+            <concept tag="A PRIORI">uses</concept>
+            <concept tag="A PRIORI">wordy</concept>
+            <concept tag="A PRIORI">notions</concept>
+            <concept tag="A PRIORI">reflexive</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">preorder</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">reflexive</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">equivalence</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">known</concept>
+            <concept tag="A PRIORI">equivalence</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">considering</concept>
+            <concept tag="A PRIORI">particular</concept>
+            <concept tag="A PRIORI">term</concept>
+            <concept tag="A PRIORI">algebra</concept>
+            <concept tag="A PRIORI">equivalence</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">compatible</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">algebra</concept>
+            <concept tag="A PRIORI">congruence</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">congruence</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">smallest</concept>
+            <concept tag="A PRIORI">congruence</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">arbitrary</concept>
+            <concept tag="A PRIORI">closure</concept>
+            <concept tag="A PRIORI">exist</concept>
+            <concept tag="A PRIORI">examples</concept>
+            <concept tag="A PRIORI">exist</concept>
+            <concept tag="A PRIORI">reflexivity</concept>
+            <concept tag="A PRIORI">transitivity</concept>
+            <concept tag="A PRIORI">symmetry</concept>
+            <concept tag="EMERGING">closed</concept>
+            <concept tag="A PRIORI">arbitrary</concept>
+            <concept tag="A PRIORI">intersections</concept>
+            <concept tag="A PRIORI">cases</concept>
+            <concept tag="A PRIORI">closure</concept>
+            <concept tag="A PRIORI">directly</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">intersection</concept>
+            <concept tag="A PRIORI">sets</concept>
+            <concept tag="A PRIORI">property</concept>
+            <concept tag="A PRIORI">containing</concept>
+            <concept tag="A PRIORI">important</concept>
+            <concept tag="A PRIORI">particular</concept>
+            <concept tag="EMERGING">closures</concept>
+            <concept tag="A PRIORI">constructively</concept>
+            <concept tag="A PRIORI">obtained</concept>
+            <concept tag="A PRIORI">reflexive</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">embedding</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">operations</concept>
+            <concept tag="A PRIORI">fixed</concept>
+            <concept tag="A PRIORI">arity</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="EMERGING">closures</concept>
+            <concept tag="A PRIORI">preserves</concept>
+            <concept tag="A PRIORI">symmetry</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="A PRIORI">preserve</concept>
+            <concept tag="A PRIORI">reflexivity</concept>
+            <concept tag="A PRIORI">preserves</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">arbitrary</concept>
+            <concept tag="A PRIORI">consequence</concept>
+            <concept tag="A PRIORI">equivalence</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">arbitrary</concept>
+            <concept tag="A PRIORI">binary</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">obtained</concept>
+            <concept tag="A PRIORI">congruence</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">obtained</concept>
+            <concept tag="A PRIORI">latter</concept>
+            <concept tag="A PRIORI">case</concept>
+            <concept tag="A PRIORI">nesting</concept>
+            <concept tag="A PRIORI">order</concept>
+            <concept tag="A PRIORI">set</concept>
+            <concept tag="A PRIORI">terms</concept>
+            <concept tag="A PRIORI">pair</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">congruence</concept>
+            <concept tag="EMERGING">closure</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">homogeneous relations</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <concept tag="A PRIORI">satisfies</concept>
+            <concept tag="A PRIORI">symmetric relation</concept>
+            <concept tag="A PRIORI">arbitrary homogeneous relation</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">symmetric relation</concept>
+            <concept tag="A PRIORI">operation of finding the smallest such S</concept>
+            <concept tag="EMERGING">closure operator</concept>
+            <concept tag="EMERGING">symmetric closure</concept>
+            <concept tag="A PRIORI">transitive relation</concept>
+            <concept tag="A PRIORI">satisfies</concept>
+            <concept tag="A PRIORI">arbitrary homogeneous relation R</concept>
+            <concept tag="A PRIORI">transitive</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="A PRIORI">transitive relation</concept>
+            <concept tag="A PRIORI">operation of finding the smallest such T</concept>
+            <concept tag="EMERGING">closure operator</concept>
+            <concept tag="EMERGING">transitive closure</concept>
+            <concept tag="A PRIORI">heterogeneous relations</concept>
+            <concept tag="A PRIORI">properties of difunctionality and contact</concept>
+            <concept tag="EMERGING">difunctional closure</concept>
+            <concept tag="EMERGING">contact closure</concept>
+            <concept tag="EMERGING">closure operators</concept>
+            <concept tag="A PRIORI">binary relations</concept>
+            <concept tag="A PRIORI">topology</concept>
+            <concept tag="A PRIORI">open-set axioms</concept>
+            <concept tag="EMERGING">Kuratowski closure axioms</concept>
+            <concept tag="A PRIORI">property P , symmetry , transitivity , difunctionality , or contact</concept>
+            <concept tag="A PRIORI">relational topology</concept>
+            <concept tag="A PRIORI">theory of rewriting systems</concept>
+            <concept tag="A PRIORI">one</concept>
+            <concept tag="A PRIORI">more wordy notions</concept>
+            <concept tag="EMERGING">reflexive transitive closure R*—</concept>
+            <concept tag="A PRIORI">smallest preorder containing R</concept>
+            <concept tag="EMERGING">reflexive transitive symmetric closure</concept>
+            <concept tag="A PRIORI">smallest equivalence relation containing R</concept>
+            <concept tag="A PRIORI">known</concept>
+            <concept tag="EMERGING">equivalence closure</concept>
+            <concept tag="A PRIORI">particular term algebra</concept>
+            <concept tag="A PRIORI">equivalence relation</concept>
+            <concept tag="A PRIORI">compatible with all operations of the algebra</concept>
+            <concept tag="A PRIORI">congruence relation</concept>
+            <concept tag="EMERGING">congruence closure of R</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">smallest congruence relation containing R</concept>
+            <concept tag="A PRIORI">arbitrary P and R</concept>
+            <concept tag="A PRIORI">P closure of R</concept>
+            <concept tag="A PRIORI">exist</concept>
+            <concept tag="A PRIORI">exist</concept>
+            <concept tag="A PRIORI">reflexivity</concept>
+            <concept tag="A PRIORI">transitivity</concept>
+            <concept tag="A PRIORI">symmetry</concept>
+            <concept tag="EMERGING">closed under arbitrary intersections</concept>
+            <concept tag="EMERGING">P closure</concept>
+            <concept tag="A PRIORI">defined</concept>
+            <concept tag="A PRIORI">intersection of all sets with property P containing R</concept>
+            <concept tag="EMERGING">important particular closures</concept>
+            <concept tag="A PRIORI">constructively obtained</concept>
+            <concept tag="EMERGING">reflexive closure</concept>
+            <concept tag="EMERGING">symmetric closure</concept>
+            <concept tag="EMERGING">transitive closure</concept>
+            <concept tag="EMERGING">embedding closure</concept>
+            <concept tag="A PRIORI">given set Σ of operations on S</concept>
+            <concept tag="A PRIORI">fixed arity</concept>
+            <concept tag="A PRIORI">relation R</concept>
+            <concept tag="EMERGING">closure under some clxxx</concept>
+            <concept tag="A PRIORI">example</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="EMERGING">closures</concept>
+            <concept tag="A PRIORI">preserves</concept>
+            <concept tag="A PRIORI">symmetry</concept>
+            <concept tag="A PRIORI">symmetric</concept>
+            <concept tag="A PRIORI">preserve</concept>
+            <concept tag="EMERGING">reflexivity</concept>
+            <concept tag="A PRIORI">preserves</concept>
+            <concept tag="EMERGING">closure under clemb</concept>
+            <concept tag="A PRIORI">arbitrary</concept>
+            <concept tag="EMERGING">equivalence closure</concept>
+            <concept tag="A PRIORI">arbitrary binary relation R</concept>
+            <concept tag="A PRIORI">obtained</concept>
+            <concept tag="EMERGING">congruence closure</concept>
+            <concept tag="A PRIORI">obtained</concept>
+            <concept tag="A PRIORI">latter case</concept>
+            <concept tag="A PRIORI">nesting order</concept>
+            <concept tag="A PRIORI">set of terms over Σ</concept>
+            <concept tag="A PRIORI">pair</concept>
+            <concept tag="A PRIORI">contained</concept>
+            <concept tag="EMERGING">congruence closure cltrn</concept>
+            <concept tag="A PRIORI">relation</concept>
+            <relation tag="ENTITY">relation S</relation>
+            <relation tag="RELATION">satisfies</relation>
+            <relation tag="ENTITY">aSb ⇒ bSa</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">symmetric relation</relation>
+            <relation tag="ENTITY">arbitrary homogeneous relation R</relation>
+            <relation tag="RELATION">may not be</relation>
+            <relation tag="ENTITY">symmetric</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is always contained in</relation>
+            <relation tag="ENTITY">symmetric relation</relation>
+            <relation tag="ENTITY">operation of finding the smallest such S</relation>
+            <relation tag="RELATION">corresponds to</relation>
+            <relation tag="ENTITY">closure operator called symmetric closure</relation>
+            <relation tag="ENTITY">transitive relation T</relation>
+            <relation tag="RELATION">satisfies</relation>
+            <relation tag="ENTITY">aTb ∧ bTc ⇒ aTc</relation>
+            <relation tag="ENTITY">arbitrary homogeneous relation R</relation>
+            <relation tag="RELATION">may not be</relation>
+            <relation tag="ENTITY">transitive</relation>
+            <relation tag="ENTITY">it</relation>
+            <relation tag="RELATION">is always contained in</relation>
+            <relation tag="ENTITY">transitive relation</relation>
+            <relation tag="ENTITY">operation of finding the smallest such T</relation>
+            <relation tag="RELATION">corresponds to</relation>
+            <relation tag="ENTITY">closure operator called transitive closure</relation>
+            <relation tag="ENTITY">presence of these closure operators in binary relations</relation>
+            <relation tag="RELATION">leads to</relation>
+            <relation tag="ENTITY">topology</relation>
+            <relation tag="ENTITY">open-set axioms</relation>
+            <relation tag="RELATION">may be replaced by</relation>
+            <relation tag="ENTITY">Kuratowski closure axioms</relation>
+            <relation tag="ENTITY">property P , symmetry , transitivity , difunctionality , or contact</relation>
+            <relation tag="RELATION">corresponds to</relation>
+            <relation tag="ENTITY">relational topology</relation>
+            <relation tag="ENTITY">one</relation>
+            <relation tag="RELATION">often uses</relation>
+            <relation tag="ENTITY">more wordy notions such as the reflexive transitive closure R*—</relation>
+            <relation tag="ENTITY">equivalence relation that is compatible with all operations of the algebra</relation>
+            <relation tag="RELATION">is called</relation>
+            <relation tag="ENTITY">congruence relation</relation>
+            <relation tag="ENTITY">congruence closure of R</relation>
+            <relation tag="RELATION">is defined as</relation>
+            <relation tag="ENTITY">smallest congruence relation containing R</relation>
+            <relation tag="ENTITY">reflexivity , transitivity and symmetry</relation>
+            <relation tag="RELATION">are closed under</relation>
+            <relation tag="ENTITY">arbitrary intersections</relation>
+            <relation tag="ENTITY">P closure</relation>
+            <relation tag="RELATION">can be directly defined as</relation>
+            <relation tag="ENTITY">intersection of all sets with property P containing R</relation>
+            <relation tag="ENTITY">relation R</relation>
+            <relation tag="RELATION">is said to have</relation>
+            <relation tag="ENTITY">closure under some clxxx</relation>
+            <relation tag="ENTITY">example R</relation>
+            <relation tag="RELATION">is called</relation>
+            <relation tag="ENTITY">symmetric</relation>
+            <relation tag="ENTITY">Any of these four closures</relation>
+            <relation tag="RELATION">preserves</relation>
+            <relation tag="ENTITY">symmetry</relation>
+            <relation tag="ENTITY">all four</relation>
+            <relation tag="RELATION">preserve</relation>
+            <relation tag="ENTITY">reflexivity</relation>
+        </annotations>
+    </section>
+</document>
+

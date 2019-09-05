@@ -28,7 +28,7 @@ where:
                         for more details.
 "
 
-while getopts ':ht:j::e' option; do
+while getopts ':ha:m:p:s:t:' option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -62,4 +62,4 @@ then
     exit 1
 fi
 
-java -Xmx${maxMemory}G -cp "${CORENLP_HOME}/*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port ${port} -timeout ${timeout} -threads ${threads} -maxCharLength ${maxCharLength} -serverProperties ${serverProperties} -preload ${preloadList}
+java -Xmx"${maxMemory}"G -cp "${CORENLP_HOME}/*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port "${port}" -timeout ${timeout} -threads "${threads}" -maxCharLength ${maxCharLength} -serverProperties "${serverProperties}" -preload "${preloadList}"

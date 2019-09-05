@@ -18,7 +18,7 @@ input="src/documents.txt"
 
 while IFS= read -r file
 do
-    ln -sf ../../../docs/${file} ${file}
+    ln -sf ../../../documents/${file} ${file}
 done < "$input"
 
 # Add root directory to python path

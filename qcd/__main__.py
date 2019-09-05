@@ -1,15 +1,21 @@
 import sys
+import warnings
+from datetime import datetime
 from xml.etree import ElementTree
 
 import plac
 
 from qcd.concept_graph import ConceptGraph
-from qcd.xml_parser import XMLParser
+from qcd.xml_parser import XMLParser, OpenIEParser, CoreNLPParser
 
 
 @plac.annotations(
     file=
-    plac.Annotation("The file to parse. Must be a XML formatted file.", type=str),
+    plac.Annotation("The file to parse. Must be a XML formatted file.", kind='positional', type=str),
+
+    parser_type=
+    plac.Annotation('The type of parser to use.', kind='positional', type=str,
+                    choices=['default', 'openie', 'corenlp']),
 
     disable_coreference_resolution=
     plac.Annotation('Flag indicating to not use coreference resolution.', kind='flag', abbrev='c'),
@@ -32,15 +38,33 @@ from qcd.xml_parser import XMLParser
     debug_mode=
     plac.Annotation('Flag indicating to enable debug mode.', kind='flag', abbrev='d')
 )
-def main(file, disable_coreference_resolution=False, disable_implicit_references=False, disable_edge_annotation=False,
-         disable_reference_marking=False, disable_summary=False, disable_graph_rendering=False, debug_mode=False):
+def main(file, parser_type='default', disable_coreference_resolution=False, disable_implicit_references=False,
+         disable_edge_annotation=False, disable_reference_marking=False, disable_summary=False,
+         disable_graph_rendering=False, debug_mode=False):
     """Parse a text document and produce a score relating to conceptual density."""
-    parser = XMLParser(not disable_edge_annotation, not disable_implicit_references,
-                       not disable_coreference_resolution)
+
+    if parser_type == 'openie':
+        parser_type = OpenIEParser
+    elif parser_type == 'corenlp':
+        parser_type = CoreNLPParser
+    else:
+        if parser_type != 'default':
+            warnings.warn('Unrecognised parser type \'%s\' - using default parser.' % parser_type)
+
+        parser_type = XMLParser
+
+    parser = parser_type(not disable_edge_annotation, not disable_implicit_references,
+                         not disable_coreference_resolution)
     graph = ConceptGraph(parser=parser, mark_references=not disable_reference_marking)
 
     try:
+        start = datetime.now()
+
         graph.parse(file)
+
+        delta = datetime.now() - start
+
+        print('Document parsed in: %s' % delta)
     except ElementTree.ParseError as e:
         print('Could not parse the file. \n%s.' % e.msg.capitalize(), file=sys.stderr)
         exit(1)

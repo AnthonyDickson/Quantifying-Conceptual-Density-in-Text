@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<document>
+    <section>
+        <title>Bread</title>
+        <text>Bread is a staple food typically prepared from a dough of wheat flour and water, usually by baking.</text>
+        <annotations>
+            <concept tag="EMERGING">Bread</concept>
+            <concept tag="A PRIORI">staple</concept>
+            <concept tag="A PRIORI">food</concept>
+            <concept tag="A PRIORI">prepared</concept>
+            <concept tag="A PRIORI">dough</concept>
+            <concept tag="EMERGING">wheat</concept>
+            <reference tag="FORWARD">wheat</reference>
+            <concept tag="A PRIORI">flour</concept>
+            <concept tag="A PRIORI">water</concept>
+            <concept tag="A PRIORI">baking</concept>
+            <concept tag="EMERGING">Bread</concept>
+            <concept tag="A PRIORI">staple food</concept>
+            <concept tag="EMERGING">dough of wheat flour and water</concept>
+            <reference tag="FORWARD">wheat flour</reference>
+            <concept tag="A PRIORI">baking</concept>
+        </annotations>
+    </section>
+    <section>
+        <title>Wheat</title>
+        <text>Wheat is a type of grain.
+            Wheat is commonly used for making wheat flour, a typical ingredient of bread dough.
+        </text>
+        <annotations>
+            <concept tag="EMERGING">Wheat</concept>
+            <concept tag="A PRIORI">type</concept>
+            <concept tag="A PRIORI">grain</concept>
+            <concept tag="EMERGING">Wheat</concept>
+            <concept tag="A PRIORI">used</concept>
+            <concept tag="EMERGING">wheat</concept>
+            <concept tag="A PRIORI">flour</concept>
+            <concept tag="A PRIORI">typical</concept>
+            <concept tag="A PRIORI">ingredient</concept>
+            <concept tag="EMERGING">bread</concept>
+            <reference tag="BACKWARD">bread</reference>
+            <concept tag="A PRIORI">dough</concept>
+            <concept tag="EMERGING">Wheat</concept>
+            <concept tag="A PRIORI">type of grain</concept>
+            <concept tag="EMERGING">Wheat</concept>
+            <concept tag="EMERGING">wheat flour</concept>
+            <concept tag="A PRIORI">typical ingredient of bread dough</concept>
+            <reference tag="BACKWARD">bread dough</reference>
+        </annotations>
+    </section>
+</document>
+

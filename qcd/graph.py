@@ -1,7 +1,8 @@
 from abc import ABC
-from typing import Type, Optional, Tuple
+from typing import Type, Optional, Tuple, NewType
 
-Node = str
+Node = NewType('Node', str)
+Section = NewType('Section', str)
 
 
 class EdgeI(ABC):
@@ -41,7 +42,7 @@ class DirectedEdgeI(EdgeI, ABC):
 class GraphI:
     """An interface describing the guaranteed functionality of a graph object."""
 
-    def add_node(self, node: Node, section: str):
+    def add_node(self, node: Node, section: Section):
         """Add a node to the graph.
 
         :param node: The node to add.
@@ -49,7 +50,7 @@ class GraphI:
         """
         raise NotImplementedError
 
-    def add_edge(self, tail: str, head: str, edge_type: Type[EdgeI] = EdgeI) -> Optional[EdgeI]:
+    def add_edge(self, tail: Node, head: Node, edge_type: Type[EdgeI] = EdgeI) -> Optional[EdgeI]:
         """Add an edge between two nodes to the graph.
 
         :param tail: The node that the edge originates from.

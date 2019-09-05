@@ -1,0 +1,506 @@
+<document>
+    <section>
+        <title>1.1 The Java Programming Language</title>
+        <text>
+            A computer is made up of hardware and software. The hardware components of
+            a computer system are the physical, tangible pieces that support the computing
+
+            effort. They include chips, boxes, wires, keyboards, speakers, disks, cables, print-
+            ers, and so on. The hardware is essentially useless without instructions to tell it
+
+            what to do. A program is a series of instructions that the hardware executes one
+            after another. Programs are sometimes called applications. Software consists of
+            programs and the data those programs use. Software is the intangible counterpart
+            to the physical hardware components. Together, they form a tool that we can use
+            to solve problems.
+
+            A program is written in a particular programming language that
+            uses specific words and symbols to express the problem solution. A
+            programming language defines a set of rules that determines exactly
+
+            how a programmer can combine the words and symbols of the lan-
+            guage into programming statements, which are the instructions that
+
+            are carried out when the program is executed.
+            Since the inception of computers, many programming languages have been
+            created. We use the Java language in this text to demonstrate various programming
+
+            concepts and techniques. Although our main goal is to learn these underlying soft-
+            ware development concepts, an important side effect will be to become proficient
+
+            in the development of Java programs.
+            Java is a relatively new programming language compared to many others. It was
+
+            developed in the early 1990s by James Gosling at Sun Microsystems. Java was in-
+            troduced to the public in 1995 and has gained tremendous popularity since.
+
+            Java has undergone various changes since its creation. The most recent Java
+            technology is generally referred to as the Java 2 Platform, which is organized into
+            three major groups:
+            ■ Java 2 Platform, Standard Edition (J2SE)
+            ■ Java 2 Platform, Enterprise Edition (J2EE)
+            ■ Java 2 Platform, Micro Edition (J2ME)
+            This text focuses on the Standard Edition, which, as the name implies, is the
+            mainstream version of the language and associated tools. Furthermore, this book is
+            consistent with any recent versions of Java, and it can be used with Java 5, 6, or 7.
+            Some parts of early Java technologies have been deprecated, which means they
+            are considered old-fashioned and should not be used. When it is important, we point
+            out deprecated elements and discuss the preferred alternatives.
+
+            Java is an object-oriented programming language. Objects are the fundamen-
+            tal elements that make up a program. The principles of object-oriented software
+
+            Key Concept
+            A computer system consists of
+            hardware and software that work in
+            concert to help us solve problems.
+
+            development are the cornerstone of this text. We explore object-
+            oriented programming concepts later in this chapter and throughout
+
+            the rest of the text.
+            The Java language is accompanied by a library of extra software
+            that we can use when developing programs. This software is referred
+            to as the Java API, which stands for Application Programmer Interfaces, or simply
+            the standard class library. It provides the ability to create graphics, communicate
+            over networks, and interact with databases, among many other features. The Java
+            API is huge and quite versatile. Although we won’t be able to cover all aspects of
+            the library, we will explore many of them.
+            Java is used in commercial environments all over the world. It is one of the
+            fastest-growing programming technologies of all time. Thus it is not only a good
+            language in which to learn programming concepts but also a practical language
+            that will serve you well in the future.
+
+            <section>
+                <title>A Java Program</title>
+                <text>
+                    Let’s look at a simple but complete Java program. The program in Listing 1.1
+                    prints two sentences to the screen. This particular program prints a quotation from
+                    Abraham Lincoln. The output is shown below the program listing.
+                    All Java applications are similar in basic structure. Despite its small size and
+                    simple purpose, this program contains several important features. Let’s carefully
+                    dissect it and examine its pieces.
+
+                    The first few lines of the program are comments, which start with the // sym-
+                    bols and continue to the end of the line. Comments don’t affect what the program
+
+                    does but are included to make the program easier to understand by humans.
+                    Programmers can and should include comments as needed throughout a program
+
+                    to clearly identify the purpose of the program and describe any special process-
+                    ing. Any written comments or documents, including a user’s guide and technical
+
+                    references, are called documentation. Comments included in a program are called
+                    inline documentation.
+                    The rest of the program is a class definition. This class is called
+                    Lincoln, although we could have named it just about anything we
+                    wished. The class definition runs from the first opening brace ({) to
+                    the final closing brace (}) on the last line of the program. All Java
+                    programs are defined using class definitions.
+                    Inside the class definition are some more comments describing the purpose of
+                    the main method, which is defined directly below the comments. A method is a
+                    group of programming statements that is given a name. In this case, the name
+                    of the method is main and it contains only two programming statements. Like a
+                    class definition, a method is delimited by braces.
+
+                    Key Concept
+                    This text focuses on the principles of
+                    object-oriented programming.
+
+                    Key Concept
+                    Comments do not affect a program’s
+                    processing; instead, they serve to
+                    facilitate human comprehension.
+
+                    All Java applications have a main method, which is where processing begins.
+                    Each programming statement in the main method is executed, one at a time in
+                    order, until the end of the method is reached. Then the program ends, or terminates.
+                    The main method definition in a Java program is always preceded by the words
+                    public, static, and void, which we examine later in the text. The use of String
+                    and args does not come into play in this particular program. We describe these
+                    later also.
+                    The two lines of code in the main method invoke another method called
+                    println (pronounced print line). We invoke, or call, a method when we want it
+                    to execute. The println method prints the specified characters to the screen. The
+                    characters to be printed are represented as a character string, enclosed in double
+                    quote characters ("). When the program is executed, it calls the println method
+                    to print the first statement, then it calls that method again to print the second
+                    statement, and then, because that is the last line in the main method, the program
+                    terminates.
+
+                    //********************************************************************
+                    // Lincoln.java Java Foundations
+                    //
+                    // Demonstrates the basic structure of a Java application.
+                    //********************************************************************
+                    public class Lincoln
+                    {
+                    //-----------------------------------------------------------------
+                    // Prints a presidential quote.
+                    //-----------------------------------------------------------------
+                    public static void main(String[] args)
+                    {
+                    System.out.println("A quote by Abraham Lincoln:");
+                    System.out.println("Whatever you are, be a good one.");
+                    }
+                    }
+                    O U TP U T
+                    A quote by Abraham Lincoln:
+                    Whatever you are, be a good one.
+                    L ISTIN G 1.1
+
+                    Overview of program
+                    elements
+                    VideoNote
+
+                    The code executed when the println method is invoked is not defined in this
+                    program. The println method is part of the System.out object, which is part
+                    of the Java standard class library. It’s not technically part of the Java language,
+                    but it is always available for use in any Java program. We explore the println
+                    method in more detail in Chapter 2.
+                    COMMON ERROR
+
+                    Statements in Java are terminated with a semicolon. If you leave the semi-
+                    colon off of a statement, the compiler will get confused and issue an error.
+
+                    Here is an example:
+                    System.out.println("Bilbo")
+                    System.out.println("Frodo");
+                    Without the semicolon on the first line, the compiler doesn’t realize that
+                    a new statement has begun. However, most compilers are good at giving
+                    clear messages about this problem. It’s easy to forget semicolons when
+                    you’re first beginning to program, but including them will soon become
+                    second nature.
+                </text>
+            </section>
+            <section>
+                <title>Comments</title>
+                <text>
+                    Let’s examine comments in more detail. Comments are the only language fea-
+                    ture that allows programmers to compose and communicate their thoughts
+
+                    independent of the code. Comments should provide insight into the programmer’s
+
+                    original intent. A program may be used for many years, and often many modi-
+                    fications are made to it over time. The original programmer may not remember
+
+                    the details of a particular program when, at some point in the future, modi-
+                    fications are required. Furthermore, the original programmer is not always
+
+                    available to make the changes; thus, someone completely unfamiliar with the
+                    program will need to understand it. Good documentation is therefore essential.
+
+                    As far as the Java programming language is concerned, the content of com-
+                    ments can be any text whatsoever. Comments are ignored by the computer; they
+
+                    do not affect how the program executes.
+
+                    The comments in the Lincoln program represent one of two types of com-
+                    ments allowed in Java. The comments in Lincoln take the following form:
+
+                    // This is a comment.
+                    This type of comment begins with a double slash //) and continues to the end
+                    of the line. You cannot have any characters between the two slashes. The computer
+
+                    ignores any text after the double slash to the end of the line. A comment can follow
+                    code on the same line to document that particular line, as in the following example:
+                    System.out.println ("Monthly Report"); // always use this title
+                    The second form a Java comment may take is
+                    /* This is another comment. */
+                    This comment type does not use the end of a line to indicate the end of the
+                    comment. Anything between the initiating slash-asterisk (/*) and the terminating
+
+                    asterisk-slash (*/) is part of the comment, including the invisible newline charac-
+                    ter that represents the end of a line. Therefore, this type of comment can extend
+
+                    over multiple lines. There can be no space between the slash and the asterisk.
+                    If there is a second asterisk following the /* at the beginning of a comment,
+
+                    the content of the comment can be used to automatically generate external docu-
+                    mentation about your program by using a tool called javadoc. More information
+
+                    about javadoc is given in Appendix I.
+                    The two basic comment types can be used to create various documentation
+                    styles, such as
+                    // This is a comment on a single line.
+                    //— — — — — — — — — — — — — — — — — — — — — — — — — — — —
+                    // Some comments such as those above methods or classes
+                    // deserve to be blocked off to focus special attention
+                    // on a particular aspect of your code. Note that each of
+                    // these lines is technically a separate comment.
+                    //— — — — — — — — — — — — — — — — — — — — — — — — — — — —
+                    /*
+                    This is one comment
+                    that spans several lines.
+                    */
+
+                    Programmers often concentrate so much on writing code that they
+
+                    focus too little on documentation. You should develop good com-
+                    menting practices and follow them habitually. Comments should be
+
+                    well written, often in complete sentences. They should not belabor
+                    the obvious but should provide appropriate insight into the intent of
+                    the code. The following examples are not good comments:
+                    System.out.println("hello"); // prints hello
+                    System.out.println("test"); // change this later
+                    The first comment paraphrases the obvious purpose of the line and does not
+                    add any value to the statement. It is better to have no comment than to add a
+
+                    Key Concept
+                    Inline documentation should provide
+                    insight into your code. It should not
+                    be ambiguous or belabor the obvious.
+
+                    useless one. The second comment is ambiguous. What should be changed later?
+                    When is later? Why should it be changed?</text>
+            </section>
+            <section>
+                <title>Identifiers and Reserved Words</title>
+                <text>
+                    The various words used when writing programs are called identifiers. The identi-
+                    fiers in the Lincoln program are class, Lincoln, public, static, void, main,
+
+                    String, args, System, out, and println. These fall into three categories:
+                    ■ words that we make up when writing a program (Lincoln and args)
+                    ■ words that another programmer chose (String, System, out, println, and main)
+                    ■ words that are reserved for special purposes in the language (class, public,
+                    static, and void)
+                    While writing the program, we simply chose to name the class Lincoln, but we
+                    could have used one of many other possibilities. For example, we could have called
+                    it Quote, or Abe, or GoodOne. The identifier args (which is short for “arguments”)
+                    is often used in the way we use it in Lincoln, but we could have used just about
+                    any other identifier in its place.
+
+                    The identifiers String, System, out, and println were chosen by other pro-
+                    grammers. These words are not part of the Java language. They are part of the
+
+                    Java standard library of predefined code, a set of classes and methods that some-
+                    one has already written for us. The authors of that code chose the identifiers in
+
+                    that code—we’re just making use of them.
+                    Reserved words are identifiers that have a special meaning in a programming
+                    language and can be used only in predefined ways. A reserved word cannot be used
+                    for any other purpose, such as naming a class or method. In the Lincoln program,
+                    the reserved words used are class, public, static, and void. Figure 1.1 lists all of
+                    the Java reserved words in alphabetical order. The words marked with an asterisk
+                    abstract
+                    assert
+                    boolean
+                    break
+                    byte
+                    case
+                    catch
+                    char
+                    class
+                    const*
+                    continue
+
+                    default
+                    do
+                    double
+                    else
+                    enum
+                    extends
+                    false
+                    final
+                    finally
+                    float
+                    for
+
+                    goto*
+                    if
+                    implements
+                    import
+                    instanceof
+                    int
+                    interface
+                    long
+                    native
+                    new
+                    null
+
+                    package
+                    private
+                    protected
+                    public
+                    return
+                    short
+                    static
+                    strictfp
+                    super
+                    switch
+                    synchronized
+                    this
+                    throw
+                    throws
+                    transient
+                    true
+                    try
+                    void
+                    volatile
+                    while
+
+                    Fig 01-19
+                    Figure 1.1 Java reserved words
+
+                    are reserved for possible future use in later versions of the language but currently
+                    have no meaning in Java.
+                    An identifier that we make up for use in a program can be composed of any
+                    combination of letters, digits, the underscore character (_), and the dollar sign ($),
+                    but it cannot begin with a digit. Identifiers may be of any length. Therefore, total,
+                    label7, nextStockItem, NUM_BOXES, and $amount are all valid identifiers, but
+                    4th_word and coin#value are not valid.
+                    Both uppercase and lowercase letters can be used in an identifier, and the
+                    difference is important. Java is case-sensitive, which means that two identifier
+                    names that differ only in the case of their letters are considered
+                    to be different identifiers. Therefore, total, Total, ToTaL, and
+                    TOTAL are all different identifiers. As you can imagine, it is not a
+                    good idea to use multiple identifiers that differ only in their case,
+                    because they can be easily confused.
+
+                    Key Concept
+                    Java is case sensitive. The uppercase
+                    and lowercase versions of a letter are
+                    distinct.
+
+                    Identifier
+                    An identifier is a letter followed by zero or more letters and digits.
+
+                    Java Letters include the 26 English alphabetic characters in both up-
+                    percase and lowercase, the $ and _ (underscore) characters, as well as
+
+                    alphabetic characters from other languages. Java Digits include the
+                    digits 0 through 9.
+                    Examples:
+                    total
+                    MAX_HEIGHT
+                    num1
+                    computeWage
+                    System
+                    Although the Java language doesn’t require it, using a consistent case format
+                    for each kind of identifier makes your identifiers easier to understand. The various
+                    Java conventions regarding identifiers should be followed, although technically
+                    they don’t have to be. For example, we use title case (uppercase for the first letter
+                    of each word) for class names. Throughout this text, we describe the preferred
+                    case style for each type of identifier when it is first encountered.
+
+                    Although an identifier can be of any length, you should choose your names care-
+                    fully. They should be descriptive but not verbose. You should avoid meaningless
+
+                    names such as a and x. An exception to this rule can be made if the short name is
+
+                    actually descriptive, such as using x and y to represent (x, y) coordinates on a two-
+                    dimensional grid. Likewise, you should not use unnecessarily long names, such as
+
+                    the identifier theCurrentItemBeingProcessed. The name currentItem would
+                    serve just as well. As you might imagine, the use of identifiers that are too long is a
+                    much less prevalent problem than the use of names that are not descriptive.
+                    You should always strive to make your programs as readable as
+                    possible. Therefore, you should always be careful when abbreviating
+                    words. You might think that curStVal is a good name to represent
+                    the current stock value, but another person trying to understand the
+                    code might have trouble figuring out what you meant. It might not
+                    even be clear to you two months after you wrote it!
+                    A name in Java is a series of identifiers separated by the dot (period) character.
+                    The name System.out is the way we designate the object through which we invoked
+                    the println method. Names appear quite regularly in Java programs.
+                </text>
+            </section>
+            <section>
+                <title>White Space</title>
+                <text>
+                    All Java programs use white space to separate the words and symbols used in
+                    a program. White space consists of blanks, tabs, and newline characters. The
+                    phrase white space refers to the fact that on a white sheet of paper with black
+
+                    printing, the space between the words and symbols is white. The way a program-
+                    mer uses white space is important, because it can be used to emphasize parts of
+
+                    the code and can make a program easier to read.
+                    The computer ignores white space except when the white space
+                    is used to separate words. It does not affect the execution of a
+                    program. This fact gives programmers a great deal of flexibility
+                    in how they format a program. The lines of a program should be
+                    divided in logical places, and certain lines should be indented and
+                    aligned so that the program’s underlying structure is clear.
+                    Because white space is ignored, we can write a program in many different
+                    ways. For example, taking white space to one extreme, we could put as many
+                    words as possible on each line. The code in Listing 1.2, the Lincoln2 program,
+                    is formatted quite differently from Lincoln but prints the same message.
+                    Taking white space to the other extreme, we could write almost every word
+
+                    and symbol on a different line with varying amounts of spaces. This awkward ap-
+                    proach is illustrated by Lincoln3, which is shown in Listing 1.3.
+
+                    Key Concept
+                    Identifier names should be descriptive
+                    and readable.
+
+                    Key Concept
+                    Appropriate use of white space
+                    makes a program easier to read and
+                    understand.
+
+                    //********************************************************************
+                    // Lincoln2.java Java Foundations
+                    //
+                    // Demonstrates a poorly formatted, though valid, program.
+                    //********************************************************************
+                    L ISTIN G 1.2
+
+                    //********************************************************************
+                    // Lincoln3.java Java Foundations
+                    //
+                    // Demonstrates another valid program that is poorly formatted.
+                    //********************************************************************
+                    public class
+                    Lincoln3
+                    {
+                    public
+                    static
+                    void
+                    main
+                    (
+                    String
+                    []
+                    args )
+                    {
+                    System.out.println (
+                    "A quote by Abraham Lincoln:" )
+                    ; System.out.println
+                    (
+                    "Whatever you are, be a good one."
+                    )
+                    ;
+                    }
+                    }
+                    O U TP U T
+                    A quote by Abraham Lincoln:
+                    Whatever you are, be a good one.
+                    L ISTIN G 1.3
+                    public class Lincoln2{public static void main(String[]args){
+                    System.out.println("A quote by Abraham Lincoln:");
+                    System.out.println("Whatever you are, be a good one.");}}
+                    O u t p u t
+                    A quote by Abraham Lincoln:
+                    Whatever you are, be a good one.
+                    L ISTIN G 1.2
+
+                    All three versions of Lincoln are technically valid and will execute in
+                    the same way, but they are radically different from a reader’s point of view.
+                    Both of the latter examples show poor style and make the program difficult
+
+                    to understand. You may be asked to adhere to particular guide-
+                    lines when you write your programs. A software development
+
+                    company often has a programming style policy that it requires its
+
+                    programmers to follow. In any case, you should adopt and con-
+                    sistently use a set of style guidelines that increases the readability
+                    of your code.
+                </text>
+            </section>
+        </text>
+    </section>
+</document>

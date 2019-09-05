@@ -1,9 +1,14 @@
+import re
+
 import nltk
+import plac
 
-if __name__ == '__main__':
-    import re
 
-    with open('docs/Sweller2011_Chapter_TheElementInteractivityEffect.txt', 'r') as f:
+@plac.annotations(
+    filepath=plac.Annotation('The text file to parse', type=str)
+)
+def main(filepath):
+    with open(filepath, 'r') as f:
         text = f.read()
 
     """Create a parser."""
@@ -15,9 +20,7 @@ if __name__ == '__main__':
                     {<NBAR>(<IN|CC><NBAR>)*}  # Above, connected with in/of/etc...
             """
     chunker = nltk.RegexpParser(grammar)
-
     pattern = re.compile(r"^(\d(\.\d)*\s+)?[A-Z]\w*(\s(&|\w+))*$", flags=re.MULTILINE)
-
     sections = []
 
     for match in re.finditer(pattern, text):
@@ -40,3 +43,7 @@ if __name__ == '__main__':
 
         end = sections[i + 1][1] - 1 if i + 1 < len(sections) else len(text) - 1
         print(section, 'start:', start, 'end:', end)
+
+
+if __name__ == '__main__':
+    plac.call(main)

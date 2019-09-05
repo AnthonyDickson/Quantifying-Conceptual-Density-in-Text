@@ -63,3 +63,38 @@ The main report can be found [here](https://github.com/eight0153/cosc480/blob/ma
     ```shell
     $ python -m qcd --help
     ```
+
+## Annotating Documents
+There is a separate GitHub repository for a web application that facilitates
+annotation of documents and generating the XML documents with annotations.
+This web app can be accessed from [here](https://cosc480-document-annotator.herokuapp.com/documents)
+and the GitHub repository can be found [here](https://github.com/eight0153/cosc480-annotator).
+
+## Evaluating the Model
+The easiest way for evaluating the model of conceptual density on a document 
+goes like this:
+
+1.  Go to the [web application](https://cosc480-document-annotator.herokuapp.com/documents)
+    and create a document.
+    
+2.  Annotate the document.
+
+3.  Download the annotated XML version of the document either via the web 
+    application interface or command line.
+    
+    For example, we can download the annotated XML document via command line
+    with the following:
+    ```bash
+    curl -o annotations.xml https://cosc480-document-annotator.herokuapp.com/api/documents/1/xml
+    ``` 
+    
+    The exact URL for a given document can be found through the link in download
+     button in web app interface, or by using the URL in the above example and 
+     replacing the document ID with the ID of the document you want. Document 
+     IDs can be found in the URL when viewing a document in the web app or by 
+     inspecting the JSON response from the endpoint [cosc480-document-annotator.herokuapp.com/api/documents](https://cosc480-document-annotator.herokuapp.com/api/documents/).
+
+4.  Run the evaluation script on a given document:
+    ```bash
+    python -m qcd/evaluate annotations.xml
+    ```
