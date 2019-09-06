@@ -118,7 +118,7 @@ Relation = NewType('Relation', str)
 
 class RelationalEdge(DirectedEdge):
     def __init__(self, tail: Node, head: Node, relation: Relation = '', weight: float = 1.0):
-        super().__init__(tail, head)
+        super().__init__(tail, head, weight)
 
         self._relation = relation
 
@@ -319,7 +319,12 @@ class ConceptGraph(GraphI):
             if tail == head:
                 return None
 
-            edge = edge_type(tail, head)
+            # Get edge if it exists in the graph already...
+            edge = self.get_edge(tail, head)
+
+            # Otherwise create a new edge instance
+            if edge is None:
+                edge = edge_type(tail, head)
         else:
             tail = edge.tail
             head = edge.head
@@ -327,9 +332,8 @@ class ConceptGraph(GraphI):
         assert tail in self.nodes and head in self.nodes, 'Both nodes in the edge must exist within the graph.'
 
         if edge in self.edges:
-            # Duplicate edges only increase a count so each edge is only
-            # rendered once.
-            edge = self.get_edge(edge.tail, edge.head)
+            # Duplicate edges only increase a count and each unique edge is
+            # only rendered once.
             edge.frequency += 1
         else:
             self.adjacency_list[tail].add(head)
@@ -352,14 +356,22 @@ class ConceptGraph(GraphI):
         self.add_node(object_, section)
         self.add_edge(edge=RelationalEdge(subject, object_, relation=relation))
 
-    def remove_edge(self, tail: Node, head: Node):
+    def remove_edge(self, tail: Optional[Node] = None, head: Optional[Node] = None,
+                    edge: Optional[DirectedEdge] = None):
         """Remove an edge from the graph.
 
         :param tail: The tail node of the edge to remove.
         :param head: The head node of the edge to remove.
+        :param edge: The edge object to remove. The parameters `tail` and `head`
+                     are ignored if this parameter is not `None`.
         """
         try:
-            edge = self.edge_index[(tail, head)]
+            if not edge:
+                assert tail is not None and head is not None, \
+                    'The parameters `head` and `tail` must both be set if no edge instance is given.'
+
+                edge = self.edge_index[(tail, head)]
+
             self.edges.discard(edge)
             del self.edge_index[(tail, head)]
 
@@ -387,9 +399,9 @@ class ConceptGraph(GraphI):
         :param edge: The new edge that should replace the one in the graph.
         :return: The new edge.
         """
-        self.remove_edge(edge.tail, edge.head)
+        self.remove_edge(edge=edge)
 
-        return self.add_edge(edge.tail, edge.head, type(edge))
+        return self.add_edge(edge=edge)
 
     def update_section_count(self, node: Node, section: Section):
         """Update the count of times a node appears in a given section by one.
@@ -475,6 +487,9 @@ class ConceptGraph(GraphI):
         Nodes that are only referenced from one section represent 'a priori references',
         all other nodes represent 'emerging concepts'.
         """
+        self.a_priori_concepts = set()
+        self.emerging_concepts = set()
+
         for section in self.sections:
             for node in self.section_listings[section]:
                 referencing_sections = set()
@@ -494,6 +509,9 @@ class ConceptGraph(GraphI):
 
     def mark_edges(self):
         """Colour edges as either forward or backward edges."""
+        self.forward_references = set()
+        self.backward_references = set()
+
         visited = set()
 
         for node in self.nodes:
