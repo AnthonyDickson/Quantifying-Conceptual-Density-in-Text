@@ -8,7 +8,7 @@ import plac
 import spacy
 
 from qcd.concept_graph import ConceptGraph
-from qcd.xml_parser import XMLParser, CoreNLPParser, OpenIEParser
+from qcd.xml_parser import XMLParser, CoreNLPParser, OpenIEParser, EnsembleParser
 
 
 # noinspection PyStringFormat
@@ -132,7 +132,7 @@ def main(filename: str, output_dir: Optional[str] = None):
                 elif tag == 'backward':
                     backward_references.add(concept)
 
-    for parser in [XMLParser(), CoreNLPParser(), OpenIEParser()]:
+    for parser in [XMLParser(), CoreNLPParser(), OpenIEParser(), EnsembleParser()]:
         df = evaluate_parser(filename, parser, a_priori_concepts, emerging_concepts, forward_references,
                              backward_references)
 

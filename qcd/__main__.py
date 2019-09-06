@@ -6,7 +6,7 @@ from xml.etree import ElementTree
 import plac
 
 from qcd.concept_graph import ConceptGraph
-from qcd.xml_parser import XMLParser, OpenIEParser, CoreNLPParser
+from qcd.xml_parser import XMLParser, OpenIEParser, CoreNLPParser, EnsembleParser
 
 
 @plac.annotations(
@@ -15,7 +15,7 @@ from qcd.xml_parser import XMLParser, OpenIEParser, CoreNLPParser
 
     parser_type=
     plac.Annotation('The type of parser to use.', kind='positional', type=str,
-                    choices=['default', 'openie', 'corenlp']),
+                    choices=['default', 'openie', 'corenlp', 'ensemble']),
 
     disable_coreference_resolution=
     plac.Annotation('Flag indicating to not use coreference resolution.', kind='flag', abbrev='c'),
@@ -47,6 +47,8 @@ def main(file, parser_type='default', disable_coreference_resolution=False, disa
         parser_type = OpenIEParser
     elif parser_type == 'corenlp':
         parser_type = CoreNLPParser
+    elif parser_type == 'ensemble':
+        parser_type = EnsembleParser
     else:
         if parser_type != 'default':
             warnings.warn('Unrecognised parser type \'%s\' - using default parser.' % parser_type)

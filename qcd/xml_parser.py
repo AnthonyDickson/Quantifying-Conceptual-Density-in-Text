@@ -435,7 +435,6 @@ class OpenIEParser(CoreNLPParserABC):
         return list(filter(lambda token_tag: token_tag[1] not in {'DET', 'DT'}, pos_tags))
 
 
-
 class CoreNLPParser(CoreNLPParserABC):
     def __init__(self, annotate_edges: bool = True, implicit_references: bool = False,
                  resolve_coreferences: bool = False, server_url: str = 'http://localhost:9000'):
@@ -594,3 +593,25 @@ class CoreNLPParser(CoreNLPParserABC):
 
         if subject and verb and object_:
             yield subject.leaves(), verb.leaves(), object_.leaves()
+
+
+class EnsembleParser(ParserABC):
+    """Parses a document using an ensemble of parsers."""
+
+    def __init__(self, annotate_edges: bool = True, implicit_references: bool = False,
+                 resolve_coreferences: bool = False, server_url: str = 'http://localhost:9000'):
+        super().__init__(annotate_edges, implicit_references, resolve_coreferences)
+
+        self.parsers = []
+
+        self.parsers.append(XMLParser(annotate_edges, implicit_references, resolve_coreferences))
+        self.parsers.append(CoreNLPParser(annotate_edges, implicit_references, resolve_coreferences, server_url))
+        self.parsers.append(OpenIEParser(annotate_edges, implicit_references, resolve_coreferences, server_url))
+
+    def get_grammar(self) -> str:
+        raise NotImplementedError('This parser does not define a grammar.')
+
+    def parse(self, filename: str, graph: ConceptGraph):
+        # TODO: Fix 'double counting' for concepts/references extracted by 2+ parsers.
+        for parser in self.parsers:
+            parser.parse(filename, graph)
