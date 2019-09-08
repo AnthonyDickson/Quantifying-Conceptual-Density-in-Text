@@ -30,21 +30,30 @@ def spacy_strategy(emerging_concepts, text):
     nlp = spacy.load('en')
     doc = nlp(text)
 
+    concept_tokens = []
+
     for sent in doc.sents:
-        for token in sent:
-            if token.lemma_ == 'be' and token.dep_ == 'ROOT':
-                subj = list(filter(lambda left: left.dep_.endswith('subj'), token.lefts))
-                subj_tokens = []
+        for token in filter(lambda token: token.dep_ == 'ROOT', sent):
+            if token.lemma_ == 'be':
+                concept_tokens = list(filter(lambda left: left.dep_.endswith('subj'), token.lefts))
+            elif token.lemma_ == 'define':
+                concept_tokens = list(filter(lambda right: right.dep_ == 'dobj', token.rights))
 
-                for tok in subj:
-                    subj_tokens += tok.subtree
+            add_concept(concept_tokens, emerging_concepts)
 
-                if len(subj_tokens) > 0:
-                    if subj_tokens[0].tag_ == 'DT':
-                        subj_tokens = subj_tokens[1:]
 
-                    subj_tokens = filter(lambda tok: len(tok.text.strip()) > 0, subj_tokens)
-                    emerging_concepts.append(' '.join(map(lambda tok: tok.text, subj_tokens)))
+def add_concept(concept_tokens, emerging_concepts):
+    tokens = []
+
+    for token in concept_tokens:
+        tokens += token.subtree
+
+    if len(tokens) > 0:
+        if tokens[0].tag_ == 'DT':
+            tokens = tokens[1:]
+
+        tokens = filter(lambda token: len(token.text.strip()) > 0, tokens)
+        emerging_concepts.add(' '.join(map(lambda token: token.text, tokens)))
 
 
 @plac.annotations(
@@ -55,7 +64,7 @@ def main(file, strategy='spacy'):
     tree = ElementTree.parse(file)
     root = tree.getroot()
 
-    emerging_concepts = []
+    emerging_concepts = set()
 
     for section in root.iterfind('section'):
         text = section.findtext('text')
