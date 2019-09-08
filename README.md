@@ -11,19 +11,19 @@ The main report can be found [here](https://github.com/eight0153/cosc480/blob/ma
 # Getting Started
 1.  Set up your python environment.
     If you are using conda you can do this with the command:
-    ```shell
-    $ conda env create -f environment.yml
+    ```shell script
+    conda env create -f environment.yml
     ```
     and then activate the environment using:
-    ```shell
-    $ conda activate cosc480
+    ```shell script
+    conda activate cosc480
     ```
     Otherwise, make sure you have the packages listed in 
     `environment.yml` installed.
     
 2.  Run the setup script:
-    ```shell
-    $ python setup.py
+    ```shell script
+    python setup.py
     ```
 
 3.  Install [GraphViz](https://graphviz.gitlab.io/download/) if you want to visualise the generated graph structures.
@@ -33,35 +33,38 @@ The main report can be found [here](https://github.com/eight0153/cosc480/blob/ma
 
 5.  Download the Standford [CoreNLP](https://stanfordnlp.github.io/CoreNLP/) package and extract the contents somewhere.
     Then add the path to where you extracted the files to the environment variable `CORENLP_HOME`:
-    ```shell
-    $ export CORENLP_HOME=path/to/corenlp
+    ```shell script
+    export CORENLP_HOME=path/to/corenlp
     ```
     This sets the environment variable for the current shell.
     
     To make this environment variable more permanent run:
-    ```shell
-    $ echo 'export CORENLP_HOME=path/to/corenlp"' >> ~/.bashrc
+    ```shell script
+    echo export CORENLP_HOME=path/to/corenlp >> ~/.bashrc
     ```
-    These changes will take effect when you next login.
+    These changes will take effect when you open a new shell.
 
 6.  Start up the CoreNLP server:
-    ```shell
-    $ bash corenlp_server/run.sh
+    ```shell script
+    bash corenlp_server/run.sh
     ```
     
     To see the help message type:
-    ```shell
-    $ bash corenlp_server/run.sh -h
-    ```    
+    ```shell script
+    bash corenlp_server/run.sh -h
+    ```
+    
+    When using the default settings, you can access the server from [localhost:9000](http://localhost:9000/) and
+    use the web interface to issue queries.
 
 7.  Run the main script to start quantifying conceptual density!
-    ```shell
-    $ python -m qcd docs/bread.xml
+    ```shell script
+    python -m qcd docs/bread.xml
     ```
 
     To see the help message type:
-    ```shell
-    $ python -m qcd --help
+    ```shell script
+    python -m qcd --help
     ```
 
 ## Annotating Documents
@@ -84,7 +87,7 @@ goes like this:
     
     For example, we can download the annotated XML document via command line
     with the following:
-    ```bash
+    ```shell script
     curl -o annotations.xml https://cosc480-document-annotator.herokuapp.com/api/documents/1/xml
     ``` 
     
@@ -93,8 +96,16 @@ goes like this:
      replacing the document ID with the ID of the document you want. Document 
      IDs can be found in the URL when viewing a document in the web app or by 
      inspecting the JSON response from the endpoint [cosc480-document-annotator.herokuapp.com/api/documents](https://cosc480-document-annotator.herokuapp.com/api/documents/).
+     
+     It may be the case that annotations need to spread across multiple copies of a document (e.g. overlapping annotations).
+     In this case you either evaluate the conceptual density model on each document separately or merge the XML documents
+     with:
+     ```shell script
+    python -m qcd.merge_xml doc-1.xml doc-2.xml ... doc-n.xml -output-path annotations.xml
+    ``` 
+    and evaluate the model using the merged XML document.
 
 4.  Run the evaluation script on a given document:
-    ```bash
+    ```shell script
     python -m qcd.evaluate annotations.xml
     ```
