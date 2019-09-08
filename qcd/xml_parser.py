@@ -145,6 +145,32 @@ class ParserABC(ParserI, ABC):
         for token, _ in chunk:
             yield token, noun_chunk
 
+    def identify_emerging_concepts(self, sent: Span, graph: ConceptGraph):
+        """Identify concepts in a given sentence that are likely to be emerging concepts.
+
+        :param sent: A spaCy span representing a sentence in a document.
+        :param graph: The concept graph to record the emerging concepts in.
+        """
+        for token in filter(lambda token: token.dep_ == 'ROOT', sent):
+            concept_tokens = []
+
+            if token.lemma_ == 'be':
+                concept_tokens = filter(lambda left: left.dep_.endswith('subj'), token.lefts)
+            elif token.lemma_ == 'define':
+                concept_tokens = filter(lambda right: right.dep_ == 'dobj', token.rights)
+
+            tokens = []
+
+            for token in concept_tokens:
+                tokens += token.subtree
+
+            if len(tokens) > 0:
+                if tokens[0].tag_ == 'DT':
+                    tokens = tokens[1:]
+
+                tokens = filter(lambda token: len(token.text.strip()) > 0, tokens)
+                graph.emerging_concepts.add(Node(' '.join(map(lambda token: token.text, tokens))))
+
 
 class XMLParser(ParserABC):
     """Parser for XML documents.
@@ -218,8 +244,8 @@ class XMLParser(ParserABC):
                 subject = Node(self.get_subject(sent))
 
                 graph.add_node(subject, section_title)
-
                 self.add_gerund_phrase(subject, section_title, sent, graph)
+                self.identify_emerging_concepts(sent, graph)
 
                 # Add other noun phrases to the graph
                 for np in parse_tree.subtrees(lambda t: t.label() == 'NP'):
@@ -382,6 +408,7 @@ class OpenIEParser(CoreNLPParserABC):
 
             for sent in span.sents:
                 s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
+                self.identify_emerging_concepts(s, graph)
 
                 if len(s.text.strip()) > 0:
                     annotation = self.client.annotate(s.text.strip())
@@ -484,6 +511,8 @@ class CoreNLPParser(CoreNLPParserABC):
                 sent = nlp(sent)
                 sent = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
 
+                self.identify_emerging_concepts(sent, graph)
+
                 annotation = self.client.annotate(sent.text)
 
                 for sentence in annotation['sentences']:
@@ -524,9 +553,10 @@ class CoreNLPParser(CoreNLPParserABC):
             elif not verb and s[i].label().startswith('VB'):
                 # If the verb is not in its own VP then get the verb, will also have to get the object too.
                 verb = s[i]
-            elif not verb and s[i].label() == 'VP':
+            elif not verb and s[i].label() == 'VP' and subject is not None:
+                # TODO: Extract subject that is buried in leading prepositional phrase 
+                #  (e.g. 'By its very definition, an operator on a set can have values outside the set.')
                 # Verb phrases contain the verb plus the object.
-
                 verb = s[i]
 
                 # vp[0] is the pos tag and the verb of the VP

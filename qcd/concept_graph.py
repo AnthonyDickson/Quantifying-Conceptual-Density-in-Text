@@ -487,9 +487,6 @@ class ConceptGraph(GraphI):
         Nodes that are only referenced from one section represent 'a priori references',
         all other nodes represent 'emerging concepts'.
         """
-        self.a_priori_concepts = set()
-        self.emerging_concepts = set()
-
         for section in self.sections:
             for node in self.section_listings[section]:
                 referencing_sections = set()
