@@ -9,7 +9,7 @@ import plac
     files=plac.Annotation('The list of annotated XML files to merge.', type=str),
     output_path=plac.Annotation('Where to save the output file. '
                                 'If set to None, the merged file is printed to stdout.',
-                                type=str, kind='option'),
+                                type=str, kind='option', abbrev='o'),
 )
 def main(output_path: Optional[str] = None, *files):
     """Merge annotations from multiple XML files into a single XML file."""

@@ -3,18 +3,15 @@
     <section>
         <title>Closure (mathematics)</title>
         <text>A set is closed under an operation if performance of that operation on members of the set always produces
-            a member
-            of that set. For example, the positive integers are closed under addition, but not under subtraction: 1 - 2
-            is not a
-            positive integer even though both 1 and 2 are positive integers. Another example is the set containing only
-            zero, which
-            is closed under addition, subtraction and multiplication (because 0 + 0 = 0, 0 - 0 = 0, and 0 × 0 = 0).
+            a member of that set.
+            For example, the positive integers are closed under addition, but not under subtraction: 1 - 2 is not a
+            positive integer even though both 1 and 2 are positive integers.
+            Another example is the set containing only zero, which is closed under addition, subtraction and
+            multiplication (because 0 + 0 = 0, 0 - 0 = 0, and 0 × 0 = 0).
             Similarly, a set is said to be closed under a collection of operations if it is closed under each of the
-            operations
-            individually.
+            operations individually.
         </text>
         <annotations>
-            <concept tag="A PRIORI">A</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="EMERGING">closed</concept>
             <concept tag="A PRIORI">operation</concept>
@@ -34,10 +31,8 @@
             <concept tag="A PRIORI">integer</concept>
             <concept tag="A PRIORI">positive</concept>
             <concept tag="A PRIORI">integers</concept>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="A PRIORI">containing</concept>
-            <concept tag="A PRIORI">zero</concept>
             <concept tag="EMERGING">closed</concept>
             <concept tag="A PRIORI">addition</concept>
             <concept tag="A PRIORI">subtraction</concept>
@@ -53,13 +48,11 @@
             <concept tag="A PRIORI">performance of that operation on members of the set</concept>
             <concept tag="A PRIORI">produces</concept>
             <concept tag="A PRIORI">member of that set</concept>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">positive integers</concept>
             <concept tag="EMERGING">closed under addition</concept>
             <concept tag="A PRIORI">subtraction</concept>
             <concept tag="A PRIORI">positive integer</concept>
             <concept tag="A PRIORI">positive integers</concept>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">set containing only zero</concept>
             <concept tag="EMERGING">closed under addition , subtraction and multiplication</concept>
             <concept tag="A PRIORI">set</concept>
@@ -95,66 +88,28 @@
         </annotations>
     </section>
     <section>
-        <title>Contents</title>
-        <text>Basic properties
-            Closed sets
-            Examples
-            Closure operator
-            Binary relation closures
-            See also
-            Notes
-            References
-        </text>
-        <annotations>
-            <concept tag="EMERGING">Closed</concept>
-            <reference tag="BACKWARD">Closed</reference>
-            <concept tag="A PRIORI">sets</concept>
-            <concept tag="EMERGING">Closure</concept>
-            <reference tag="FORWARD">Closure</reference>
-            <concept tag="A PRIORI">operator</concept>
-            <concept tag="A PRIORI">Binary</concept>
-            <concept tag="A PRIORI">relation</concept>
-            <concept tag="EMERGING">closures</concept>
-            <reference tag="FORWARD">closures</reference>
-            <concept tag="EMERGING">Closed sets</concept>
-            <reference tag="FORWARD">Closed sets</reference>
-            <concept tag="EMERGING">Closure operator</concept>
-            <reference tag="FORWARD">Closure operator</reference>
-            <concept tag="EMERGING">Binary relation closures</concept>
-        </annotations>
-    </section>
-    <section>
         <title>Basic properties</title>
         <text>A set that is closed under an operation or collection of operations is said to satisfy a closure property.
-            Often a
-            closure property is introduced as an axiom, which is then usually called the axiom of closure. Modern
-            set-theoretic
-            definitions usually define operations as maps between sets, so adding closure to a structure as an axiom is
-            superfluous;
-            however in practice operations are often defined initially on a superset of the set in question and a
-            closure proof is
-            required to establish that the operation applied to pairs from that set only produces members of that set.
-            For example,
-            the set of even integers is closed under addition, but the set of odd integers is not.
+            Often a closure property is introduced as an axiom, which is then usually called the axiom of closure.
+            Modern set-theoretic definitions usually define operations as maps between sets, so adding closure to a
+            structure as an axiom is superfluous; however in practice operations are often defined initially on a
+            superset of the set in question and a closure proof is required to establish that the operation applied to
+            pairs from that set only produces members of that set.
+            For example, the set of even integers is closed under addition, but the set of odd integers is not.
             When a set S is not closed under some operations, one can usually find the smallest set containing S that is
             closed.
-            This smallest closed set is called the closure of S (with respect to these operations). For example, the
-            closure under
-            subtraction of the set of natural numbers, viewed as a subset of the real numbers, is the set of integers.
-            An important
-            example is that of topological closure. The notion of closure is generalized by Galois connection, and
-            further by
-            monads.
-            The set S must be a subset of a closed set in order for the closure operator to be defined. In the preceding
-            example, it is
-            important that the reals are closed under subtraction; in the domain of the natural numbers subtraction is
-            not always
-            defined.
-            The two uses of the word &quot;closure&quot; should not be confused. The former usage refers to the property
-            of being closed,
-            and the latter refers to the smallest closed set containing one that may not be closed. In short, the
-            closure of a set
-            satisfies a closure property.
+            This smallest closed set is called the closure of S (with respect to these operations).
+            For example, the closure under subtraction of the set of natural numbers, viewed as a subset of the real
+            numbers, is the set of integers.
+            An important example is that of topological closure. The notion of closure is generalized by Galois
+            connection, and further by monads.
+            The set S must be a subset of a closed set in order for the closure operator to be defined.
+            In the preceding example, it is important that the reals are closed under subtraction; in the domain of the
+            natural numbers subtraction is not always defined.
+            The two uses of the word &quot;closure&quot; should not be confused.
+            The former usage refers to the property of being closed, and the latter refers to the smallest closed set
+            containing one that may not be closed.
+            In short, the closure of a set satisfies a closure property.
         </text>
         <annotations>
             <concept tag="A PRIORI">set</concept>
@@ -170,9 +125,7 @@
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">property</concept>
-            <concept tag="A PRIORI">introduced</concept>
             <concept tag="A PRIORI">axiom</concept>
-            <concept tag="A PRIORI">called</concept>
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
@@ -183,7 +136,6 @@
             <concept tag="A PRIORI">operations</concept>
             <concept tag="A PRIORI">maps</concept>
             <concept tag="A PRIORI">sets</concept>
-            <concept tag="A PRIORI">adding</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">structure</concept>
@@ -193,12 +145,10 @@
             <concept tag="A PRIORI">defined</concept>
             <concept tag="A PRIORI">superset</concept>
             <concept tag="A PRIORI">set</concept>
-            <concept tag="A PRIORI">question</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">proof</concept>
             <concept tag="A PRIORI">required</concept>
-            <concept tag="A PRIORI">establish</concept>
             <concept tag="A PRIORI">operation</concept>
             <concept tag="A PRIORI">applied</concept>
             <concept tag="A PRIORI">pairs</concept>
@@ -238,14 +188,11 @@
             <concept tag="A PRIORI">set</concept>
             <concept tag="A PRIORI">natural</concept>
             <concept tag="A PRIORI">numbers</concept>
-            <concept tag="A PRIORI">viewed</concept>
             <concept tag="A PRIORI">subset</concept>
             <concept tag="A PRIORI">real</concept>
             <concept tag="A PRIORI">numbers</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="A PRIORI">integers</concept>
-            <concept tag="A PRIORI">important</concept>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">topological</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
@@ -264,9 +211,6 @@
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">operator</concept>
             <concept tag="A PRIORI">defined</concept>
-            <concept tag="A PRIORI">preceding</concept>
-            <concept tag="A PRIORI">example</concept>
-            <concept tag="A PRIORI">important</concept>
             <concept tag="A PRIORI">reals</concept>
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
@@ -276,19 +220,11 @@
             <concept tag="A PRIORI">numbers</concept>
             <concept tag="A PRIORI">subtraction</concept>
             <concept tag="A PRIORI">defined</concept>
-            <concept tag="A PRIORI">uses</concept>
-            <concept tag="A PRIORI">word</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
-            <concept tag="A PRIORI">confused</concept>
-            <concept tag="A PRIORI">former</concept>
-            <concept tag="A PRIORI">usage</concept>
-            <concept tag="A PRIORI">refers</concept>
             <concept tag="A PRIORI">property</concept>
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
-            <concept tag="A PRIORI">latter</concept>
-            <concept tag="A PRIORI">refers</concept>
             <concept tag="A PRIORI">smallest</concept>
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
@@ -310,11 +246,9 @@
             <concept tag="A PRIORI">satisfy</concept>
             <concept tag="EMERGING">closure property</concept>
             <concept tag="EMERGING">closure property</concept>
-            <concept tag="A PRIORI">introduced</concept>
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="EMERGING">axiom of closure</concept>
             <concept tag="A PRIORI">Modern set-theoretic definitions</concept>
-            <concept tag="A PRIORI">define</concept>
             <concept tag="A PRIORI">operations</concept>
             <concept tag="A PRIORI">maps between sets</concept>
             <concept tag="EMERGING">closure</concept>
@@ -322,11 +256,8 @@
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="A PRIORI">superfluous</concept>
             <concept tag="A PRIORI">operations</concept>
-            <concept tag="A PRIORI">defined</concept>
             <concept tag="A PRIORI">superset of the set in question</concept>
             <concept tag="EMERGING">closure proof</concept>
-            <concept tag="A PRIORI">required</concept>
-            <concept tag="A PRIORI">establish</concept>
             <concept tag="A PRIORI">operation applied to pairs from that set</concept>
             <concept tag="A PRIORI">produces</concept>
             <concept tag="A PRIORI">members of that set</concept>
@@ -336,7 +267,6 @@
             <concept tag="A PRIORI">set of odd integers</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="EMERGING">not closed under some operations</concept>
-            <concept tag="A PRIORI">one</concept>
             <concept tag="A PRIORI">find</concept>
             <concept tag="A PRIORI">smallest set containing</concept>
             <concept tag="EMERGING">closed</concept>
@@ -347,7 +277,6 @@
             <concept tag="EMERGING">closure under subtraction of the set of natural numbers</concept>
             <concept tag="A PRIORI">subset of the real numbers</concept>
             <concept tag="A PRIORI">set of integers</concept>
-            <concept tag="A PRIORI">important example</concept>
             <concept tag="EMERGING">topological closure</concept>
             <concept tag="EMERGING">notion of closure</concept>
             <concept tag="A PRIORI">generalized</concept>
@@ -359,21 +288,13 @@
             <concept tag="EMERGING">closure operator</concept>
             <reference tag="FORWARD">closure operator</reference>
             <concept tag="A PRIORI">defined</concept>
-            <concept tag="A PRIORI">preceding example</concept>
-            <concept tag="A PRIORI">important</concept>
             <concept tag="A PRIORI">reals</concept>
             <concept tag="EMERGING">closed under subtraction</concept>
             <concept tag="A PRIORI">domain of the natural numbers</concept>
             <concept tag="A PRIORI">subtraction</concept>
             <concept tag="A PRIORI">defined</concept>
-            <concept tag="A PRIORI">uses of the word</concept>
             <concept tag="EMERGING">closure</concept>
-            <concept tag="A PRIORI">confused</concept>
-            <concept tag="A PRIORI">former usage</concept>
-            <concept tag="A PRIORI">refers</concept>
             <concept tag="EMERGING">property of being closed</concept>
-            <concept tag="A PRIORI">latter</concept>
-            <concept tag="A PRIORI">refers</concept>
             <reference tag="FORWARD">closed set</reference>
             <concept tag="EMERGING">closed set containing one that may not be closed</concept>
             <concept tag="EMERGING">closure of a set</concept>
@@ -457,32 +378,26 @@
         <text>A set is closed under an operation if the operation returns a member of the set when evaluated on members
             of the set.
             Sometimes the requirement that the operation be valued in a set is explicitly stated, in which case it is
-            known as the
-            axiom of closure. For example, one may define a group as a set with a binary product operator obeying
-            several
-            axioms, including an axiom that the product of any two elements of the group is again an element. However
-            the
-            modern definition of an operation makes this axiom superfluous; an n-ary operation on S is just a subset of
-            Sn+1. By its
-            very definition, an operator on a set cannot have values outside the set.
-            Nevertheless, the closure property of an operator on a set still has some utility. Closure on a set does not
-            necessarily
-            imply closure on all subsets. Thus a subgroup of a group is a subset on which the binary product and the
-            unary
-            operation of inversion satisfy the closure axiom.
-            An operation of a different sort is that of finding the limit points of a subset of a topological space. A
-            set that is closed
-            under this operation is usually referred to as a closed set in the context of topology. Without any further
-            qualification,
-            the phrase usually means closed in this sense. Closed intervals like [1,2] = {x : 1 ≤ x ≤ 2} are closed in
-            this sense.
+            known as the axiom of closure.
+            For example, one may define a group as a set with a binary product operator obeying several axioms,
+            including an axiom that the product of any two elements of the group is again an element.
+            However the modern definition of an operation makes this axiom superfluous; an n-ary operation on S is just
+            a subset of Sn+1.
+            By its very definition, an operator on a set cannot have values outside the set.
+            Nevertheless, the closure property of an operator on a set still has some utility.
+            Closure on a set does not necessarily imply closure on all subsets.
+            Thus a subgroup of a group is a subset on which the binary product and the unary operation of inversion
+            satisfy the closure axiom.
+            An operation of a different sort is that of finding the limit points of a subset of a topological space.
+            A set that is closed under this operation is usually referred to as a closed set in the context of topology.
+            Without any further qualification, the phrase usually means closed in this sense.
+            Closed intervals like [1,2] = {x : 1 ≤ x ≤ 2} are closed in this sense.
             A subset of a partially ordered set is a downward closed set (also called a lower set) if for every element
-            of the
-            subset, all smaller elements are also in the subset. This applies for example to the real intervals (−∞, p)
-            and (−∞, p],
-            and for an ordinal number p represented as interval [0, p). Every downward closed set of ordinal numbers is
-            itself an
-            ordinal number. Upward closed sets (also called upper sets) are defined similarly.
+            of the subset, all smaller elements are also in the subset.
+            This applies for example to the real intervals (−∞, p) and (−∞, p], and for an ordinal number p represented
+            as interval [0, p).
+            Every downward closed set of ordinal numbers is itself an ordinal number.
+            Upward closed sets (also called upper sets) are defined similarly.
         </text>
         <annotations>
             <concept tag="A PRIORI">set</concept>
@@ -496,17 +411,12 @@
             <concept tag="A PRIORI">evaluated</concept>
             <concept tag="A PRIORI">members</concept>
             <concept tag="A PRIORI">set</concept>
-            <concept tag="A PRIORI">requirement</concept>
             <concept tag="A PRIORI">operation</concept>
             <concept tag="A PRIORI">valued</concept>
             <concept tag="A PRIORI">set</concept>
-            <concept tag="A PRIORI">explicitly</concept>
-            <concept tag="A PRIORI">stated</concept>
-            <concept tag="A PRIORI">known</concept>
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">one</concept>
             <concept tag="A PRIORI">define</concept>
             <concept tag="EMERGING">group</concept>
@@ -516,7 +426,6 @@
             <concept tag="A PRIORI">operator</concept>
             <concept tag="A PRIORI">obeying</concept>
             <concept tag="A PRIORI">axioms</concept>
-            <concept tag="A PRIORI">including</concept>
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="A PRIORI">product</concept>
             <concept tag="A PRIORI">elements</concept>
@@ -529,7 +438,6 @@
             <concept tag="A PRIORI">superfluous</concept>
             <concept tag="A PRIORI">n-ary operation</concept>
             <concept tag="A PRIORI">subset</concept>
-            <concept tag="A PRIORI">definition</concept>
             <concept tag="A PRIORI">operator</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="A PRIORI">values</concept>
@@ -544,8 +452,6 @@
             <concept tag="EMERGING">Closure</concept>
             <reference tag="FORWARD">Closure</reference>
             <concept tag="A PRIORI">set</concept>
-            <concept tag="A PRIORI">necessarily</concept>
-            <concept tag="A PRIORI">imply</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">subsets</concept>
@@ -562,8 +468,6 @@
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="A PRIORI">operation</concept>
-            <concept tag="A PRIORI">different</concept>
-            <concept tag="A PRIORI">sort</concept>
             <concept tag="A PRIORI">finding</concept>
             <concept tag="A PRIORI">limit</concept>
             <concept tag="A PRIORI">points</concept>
@@ -574,25 +478,17 @@
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
             <concept tag="A PRIORI">operation</concept>
-            <concept tag="A PRIORI">referred</concept>
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
             <concept tag="A PRIORI">set</concept>
-            <concept tag="A PRIORI">context</concept>
             <concept tag="A PRIORI">topology</concept>
-            <concept tag="A PRIORI">further</concept>
-            <concept tag="A PRIORI">qualification</concept>
-            <concept tag="A PRIORI">phrase</concept>
-            <concept tag="A PRIORI">means</concept>
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
-            <concept tag="A PRIORI">sense</concept>
             <concept tag="A PRIORI">Closed</concept>
             <reference tag="BACKWARD">Closed</reference>
             <concept tag="A PRIORI">intervals</concept>
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
-            <concept tag="A PRIORI">sense</concept>
             <concept tag="A PRIORI">subset</concept>
             <concept tag="A PRIORI">partially</concept>
             <concept tag="A PRIORI">ordered</concept>
@@ -608,12 +504,10 @@
             <concept tag="A PRIORI">smaller</concept>
             <concept tag="A PRIORI">elements</concept>
             <concept tag="A PRIORI">subset</concept>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">real</concept>
             <concept tag="A PRIORI">intervals</concept>
             <concept tag="A PRIORI">ordinal</concept>
             <concept tag="A PRIORI">number</concept>
-            <concept tag="A PRIORI">represented</concept>
             <concept tag="A PRIORI">interval</concept>
             <concept tag="A PRIORI">downward</concept>
             <concept tag="EMERGING">closed</concept>
@@ -627,11 +521,8 @@
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
             <concept tag="A PRIORI">sets</concept>
-            <concept tag="A PRIORI">called</concept>
             <concept tag="A PRIORI">upper</concept>
             <concept tag="A PRIORI">sets</concept>
-            <concept tag="A PRIORI">defined</concept>
-            <concept tag="A PRIORI">similarly .</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="EMERGING">closed under an operation</concept>
             <reference tag="BACKWARD">closed under an operation</reference>
@@ -640,27 +531,20 @@
             <concept tag="A PRIORI">member of the set</concept>
             <concept tag="A PRIORI">evaluated</concept>
             <concept tag="A PRIORI">members of the set</concept>
-            <concept tag="A PRIORI">requirement</concept>
             <concept tag="A PRIORI">operation</concept>
             <concept tag="A PRIORI">valued in a set</concept>
-            <concept tag="A PRIORI">explicitly stated</concept>
-            <concept tag="A PRIORI">known</concept>
             <concept tag="EMERGING">axiom of closure</concept>
             <reference tag="BACKWARD">axiom of closure</reference>
-            <concept tag="A PRIORI">define</concept>
             <concept tag="EMERGING">group</concept>
             <concept tag="A PRIORI">set with a binary product operator obeying several axioms</concept>
-            <concept tag="A PRIORI">including</concept>
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="EMERGING">product of any two elements of the group</concept>
             <concept tag="A PRIORI">element</concept>
-            <concept tag="A PRIORI">modern definition</concept>
-            <concept tag="A PRIORI">operation</concept>
+            <concept tag="A PRIORI">modern definition of an operation</concept>
             <concept tag="A PRIORI">axiom</concept>
             <concept tag="A PRIORI">superfluous</concept>
             <concept tag="A PRIORI">an n-ary operation on S</concept>
             <concept tag="A PRIORI">subset of Sn+1</concept>
-            <concept tag="A PRIORI">definition</concept>
             <concept tag="A PRIORI">operator on a set</concept>
             <concept tag="A PRIORI">values</concept>
             <concept tag="A PRIORI">outside the set</concept>
@@ -771,13 +655,12 @@
     </section>
     <section>
         <title>Examples</title>
-        <text>In topology and related branches, the relevant operation is taking limits. The topological closure of a
-            set is the
-            corresponding closure operator. The Kuratowski closure axioms characterize this operator.
+        <text>In topology and related branches, the relevant operation is taking limits.
+            The topological closure of a set is the corresponding closure operator.
+            The Kuratowski closure axioms characterize this operator.
             In linear algebra, the linear span of a set X of vectors is the closure of that set; it is the smallest
-            subset of the
-            vector space that includes X and is closed under the operation of linear combination. This subset is a
-            subspace.
+            subset of the vector space that includes X and is closed under the operation of linear combination.
+            This subset is a subspace.
             In matroid theory, the closure of X is the largest superset of X that has the same rank as X.
             In set theory, the transitive closure of a set.
             In set theory, the transitive closure of a binary relation.
@@ -785,13 +668,11 @@
             In commutative algebra, closure operations for ideals, as integral closure and tight closure.
             In geometry, the convex hull of a set S of points is the smallest convex set of which S is a subset.
             In formal languages, the Kleene closure of a language can be described as the set of strings that can be
-            made by
-            concatenating zero or more strings from that language.
+            made by concatenating zero or more strings from that language.
             In group theory, the conjugate closure or normal closure of a set of group elements is the smallest normal
             subgroup containing the set.
             In mathematical analysis and in probability theory, the closure of a collection of subsets of X under
-            countably
-            many set operations is called the σ-algebra generated by the collection.
+            countably many set operations is called the σ-algebra generated by the collection.
         </text>
         <annotations>
             <concept tag="A PRIORI">topology</concept>
@@ -812,7 +693,6 @@
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">axioms</concept>
-            <concept tag="A PRIORI">characterize</concept>
             <concept tag="A PRIORI">operator</concept>
             <concept tag="A PRIORI">linear</concept>
             <concept tag="A PRIORI">algebra</concept>
@@ -887,7 +767,6 @@
             <concept tag="EMERGING">closure</concept>
             <reference tag="FORWARD">closure</reference>
             <concept tag="A PRIORI">language</concept>
-            <concept tag="A PRIORI">described</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="A PRIORI">strings</concept>
             <concept tag="A PRIORI">concatenating</concept>
@@ -966,7 +845,6 @@
             <concept tag="A PRIORI">smallest convex set of which S is a subset</concept>
             <concept tag="A PRIORI">formal languages</concept>
             <concept tag="EMERGING">Kleene closure of a language</concept>
-            <concept tag="A PRIORI">described</concept>
             <concept tag="A PRIORI">set of strings</concept>
             <concept tag="A PRIORI">concatenating zero or more strings from that language</concept>
             <concept tag="EMERGING">group theory</concept>
@@ -1022,31 +900,25 @@
     <section>
         <title>Closure operator</title>
         <text>Given an operation on a set X, one can define the closure C(S) of a subset S of X to be the smallest
-            subset closed under
-            that operation that contains S as a subset, if any such subsets exist. Consequently, C(S) is the
-            intersection of all closed
-            sets containing S. For example, the closure of a subset of a group is the subgroup generated by that set.
-            The closure of sets with respect to some operation defines a closure operator on the subsets of X. The
-            closed sets
-            can be determined from the closure operator; a set is closed if it is equal to its own closure. Typical
-            structural
-            properties of all closure operations are: [1]
+            subset closed under that operation that contains S as a subset, if any such subsets exist.
+            Consequently, C(S) is the intersection of all closed sets containing S.
+            For example, the closure of a subset of a group is the subgroup generated by that set.
+            The closure of sets with respect to some operation defines a closure operator on the subsets of X.
+            The closed sets can be determined from the closure operator; a set is closed if it is equal to its own
+            closure.
+            Typical structural properties of all closure operations are: [1]
             The closure is increasing or extensive: the closure of an object contains the object.
             The closure is idempotent: the closure of the closure equals the closure.
             The closure is monotone, that is, if X is contained in Y, then also C(X) is contained in C(Y).
             An object that is its own closure is called closed. By idempotency, an object is closed if and only if it is
-            the closure of
-            some object.
-            These three properties define an abstract closure operator. Typically, an abstract closure acts on the class
-            of all
-            subsets of a set.
+            the closure of some object.
+            These three properties define an abstract closure operator.
+            Typically, an abstract closure acts on the class of all subsets of a set.
             If X is contained in a set closed under the operation then every subset of X has a closure.
         </text>
         <annotations>
             <concept tag="A PRIORI">operation</concept>
             <concept tag="A PRIORI">set</concept>
-            <concept tag="A PRIORI">one</concept>
-            <concept tag="A PRIORI">define</concept>
             <concept tag="EMERGING">closure</concept>
             <concept tag="A PRIORI">subset</concept>
             <concept tag="A PRIORI">smallest</concept>
@@ -1074,14 +946,12 @@
             <concept tag="EMERGING">closure</concept>
             <concept tag="A PRIORI">sets</concept>
             <concept tag="A PRIORI">operation</concept>
-            <concept tag="A PRIORI">defines</concept>
             <concept tag="EMERGING">closure</concept>
             <concept tag="A PRIORI">operator</concept>
             <concept tag="A PRIORI">subsets</concept>
             <concept tag="EMERGING">closed</concept>
             <reference tag="BACKWARD">closed</reference>
             <concept tag="A PRIORI">sets</concept>
-            <concept tag="A PRIORI">determined</concept>
             <concept tag="EMERGING">closure</concept>
             <concept tag="A PRIORI">operator</concept>
             <concept tag="A PRIORI">set</concept>
@@ -1141,22 +1011,18 @@
             <concept tag="EMERGING">closure</concept>
             <concept tag="A PRIORI">operation on a set X</concept>
             <concept tag="A PRIORI">one</concept>
-            <concept tag="A PRIORI">define</concept>
             <concept tag="EMERGING">closure C ( S ) of a subset S of X</concept>
             <concept tag="EMERGING">smallest subset closed under that operation that contains S as a subset</concept>
             <concept tag="A PRIORI">subsets</concept>
             <concept tag="A PRIORI">exist</concept>
             <concept tag="EMERGING">intersection of all closed sets containing S</concept>
             <reference tag="BACKWARD">closed sets</reference>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="EMERGING">closure of a subset of a group</concept>
             <concept tag="EMERGING">subgroup generated by that set</concept>
             <concept tag="EMERGING">closure of sets with respect to some operation</concept>
-            <concept tag="A PRIORI">defines</concept>
             <concept tag="EMERGING">closure operator on the subsets of X</concept>
             <concept tag="EMERGING">closed sets</concept>
             <reference tag="BACKWARD">closed sets</reference>
-            <concept tag="A PRIORI">determined</concept>
             <concept tag="EMERGING">closure operator</concept>
             <concept tag="A PRIORI">set</concept>
             <concept tag="EMERGING">closed</concept>
@@ -1262,57 +1128,47 @@
     </section>
     <section>
         <title>Binary relation closures</title>
-        <text>Consider first homogeneous relations R ⊆ A × A. If a relation S satisfies aSb ⇒ bSa, then it is a
-            symmetric relation. An
-            arbitrary homogeneous relation R may not be symmetric but it is always contained in some symmetric relation:
-            R ⊆ S.
+        <text>Consider first homogeneous relations R ⊆ A × A.
+            If a relation S satisfies aSb ⇒ bSa, then it is a symmetric relation.
+            An arbitrary homogeneous relation R may not be symmetric but it is always contained in some symmetric
+            relation: R ⊆ S.
             The operation of finding the smallest such S corresponds to a closure operator called symmetric closure.
             A transitive relation T satisfies aTb ∧ bTc ⇒ aTc. An arbitrary homogeneous relation R may not be transitive
-            but it is
-            always contained in some transitive relation: R ⊆ T. The operation of finding the smallest such T
-            corresponds to a
-            closure operator called transitive closure.
+            but it is always contained in some transitive relation: R ⊆ T.
+            The operation of finding the smallest such T corresponds to a closure operator called transitive closure.
             Among heterogeneous relations there are properties of difunctionality and contact which lead to difunctional
-            closure and contact closure.[2] The presence of these closure operators in binary relations leads to
-            topology since
-            open-set axioms may be replaced by Kuratowski closure axioms. Thus each property P, symmetry, transitivity,
-            difunctionality, or contact corresponds to a relational topology.[3]
+            closure and contact closure.[2]
+            The presence of these closure operators in binary relations leads to topology since open-set axioms may be
+            replaced by Kuratowski closure axioms.
+            Thus each property P, symmetry, transitivity, difunctionality, or contact corresponds to a relational
+            topology.[3]
             In the theory of rewriting systems, one often uses more wordy notions such as the reflexive transitive
-            closure R*—
-            the smallest preorder containing R, or the reflexive transitive symmetric closure R≡—the smallest
-            equivalence
-            relation containing R, and therefore also known as the equivalence closure. When considering a particular
-            term
-            algebra, an equivalence relation that is compatible with all operations of the algebra [note 1] is called a
-            congruence
-            relation. The congruence closure of R is defined as the smallest congruence relation containing R.
-            For arbitrary P and R, the P closure of R need not exist. In the above examples, these exist because
-            reflexivity,
-            transitivity and symmetry are closed under arbitrary intersections. In such cases, the P closure can be
-            directly defined
-            as the intersection of all sets with property P containing R.[4]
-            Some important particular closures can be constructively obtained as follows:
-            clref(R) = R ∪ { ⟨x,x⟩ : x ∈ S } is the reflexive closure of R,
-            clsym(R) = R ∪ { ⟨y,x⟩ : ⟨x,y⟩ ∈ R } is its symmetric closure,
-            cltrn(R) = R ∪ { ⟨x1,xn⟩ : n &gt;1 ∧ ⟨x1,x2⟩, ..., ⟨xn-1,xn⟩ ∈ R } is its transitive closure,
-            clemb,Σ(R) = R ∪ { ⟨f(x1,…,xi-1,xi,xi+1,…,xn), f(x1,…,xi-1,y,xi+1,…,xn)⟩ : ⟨xi,y⟩ ∈ R ∧ f ∈ Σ n-ary ∧ 1 ≤ i
-            ≤ n ∧ x1,...,xn ∈
-            S } is its embedding closure with respect to a given set Σ of operations on S, each with a fixed arity.
+            closure R*— the smallest preorder containing R, or the reflexive transitive symmetric closure R≡—the
+            smallest equivalence relation containing R, and therefore also known as the equivalence closure.
+            When considering a particular term algebra, an equivalence relation that is compatible with all operations
+            of the algebra [note 1] is called a congruence relation.
+            The congruence closure of R is defined as the smallest congruence relation containing R.
+            For arbitrary P and R, the P closure of R need not exist.
+            In the above examples, these exist because reflexivity, transitivity and symmetry are closed under arbitrary
+            intersections.
+            In such cases, the P closure can be directly defined as the intersection of all sets with property P
+            containing R.[4]
+            Some important particular closures can be constructively obtained as follows: clref(R) = R ∪ { ⟨x,x⟩ : x ∈ S
+            } is the reflexive closure of R, clsym(R) = R ∪ { ⟨y,x⟩ : ⟨x,y⟩ ∈ R } is its symmetric closure, cltrn(R) = R
+            ∪ { ⟨x1,xn⟩ : n &gt;1 ∧ ⟨x1,x2⟩, ..., ⟨xn-1,xn⟩ ∈ R } is its transitive closure, clemb,Σ(R) = R ∪ {
+            ⟨f(x1,…,xi-1,xi,xi+1,…,xn), f(x1,…,xi-1,y,xi+1,…,xn)⟩ : ⟨xi,y⟩ ∈ R ∧ f ∈ Σ n-ary ∧ 1 ≤ i ≤ n ∧ x1,...,xn ∈ S
+            } is its embedding closure with respect to a given set Σ of operations on S, each with a fixed arity.
             The relation R is said to have closure under some clxxx, if R = clxxx(R); for example R is called symmetric
-            if R =
-            clsym(R).
+            if R = clsym(R).
             Any of these four closures preserves symmetry, i.e., if R is symmetric, so is any clxxx(R). [note 2]
-            Similarly, all four
-            preserve reflexivity. Moreover, cltrn preserves closure under clemb,Σ for arbitrary Σ. As a consequence, the
-            equivalence
-            closure of an arbitrary binary relation R can be obtained as cltrn(clsym(clref(R))), and the congruence
-            closure with
-            respect to some Σ can be obtained as cltrn(clemb,Σ(clsym(clref(R)))). In the latter case, the nesting order
-            does matter; e.g.
-            if S is the set of terms over Σ = { a, b, c, f } and R = { ⟨a,b⟩, ⟨f(b),c⟩ }, then the pair ⟨f(a),c⟩ is
-            contained in the
-            congruence closure cltrn(clemb,Σ(clsym(clref(R)))) of R, but not in the relation
-            clemb,Σ(cltrn(clsym(clref(R)))).
+            Similarly, all four preserve reflexivity.
+            Moreover, cltrn preserves closure under clemb,Σ for arbitrary Σ.
+            As a consequence, the equivalence closure of an arbitrary binary relation R can be obtained as
+            cltrn(clsym(clref(R))), and the congruence closure with respect to some Σ can be obtained as
+            cltrn(clemb,Σ(clsym(clref(R)))).
+            In the latter case, the nesting order does matter; e.g. if S is the set of terms over Σ = { a, b, c, f } and
+            R = { ⟨a,b⟩, ⟨f(b),c⟩ }, then the pair ⟨f(a),c⟩ is contained in the congruence closure
+            cltrn(clemb,Σ(clsym(clref(R)))) of R, but not in the relation clemb,Σ(cltrn(clsym(clref(R)))).
         </text>
         <annotations>
             <concept tag="A PRIORI">first</concept>
@@ -1332,7 +1188,6 @@
             <concept tag="A PRIORI">operation</concept>
             <concept tag="A PRIORI">finding</concept>
             <concept tag="A PRIORI">smallest</concept>
-            <concept tag="A PRIORI">corresponds</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
             <concept tag="A PRIORI">operator</concept>
@@ -1370,7 +1225,6 @@
             <concept tag="A PRIORI">contact</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
-            <concept tag="A PRIORI">presence</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
             <concept tag="A PRIORI">operators</concept>
@@ -1388,16 +1242,11 @@
             <concept tag="A PRIORI">transitivity</concept>
             <concept tag="A PRIORI">difunctionality</concept>
             <concept tag="A PRIORI">contact</concept>
-            <concept tag="A PRIORI">corresponds</concept>
             <concept tag="A PRIORI">relational</concept>
             <concept tag="A PRIORI">topology</concept>
             <concept tag="A PRIORI">theory</concept>
             <concept tag="A PRIORI">rewriting</concept>
             <concept tag="A PRIORI">systems</concept>
-            <concept tag="A PRIORI">one</concept>
-            <concept tag="A PRIORI">uses</concept>
-            <concept tag="A PRIORI">wordy</concept>
-            <concept tag="A PRIORI">notions</concept>
             <concept tag="A PRIORI">reflexive</concept>
             <concept tag="A PRIORI">transitive</concept>
             <concept tag="EMERGING">closure</concept>
@@ -1414,17 +1263,14 @@
             <concept tag="A PRIORI">equivalence</concept>
             <concept tag="A PRIORI">relation</concept>
             <concept tag="A PRIORI">containing</concept>
-            <concept tag="A PRIORI">known</concept>
             <concept tag="A PRIORI">equivalence</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
-            <concept tag="A PRIORI">considering</concept>
             <concept tag="A PRIORI">particular</concept>
             <concept tag="A PRIORI">term</concept>
             <concept tag="A PRIORI">algebra</concept>
             <concept tag="A PRIORI">equivalence</concept>
             <concept tag="A PRIORI">relation</concept>
-            <concept tag="A PRIORI">compatible</concept>
             <concept tag="A PRIORI">operations</concept>
             <concept tag="A PRIORI">algebra</concept>
             <concept tag="A PRIORI">congruence</concept>
@@ -1432,17 +1278,12 @@
             <concept tag="A PRIORI">congruence</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
-            <concept tag="A PRIORI">defined</concept>
             <concept tag="A PRIORI">smallest</concept>
             <concept tag="A PRIORI">congruence</concept>
             <concept tag="A PRIORI">relation</concept>
             <concept tag="A PRIORI">containing</concept>
-            <concept tag="A PRIORI">arbitrary</concept>
-            <concept tag="A PRIORI">closure</concept>
+            <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
-            <concept tag="A PRIORI">exist</concept>
-            <concept tag="A PRIORI">examples</concept>
-            <concept tag="A PRIORI">exist</concept>
             <concept tag="A PRIORI">reflexivity</concept>
             <concept tag="A PRIORI">transitivity</concept>
             <concept tag="A PRIORI">symmetry</concept>
@@ -1450,11 +1291,8 @@
             <reference tag="BACKWARD">closed</reference>
             <concept tag="A PRIORI">arbitrary</concept>
             <concept tag="A PRIORI">intersections</concept>
-            <concept tag="A PRIORI">cases</concept>
-            <concept tag="A PRIORI">closure</concept>
+            <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
-            <concept tag="A PRIORI">directly</concept>
-            <concept tag="A PRIORI">defined</concept>
             <concept tag="A PRIORI">intersection</concept>
             <concept tag="A PRIORI">sets</concept>
             <concept tag="A PRIORI">property</concept>
@@ -1463,8 +1301,6 @@
             <concept tag="A PRIORI">particular</concept>
             <concept tag="EMERGING">closures</concept>
             <reference tag="BACKWARD">closures</reference>
-            <concept tag="A PRIORI">constructively</concept>
-            <concept tag="A PRIORI">obtained</concept>
             <concept tag="A PRIORI">reflexive</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
@@ -1474,6 +1310,7 @@
             <concept tag="A PRIORI">transitive</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
+            <concept tag="A PRIORI">n-ary</concept>
             <concept tag="A PRIORI">embedding</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
@@ -1484,7 +1321,6 @@
             <concept tag="A PRIORI">relation</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">symmetric</concept>
             <concept tag="EMERGING">closures</concept>
             <reference tag="BACKWARD">closures</reference>
@@ -1504,13 +1340,9 @@
             <concept tag="A PRIORI">arbitrary</concept>
             <concept tag="A PRIORI">binary</concept>
             <concept tag="A PRIORI">relation</concept>
-            <concept tag="A PRIORI">obtained</concept>
             <concept tag="A PRIORI">congruence</concept>
             <concept tag="EMERGING">closure</concept>
             <reference tag="BACKWARD">closure</reference>
-            <concept tag="A PRIORI">obtained</concept>
-            <concept tag="A PRIORI">latter</concept>
-            <concept tag="A PRIORI">case</concept>
             <concept tag="A PRIORI">nesting</concept>
             <concept tag="A PRIORI">order</concept>
             <concept tag="A PRIORI">set</concept>
@@ -1556,34 +1388,26 @@
             <concept tag="A PRIORI">property P , symmetry , transitivity , difunctionality , or contact</concept>
             <concept tag="A PRIORI">relational topology</concept>
             <concept tag="A PRIORI">theory of rewriting systems</concept>
-            <concept tag="A PRIORI">one</concept>
-            <concept tag="A PRIORI">more wordy notions</concept>
             <concept tag="EMERGING">reflexive transitive closure R*—</concept>
             <concept tag="A PRIORI">smallest preorder containing R</concept>
             <concept tag="EMERGING">reflexive transitive symmetric closure</concept>
             <concept tag="A PRIORI">smallest equivalence relation containing R</concept>
-            <concept tag="A PRIORI">known</concept>
             <concept tag="EMERGING">equivalence closure</concept>
             <concept tag="A PRIORI">particular term algebra</concept>
             <concept tag="A PRIORI">equivalence relation</concept>
             <concept tag="A PRIORI">compatible with all operations of the algebra</concept>
             <concept tag="A PRIORI">congruence relation</concept>
             <concept tag="EMERGING">congruence closure of R</concept>
-            <concept tag="A PRIORI">defined</concept>
             <concept tag="A PRIORI">smallest congruence relation containing R</concept>
             <concept tag="A PRIORI">arbitrary P and R</concept>
             <concept tag="A PRIORI">P closure of R</concept>
-            <concept tag="A PRIORI">exist</concept>
-            <concept tag="A PRIORI">exist</concept>
             <concept tag="A PRIORI">reflexivity</concept>
             <concept tag="A PRIORI">transitivity</concept>
             <concept tag="A PRIORI">symmetry</concept>
             <concept tag="EMERGING">closed under arbitrary intersections</concept>
             <concept tag="EMERGING">P closure</concept>
-            <concept tag="A PRIORI">defined</concept>
             <concept tag="A PRIORI">intersection of all sets with property P containing R</concept>
             <concept tag="EMERGING">important particular closures</concept>
-            <concept tag="A PRIORI">constructively obtained</concept>
             <concept tag="EMERGING">reflexive closure</concept>
             <concept tag="EMERGING">symmetric closure</concept>
             <concept tag="EMERGING">transitive closure</concept>
@@ -1592,7 +1416,6 @@
             <concept tag="A PRIORI">fixed arity</concept>
             <concept tag="A PRIORI">relation R</concept>
             <concept tag="EMERGING">closure under some clxxx</concept>
-            <concept tag="A PRIORI">example</concept>
             <concept tag="A PRIORI">symmetric</concept>
             <concept tag="EMERGING">closures</concept>
             <concept tag="A PRIORI">preserves</concept>
@@ -1602,10 +1425,8 @@
             <concept tag="EMERGING">reflexivity</concept>
             <concept tag="A PRIORI">preserves</concept>
             <concept tag="EMERGING">closure under clemb</concept>
-            <concept tag="A PRIORI">arbitrary</concept>
             <concept tag="EMERGING">equivalence closure</concept>
             <concept tag="A PRIORI">arbitrary binary relation R</concept>
-            <concept tag="A PRIORI">obtained</concept>
             <concept tag="EMERGING">congruence closure</concept>
             <concept tag="A PRIORI">obtained</concept>
             <concept tag="A PRIORI">latter case</concept>
@@ -1666,6 +1487,21 @@
             <relation tag="ENTITY">P closure</relation>
             <relation tag="RELATION">can be directly defined as</relation>
             <relation tag="ENTITY">intersection of all sets with property P containing R</relation>
+            <relation tag="ENTITY">: clref ( R ) = R ∪ { ⟨x , x⟩ : x ∈ S }</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">reflexive closure of R</relation>
+            <relation tag="ENTITY">clsym ( R ) = R ∪ { ⟨y , x⟩ : ⟨x , y⟩ ∈ R }</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">symmetric closure</relation>
+            <relation tag="ENTITY">cltrn ( R ) = R ∪ { ⟨x1 , xn⟩ : n &gt;1 ∧ ⟨x1 , x2⟩ , . . . , ⟨xn-1 , xn⟩ ∈ R }
+            </relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">transitive closure</relation>
+            <relation tag="ENTITY">clemb , Σ ( R ) = R ∪ { ⟨f ( x1 , … , xi-1 , xi , xi+1 , … , xn ) , f ( x1 , … , xi-1
+                , y , xi+1 , … , xn ) ⟩ : ⟨xi , y⟩ ∈ R ∧ f ∈ Σ n-ary ∧ 1 ≤ i ≤ n ∧ x1 , . . . , xn ∈ S }
+            </relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">embedding closure with respect to a given set Σ of operations on S</relation>
             <relation tag="ENTITY">relation R</relation>
             <relation tag="RELATION">is said to have</relation>
             <relation tag="ENTITY">closure under some clxxx</relation>
@@ -1678,6 +1514,22 @@
             <relation tag="ENTITY">all four</relation>
             <relation tag="RELATION">preserve</relation>
             <relation tag="ENTITY">reflexivity</relation>
+            <relation tag="ENTITY">cltrn</relation>
+            <relation tag="RELATION">preserves closure under</relation>
+            <relation tag="ENTITY">clemb</relation>
+            <relation tag="ENTITY">equivalence closure of an arbitrary binary relation R</relation>
+            <relation tag="RELATION">can be obtained as</relation>
+            <relation tag="ENTITY">cltrn ( clsym ( clref ( R ) ) )</relation>
+            <relation tag="ENTITY">congruence closure with respect to some Σ</relation>
+            <relation tag="RELATION">can be obtained as</relation>
+            <relation tag="ENTITY">cltrn ( clemb , Σ ( clsym ( clref ( R ) ) ) )</relation>
+            <relation tag="ENTITY">S</relation>
+            <relation tag="RELATION">is</relation>
+            <relation tag="ENTITY">set of terms over Σ = { a , b , c , f } and R = { ⟨a , b⟩ , ⟨f ( b ) , c⟩ }
+            </relation>
+            <relation tag="ENTITY">pair ⟨f ( a ) , c⟩</relation>
+            <relation tag="RELATION">is contained in</relation>
+            <relation tag="ENTITY">congruence closure cltrn ( clemb , Σ ( clsym ( clref ( R ) ) ) ) of R</relation>
         </annotations>
     </section>
 </document>

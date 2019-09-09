@@ -87,7 +87,7 @@ def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, flo
 @plac.annotations(
     filename=plac.Annotation('The annotated file to evaluate the model with.'),
     output_dir=plac.Annotation('The directory in which the calculated metrics should be saved. '
-                               'By default metrics are not saved.')
+                               'By default metrics are not saved.', type=str, kind='option', abbrev='o')
 )
 def main(filename: str, output_dir: Optional[str] = None):
     pd.set_option('precision', 2)

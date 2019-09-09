@@ -560,7 +560,7 @@ class CoreNLPParser(CoreNLPParserABC):
                 # If the verb is not in its own VP then get the verb, will also have to get the object too.
                 verb = s[i]
             elif not verb and s[i].label() == 'VP' and subject is not None:
-                # TODO: Extract subject that is buried in leading prepositional phrase 
+                # TODO: Extract subject that is buried in leading prepositional phrase
                 #  (e.g. 'By its very definition, an operator on a set can have values outside the set.')
                 # Verb phrases contain the verb plus the object.
                 verb = s[i]
