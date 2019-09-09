@@ -157,7 +157,10 @@ class ParserABC(ParserI, ABC):
             if token.lemma_ == 'be':
                 concept_tokens = filter(lambda left: left.dep_.endswith('subj'), token.lefts)
             elif token.lemma_ == 'define':
-                concept_tokens = filter(lambda right: right.dep_ == 'dobj', token.rights)
+                try:
+                    concept_tokens = list(filter(lambda left: left.dep_.endswith('subjpass'), token.lefts))
+                except StopIteration:
+                    concept_tokens = list(filter(lambda right: right.dep_ == 'dobj', token.rights))
 
             tokens = []
 

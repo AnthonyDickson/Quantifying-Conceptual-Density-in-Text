@@ -37,7 +37,10 @@ def spacy_strategy(emerging_concepts, text):
             if token.lemma_ == 'be':
                 concept_tokens = list(filter(lambda left: left.dep_.endswith('subj'), token.lefts))
             elif token.lemma_ == 'define':
-                concept_tokens = list(filter(lambda right: right.dep_ == 'dobj', token.rights))
+                try:
+                    concept_tokens = list(filter(lambda left: left.dep_.endswith('subjpass'), token.lefts))
+                except StopIteration:
+                    concept_tokens = list(filter(lambda right: right.dep_ == 'dobj', token.rights))
 
             add_concept(concept_tokens, emerging_concepts)
 
