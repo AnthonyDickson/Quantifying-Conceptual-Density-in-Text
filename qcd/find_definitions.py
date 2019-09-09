@@ -35,12 +35,15 @@ def spacy_strategy(emerging_concepts, text):
     for sent in doc.sents:
         for token in filter(lambda token: token.dep_ == 'ROOT', sent):
             if token.lemma_ == 'be':
-                concept_tokens = list(filter(lambda left: left.dep_.endswith('subj'), token.lefts))
+                if len(list(filter(lambda right: right.dep_ == 'attr', token.rights))) > 0:
+                    concept_tokens = filter(lambda left: left.dep_.endswith('subj'), token.lefts)
             elif token.lemma_ == 'define':
                 try:
                     concept_tokens = list(filter(lambda left: left.dep_.endswith('subjpass'), token.lefts))
                 except StopIteration:
                     concept_tokens = list(filter(lambda right: right.dep_ == 'dobj', token.rights))
+            elif token.lemma_ == 'call':
+                concept_tokens = list(filter(lambda right: right.dep_ == 'oprd', token.rights))
 
             add_concept(concept_tokens, emerging_concepts)
 
