@@ -192,7 +192,7 @@ class ConceptGraph(GraphI):
         # List of sections used to record order that sections are introduced.
         self.sections: List[Section] = list()
         # Maps nodes to the frequency they appear in each section.
-        self.section_counts: Dict[Node, Dict[Section, int]] = defaultdict(lambda: defaultdict(int))
+        self.node_frequency_by_section: Dict[Node, Dict[Section, int]] = defaultdict(lambda: defaultdict(int))
 
         # Maps tail to head nodes
         self.adjacency_list: Dict[Node, Set[Node]] = defaultdict(set)
@@ -303,21 +303,19 @@ class ConceptGraph(GraphI):
         self.update_section_count(node, section)
 
     def add_edge(self, tail: Node = None, head: Node = None, edge_type: Type[DirectedEdge] = DirectedEdge,
-                 edge: DirectedEdge = None) -> Optional[DirectedEdge]:
+                 edge: DirectedEdge = None, allow_self_reference: bool = False) -> Optional[DirectedEdge]:
         """Add an edge between two nodes to the graph.
 
         :param tail: The node that the edge originates from.
         :param head: The node that the edge points to.
         :param edge_type: The type of edge to be created.
+        :param edge: The edge object to add to the graph.
+        :param allow_self_reference: Whether or not to allow edges to point to themselves.
         :return: The edge instance, possibly None.
         """
         if edge is None:
             assert tail is not None and head is not None, \
                 'The parameters `head` and `tail` must both be set if no edge instance is given.'
-
-            # Ignore spurious edges, a concept cannot be defined directly in terms of itself
-            if tail == head:
-                return None
 
             # Get edge if it exists in the graph already...
             edge = self.get_edge(tail, head)
@@ -330,6 +328,10 @@ class ConceptGraph(GraphI):
             head = edge.head
 
         assert tail in self.nodes and head in self.nodes, 'Both nodes in the edge must exist within the graph.'
+
+        # Ignore spurious edges, a concept cannot be defined directly in terms of itself
+        if not allow_self_reference and tail == head:
+            return None
 
         if edge in self.edges:
             # Duplicate edges only increase a count and each unique edge is
@@ -409,7 +411,7 @@ class ConceptGraph(GraphI):
         :param node: The node.
         :param section: The section the node was found in.
         """
-        self.section_counts[node][section] += 1
+        self.node_frequency_by_section[node][section] += 1
 
     def parse(self, filename: str):
         """Parse a XML document and build up a graph structure.
@@ -424,6 +426,7 @@ class ConceptGraph(GraphI):
         self._reassign_implicit_entities()
         self._reassign_sections()
         self._categorise_nodes()
+        self._add_self_references()
         self.nx = self.to_nx()
 
         self.mark_edges()
@@ -474,7 +477,8 @@ class ConceptGraph(GraphI):
                 continue
 
             prev_section = self.section_index[node]
-            new_section = max(self.section_counts[node], key=lambda key: self.section_counts[node][key])
+            new_section = max(self.node_frequency_by_section[node],
+                              key=lambda key: self.node_frequency_by_section[node][key])
 
             if new_section != prev_section:
                 self.section_listings[prev_section].remove(node)
@@ -489,6 +493,10 @@ class ConceptGraph(GraphI):
         """
         for section in self.sections:
             for node in self.section_listings[section]:
+                # Skip concepts that have already been categorised during parsing.
+                if node in self.emerging_concepts:
+                    continue
+
                 referencing_sections = set()
 
                 for tail in self.adjacency_index[node]:
@@ -503,6 +511,21 @@ class ConceptGraph(GraphI):
                     self.a_priori_concepts.add(node)
                 else:
                     self.emerging_concepts.add(node)
+
+    def _add_self_references(self):
+        """Add edges to the graph for emerging concepts that reference themselves from different sections."""
+        for node in self.emerging_concepts:
+            section_i = self.sections.index(self.section_index[node])
+
+            for section in self.sections:
+                if self.node_frequency_by_section[node][section] > 0:
+                    # TODO: If reference is already in the graph, then update the frequency of the edge by
+                    #  `self.node_frequency_by_section[node][section]`.
+                    if self.sections.index(section) < section_i:
+                        self.add_edge(node, node, ForwardReference, allow_self_reference=True)
+                    elif self.sections.index(section) > section_i:
+                        self.add_edge(node, node, BackwardReference, allow_self_reference=True)
+
 
     def mark_edges(self):
         """Colour edges as either forward or backward edges."""
@@ -522,7 +545,7 @@ class ConceptGraph(GraphI):
         :param visited: The set of nodes that have already been visited.
         """
         # We have reached a 'leaf node' which is a node belonging to another section
-        if prev and self.section_index[curr] != self.section_index[prev]:
+        if prev and self.section_index[curr] != self.section_index[prev] and curr in self.emerging_concepts:
             # Check if the path goes forward from section to a later section, or vice versa
             curr_i = self.sections.index(self.section_index[curr])
             prev_i = self.sections.index(self.section_index[prev])
