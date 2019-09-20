@@ -145,10 +145,11 @@ class ParserABC(ParserI, ABC):
         for token, _ in chunk:
             yield token, noun_chunk
 
-    def identify_emerging_concepts(self, sent: Span, graph: ConceptGraph):
+    def identify_emerging_concepts(self, sent: Span, section: Section, graph: ConceptGraph):
         """Identify concepts in a given sentence that are likely to be emerging concepts.
 
         :param sent: A spaCy span representing a sentence in a document.
+        :param section: The section the sentence appears in.
         :param graph: The concept graph to record the emerging concepts in.
         """
         for token in filter(lambda token: token.dep_ == 'ROOT', sent):
@@ -175,7 +176,12 @@ class ParserABC(ParserI, ABC):
                     tokens = tokens[1:]
 
                 tokens = filter(lambda token: len(token.text.strip()) > 0, tokens)
-                graph.emerging_concepts.add(Node(' '.join(map(lambda token: token.text, tokens))))
+                node = Node(' '.join(map(lambda token: token.text, tokens)))
+
+                if node not in graph.nodes:
+                    graph.add_node(node, section)
+
+                graph.emerging_concepts.add(node)
 
 
 class XMLParser(ParserABC):
@@ -251,7 +257,7 @@ class XMLParser(ParserABC):
 
                 graph.add_node(subject, section_title)
                 self.add_gerund_phrase(subject, section_title, sent, graph)
-                self.identify_emerging_concepts(sent, graph)
+                self.identify_emerging_concepts(sent, section_title, graph)
 
                 # Add other noun phrases to the graph
                 for np in parse_tree.subtrees(lambda t: t.label() == 'NP'):
@@ -414,7 +420,7 @@ class OpenIEParser(CoreNLPParserABC):
 
             for sent in span.sents:
                 s = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
-                self.identify_emerging_concepts(s, graph)
+                self.identify_emerging_concepts(s, section_title, graph)
 
                 if len(s.text.strip()) > 0:
                     annotation = self.client.annotate(s.text.strip())
@@ -517,7 +523,7 @@ class CoreNLPParser(CoreNLPParserABC):
                 sent = nlp(sent)
                 sent = nlp(' '.join([tok.text for tok in filter(lambda tok: tok.tag_ not in {'RB'}, sent)]))
 
-                self.identify_emerging_concepts(sent, graph)
+                self.identify_emerging_concepts(sent, section_title, graph)
 
                 annotation = self.client.annotate(sent.text)
 
