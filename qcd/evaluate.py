@@ -69,17 +69,20 @@ def precision_recall_f1(target: set, prediction: set) -> Tuple[float, float, flo
     :param prediction: The predicted set.
     :return: A 3-tuple containing the precision, recall and f1-score.
     """
-    # Use a small value to avoid zero division, zero division is treated as if it produces zero for the sake of
-    # numerical stability and to prevent the whole program from crashing and burning.
-    eps = 1e-128
+    try:
+        precision = len(target.intersection(prediction)) / len(prediction)
+    except ZeroDivisionError:
+        precision = float('nan')
 
-    true_positive_rate = len(target.intersection(prediction)) / len(target) if len(target) > 0 else float('nan')
-    false_negative_rate = 1 - true_positive_rate
-    false_positive_rate = len(prediction.difference(target)) / len(prediction) if len(prediction) > 0 else float('nan')
+    try:
+        recall = len(target.intersection(prediction)) / len(target)
+    except ZeroDivisionError:
+        recall = float('nan')
 
-    precision = true_positive_rate / (true_positive_rate + false_positive_rate + eps)
-    recall = true_positive_rate / (true_positive_rate + false_negative_rate + eps)
-    f1 = 2 * ((precision * recall) / (precision + recall + eps)) - 2 * eps if precision != 0 and recall != 0 else 0
+    try:
+        f1 = 2 * ((precision * recall) / (precision + recall))
+    except ZeroDivisionError:
+        f1 = float('nan')
 
     return precision, recall, f1
 
