@@ -8,7 +8,7 @@ import pandas as pd
 import plac
 import spacy
 
-from qcd.concept_graph import ConceptGraph
+from qcd.concept_graph import ConceptGraph, DirectedEdge
 from qcd.xml_parser import XMLParser, CoreNLPParser, OpenIEParser, EnsembleParser
 
 
@@ -176,6 +176,7 @@ def evaluate_random(a_priori_concepts, backward_references, basename, emerging_c
         graph.parse(filename)
 
         for trial in range(random_trials):
+            # Mark concepts
             graph.a_priori_concepts = set()
             graph.emerging_concepts = set()
 
@@ -185,6 +186,19 @@ def evaluate_random(a_priori_concepts, backward_references, basename, emerging_c
                 else:
                     graph.emerging_concepts.add(node)
 
+            # Redo edges
+            edges = graph.edges.copy()
+
+            for edge in edges:
+                new_edge = DirectedEdge(edge.tail, edge.head)
+                new_edge.style = edge.style
+                new_edge.frequency = edge.frequency
+
+                graph.set_edge(new_edge)
+
+            graph.mark_edges()
+
+            # Evaluate graph
             df = evaluate(graph, a_priori_concepts, emerging_concepts, forward_references,
                           backward_references)
 

@@ -282,9 +282,12 @@ class ConceptGraph(GraphI):
         :param node: The node to add.
         :param section: The section that the node appeared in.
         """
+        if node == '':
+            return
+
         # Main section node was referenced before but now is being added under its own section,
         # update the relevant section details.
-        if node in self.nodes and node == section:
+        elif node in self.nodes and node == section:
             self.section_listings[self.section_index[node]].remove(node)
             self.section_index[node] = section
             self.section_listings[section].add(node)
@@ -327,9 +330,11 @@ class ConceptGraph(GraphI):
             tail = edge.tail
             head = edge.head
 
+        if tail == '' or head == '':
+            return None
+
         assert tail in self.nodes and head in self.nodes, 'Both nodes in the edge must exist within the graph.'
 
-        # Ignore spurious edges, a concept cannot be defined directly in terms of itself
         if not allow_self_reference and tail == head:
             return None
 
@@ -426,12 +431,11 @@ class ConceptGraph(GraphI):
         self._reassign_implicit_entities()
         self._reassign_sections()
         self._categorise_nodes()
-        self._add_self_references()
         self.nx = self.to_nx()
 
         self.mark_edges()
-        self.find_cycles()
-        self.find_subgraphs()
+        # self.find_cycles()
+        # self.find_subgraphs()
 
     def to_nx(self):
         """Convert the graph to a NetworkX graph.
@@ -504,10 +508,6 @@ class ConceptGraph(GraphI):
                     referencing_sections.add(tail_section)
 
                 if len(referencing_sections) == 1:
-                    for tail in self.adjacency_index[node]:
-                        the_edge = self.get_edge(tail, node)
-                        the_edge.weight = 0.5
-
                     self.a_priori_concepts.add(node)
                 else:
                     self.emerging_concepts.add(node)
@@ -526,7 +526,6 @@ class ConceptGraph(GraphI):
                     elif self.sections.index(section) > section_i:
                         self.add_edge(node, node, BackwardReference, allow_self_reference=True)
 
-
     def mark_edges(self):
         """Colour edges as either forward or backward edges."""
         self.forward_references = set()
@@ -537,6 +536,8 @@ class ConceptGraph(GraphI):
         for node in self.nodes:
             self._mark_edges(node, None, visited)
 
+        self._add_self_references()
+
     def _mark_edges(self, curr: Node, prev: Optional[Node], visited: set):
         """Recursively mark edges.
 
@@ -545,7 +546,7 @@ class ConceptGraph(GraphI):
         :param visited: The set of nodes that have already been visited.
         """
         # We have reached a 'leaf node' which is a node belonging to another section
-        if prev and self.section_index[curr] != self.section_index[prev] and curr in self.emerging_concepts:
+        if prev and self.section_index[curr] != self.section_index[prev]:
             # Check if the path goes forward from section to a later section, or vice versa
             curr_i = self.sections.index(self.section_index[curr])
             prev_i = self.sections.index(self.section_index[prev])
@@ -573,11 +574,12 @@ class ConceptGraph(GraphI):
         edge = self.get_edge(tail, head)
 
         new_edge = edge_type(tail, head)
-        new_edge = self.set_edge(new_edge)
         # preserve edge style for cases where there are implicit
         # forward/backward edges
         new_edge.style = edge.style
         new_edge.frequency = edge.frequency
+
+        self.set_edge(new_edge)
 
         if isinstance(new_edge, ForwardReference):
             self.forward_references.add(new_edge)
