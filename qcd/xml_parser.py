@@ -178,10 +178,11 @@ class ParserABC(ParserI, ABC):
                 tokens = filter(lambda token: len(token.text.strip()) > 0, tokens)
                 node = Node(' '.join(map(lambda token: token.text, tokens)))
 
-                if node not in graph.nodes:
-                    graph.add_node(node, section)
+                if node != '':
+                    if node not in graph.nodes:
+                        graph.add_node(node, section)
 
-                graph.emerging_concepts.add(node)
+                    graph.emerging_concepts.add(node)
 
 
 class XMLParser(ParserABC):
