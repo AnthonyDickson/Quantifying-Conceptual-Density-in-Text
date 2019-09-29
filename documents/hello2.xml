@@ -1,9 +1,0 @@
-<document>
-    <section>
-        <title>Hello, World!</title>
-        Printing 'Hello <entity>World</entity>!' is probably <entity>the first thing</entity> a
-        <entity>programmer</entity>
-        will do when learning a <entity>new programming language</entity>.
-    </section>
-</document>
-

@@ -1,6 +1,0 @@
-<document>
-	<section>
-	<title>SLAM</title>
-	For example, in <entity>computer vision</entity> there is a <entity>technique</entity> called <entity>SLAM</entity> (Simultaneous localisation and mapping) where an <entity>agent</entity> with some sort of <entity>camera</entity> moves around in an <entity>3D environment</entity> and the <entity>SLAM algorithm</entity> builds up a <entity>3D map</entity> of the <entity>environment</entity> and estimates the <entity>location of the agent</entity> using just the <entity>camera feed</entity>. The <entity>algorithm</entity> typically starts with no <entity>map</entity> and no <entity>idea</entity> where it is. The <entity>algorithm</entity> must use the <entity>map</entity> to estimate the <entity>agent's location</entity> in the <entity>world</entity> and it must use the <entity>agent's location</entity> to create an <entity>accurate map of the world</entity>.
-	</section>
-</document>

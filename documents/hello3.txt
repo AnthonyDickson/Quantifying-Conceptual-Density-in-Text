@@ -1,3 +1,0 @@
-Printing 'Hello World!' is probably the first thing a programmer will do when learning a new programming language.
-Printing a message is typically the easiest thing to do in a programming language.
-It is much like learning how to say 'Hello' in a foreign language.

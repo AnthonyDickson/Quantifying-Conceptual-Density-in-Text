@@ -1,1 +1,0 @@
-Printing 'Hello World!' is probably the first thing a programmer will do when learning a new programming language.
