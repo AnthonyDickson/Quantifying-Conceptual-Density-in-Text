@@ -181,8 +181,11 @@ class ConceptGraph(GraphI):
         :param parser: The parser to use.
         :param mark_references: Whether or not to mark forward and backward references after parsing.
         """
+        # The cutoff for deciding whether or not to consider a concept an emerging concept.
+        # Units: Zipf-scale frequency of a word.
+        self.emerging_concept_frequency_cutoff = 3.0
+
         # The set of all nodes (vertices) in the graph.
-        self.emerging_concept_frequency_cutoff = 4.0
         self.nodes: Set[Node] = set()
 
         # Maps section to nodes found in that section.
@@ -491,36 +494,55 @@ class ConceptGraph(GraphI):
                 self.section_index[node] = new_section
                 self.section_listings[new_section].add(node)
 
-    def _categorise_nodes(self):
+    def _categorise_nodes(self, graph_based=True):
         """Categorise nodes in the graph into 'a priori' and 'emerging' concepts.
 
         Nodes that are only referenced from one section represent 'a priori references',
         all other nodes represent 'emerging concepts'.
+
+        :param graph_based: Flag indicating whether or not to use the graph-based classification method.
         """
-        # TODO: add config for graph to allow for the 'rule-based classifier' config.
-        #  This should make the this function only execute the commented out block below.
-        # for node in self.nodes:
-        #     if node not in self.emerging_concepts:
-        #         self.a_priori_concepts.add(node)
-        #
-        # return
+        if graph_based:
+            for section in self.sections:
+                for node in self.section_listings[section]:
+                    # Skip concepts that have already been categorised during parsing.
+                    if node in self.emerging_concepts:
+                        continue
 
-        for section in self.sections:
-            for node in self.section_listings[section]:
-                # Skip concepts that have already been categorised during parsing.
-                if node in self.emerging_concepts:
-                    continue
+                    referencing_sections = set()
 
-                referencing_sections = set()
+                    for tail in self.adjacency_index[node]:
+                        tail_section = self.section_index[tail]
+                        referencing_sections.add(tail_section)
 
-                for tail in self.adjacency_index[node]:
-                    tail_section = self.section_index[tail]
-                    referencing_sections.add(tail_section)
+                    if len(referencing_sections) > 1 and zipf_frequency(node,
+                                                                        'en') < self.emerging_concept_frequency_cutoff:
+                        self.emerging_concepts.add(node)
+                    else:
+                        self.a_priori_concepts.add(node)
 
-                if len(referencing_sections) > 1 and zipf_frequency(node, 'en') < self.emerging_concept_frequency_cutoff:
-                    self.emerging_concepts.add(node)
-                else:
-                    self.a_priori_concepts.add(node)
+        # Enforce transitivity of concept labels such that all concepts that contain an emerging concept as a
+        # constituent are also labelled as emerging concepts.
+        for node in self.nodes:
+            found = False
+
+            for token in node.split(' '):
+                for other in self.emerging_concepts:
+                    if token in other.split(' '):
+                        self.a_priori_concepts.discard(node)
+                        self.emerging_concepts.add(node)
+                        found = True
+
+                    if found:
+                        break
+
+                if found:
+                    break
+
+            # Need to add a priori concepts here if we are not using the graph-based classifier
+            # (i.e. we are using the rule-based classifier)
+            if not graph_based and not found:
+                self.a_priori_concepts.add(node)
 
     def _add_self_references(self):
         """Add edges to the graph for emerging concepts that reference themselves from different sections."""

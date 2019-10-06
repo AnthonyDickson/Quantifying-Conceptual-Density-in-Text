@@ -23,7 +23,9 @@ class ParserABC(ParserI, ABC):
         :param implicit_references: Whether or not to add implicit references to the graph during parsing.
         :param resolve_coreferences: Whether or not to resolve coreferences.
         """
-        self.emerging_concept_frequency_cutoff = 4.0
+        # The cutoff for deciding whether or not to consider a concept an emerging concept.
+        # Units: Zipf-scale frequency of a word.
+        self.emerging_concept_frequency_cutoff = 3.0
         self.resolve_coreferences: bool = resolve_coreferences
         self.implicit_references: bool = implicit_references
         self.annotate_edges: bool = annotate_edges
@@ -147,16 +149,16 @@ class ParserABC(ParserI, ABC):
         for token, _ in chunk:
             yield token, noun_chunk
 
-    def identify_emerging_concepts(self, sent: Span, section: Section, graph: ConceptGraph):
+    def identify_emerging_concepts(self, sent: Span, section: Section, graph: ConceptGraph, rule_based=True):
         """Identify concepts in a given sentence that are likely to be emerging concepts.
 
         :param sent: A spaCy span representing a sentence in a document.
         :param section: The section the sentence appears in.
         :param graph: The concept graph to record the emerging concepts in.
+        :param rule_based: Flag indicating whether or not to use the rule-based classifier.
         """
-        # TODO: add config for parser to allow for the 'graph-based classifier' config.
-        #  This should simply make the parser skip this function.
-        # return
+        if not rule_based:
+            return
 
         for token in filter(lambda token: token.dep_ == 'ROOT', sent):
             concept_tokens = []
