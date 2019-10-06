@@ -495,6 +495,14 @@ class ConceptGraph(GraphI):
         Nodes that are only referenced from one section represent 'a priori references',
         all other nodes represent 'emerging concepts'.
         """
+        # TODO: add config for graph to allow for the 'rule-based classifier' config.
+        #  This should make the this function only execute the commented out block below.
+        # for node in self.nodes:
+        #     if node not in self.emerging_concepts:
+        #         self.a_priori_concepts.add(node)
+        #
+        # return
+
         for section in self.sections:
             for node in self.section_listings[section]:
                 # Skip concepts that have already been categorised during parsing.
@@ -546,7 +554,7 @@ class ConceptGraph(GraphI):
         :param visited: The set of nodes that have already been visited.
         """
         # We have reached a 'leaf node' which is a node belonging to another section
-        if prev and self.section_index[curr] != self.section_index[prev]:
+        if prev and self.section_index[curr] != self.section_index[prev] and curr in self.emerging_concepts:
             # Check if the path goes forward from section to a later section, or vice versa
             curr_i = self.sections.index(self.section_index[curr])
             prev_i = self.sections.index(self.section_index[prev])

@@ -152,6 +152,10 @@ class ParserABC(ParserI, ABC):
         :param section: The section the sentence appears in.
         :param graph: The concept graph to record the emerging concepts in.
         """
+        # TODO: add config for parser to allow for the 'graph-based classifier' config.
+        #  This should simply make the parser skip this function.
+        # return
+
         for token in filter(lambda token: token.dep_ == 'ROOT', sent):
             concept_tokens = []
 
