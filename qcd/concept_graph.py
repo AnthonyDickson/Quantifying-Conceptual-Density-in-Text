@@ -6,6 +6,7 @@ from typing import Type, Set, Dict, Optional, List, Tuple, NewType, Union
 
 import graphviz
 import networkx as nx
+from wordfreq import zipf_frequency
 
 from qcd.graph import Node, DirectedEdgeI, GraphI, Section
 from qcd.parser import ParserI
@@ -181,6 +182,7 @@ class ConceptGraph(GraphI):
         :param mark_references: Whether or not to mark forward and backward references after parsing.
         """
         # The set of all nodes (vertices) in the graph.
+        self.emerging_concept_frequency_cutoff = 4.0
         self.nodes: Set[Node] = set()
 
         # Maps section to nodes found in that section.
@@ -515,10 +517,10 @@ class ConceptGraph(GraphI):
                     tail_section = self.section_index[tail]
                     referencing_sections.add(tail_section)
 
-                if len(referencing_sections) == 1:
-                    self.a_priori_concepts.add(node)
-                else:
+                if len(referencing_sections) > 1 and zipf_frequency(node, 'en') < self.emerging_concept_frequency_cutoff:
                     self.emerging_concepts.add(node)
+                else:
+                    self.a_priori_concepts.add(node)
 
     def _add_self_references(self):
         """Add edges to the graph for emerging concepts that reference themselves from different sections."""
@@ -542,11 +544,11 @@ class ConceptGraph(GraphI):
         visited = set()
 
         for node in self.nodes:
-            self._mark_edges(node, None, visited)
+            self._mark_edges_helper(node, None, visited)
 
         self._add_self_references()
 
-    def _mark_edges(self, curr: Node, prev: Optional[Node], visited: set):
+    def _mark_edges_helper(self, curr: Node, prev: Optional[Node], visited: set):
         """Recursively mark edges.
 
         :param curr: The next node to vist.
@@ -569,7 +571,7 @@ class ConceptGraph(GraphI):
             visited.add(curr)
 
             for child in self.adjacency_list[curr]:
-                self._mark_edges(child, curr, visited)
+                self._mark_edges_helper(child, curr, visited)
 
     def _mark_edge(self, tail: Node, head: Node, edge_type: Type[DirectedEdge] = DirectedEdge):
         """Mark an edge.

@@ -12,4 +12,5 @@ dependencies:
       - neuralcoref
       - plac==0.9.6
       - stanfordnlp
+      - wordfreq==2.2.1
       - git+https://github.com/stanfordnlp/stanza.git

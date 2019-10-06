@@ -6,6 +6,7 @@ import neuralcoref
 import nltk
 import spacy
 from spacy.tokens.span import Span
+from wordfreq import zipf_frequency
 
 from qcd.concept_graph import ImplicitReference, ConceptGraph, Relation
 from qcd.corenlp import CustomCoreNLPClient
@@ -22,6 +23,7 @@ class ParserABC(ParserI, ABC):
         :param implicit_references: Whether or not to add implicit references to the graph during parsing.
         :param resolve_coreferences: Whether or not to resolve coreferences.
         """
+        self.emerging_concept_frequency_cutoff = 4.0
         self.resolve_coreferences: bool = resolve_coreferences
         self.implicit_references: bool = implicit_references
         self.annotate_edges: bool = annotate_edges
@@ -182,7 +184,7 @@ class ParserABC(ParserI, ABC):
                 tokens = filter(lambda token: len(token.text.strip()) > 0, tokens)
                 node = Node(' '.join(map(lambda token: token.text, tokens)))
 
-                if node != '':
+                if node != '' and zipf_frequency(node, 'en') < self.emerging_concept_frequency_cutoff:
                     if node not in graph.nodes:
                         graph.add_node(node, section)
 
