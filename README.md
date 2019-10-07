@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3458621.svg)](https://doi.org/10.5281/zenodo.3458621)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3474469.svg)](https://doi.org/10.5281/zenodo.3474469)
 
 # COSC480 Project - Quantifying Conceptual Density in Text
 This repository contains the source code for my COSC480 project, "Quantifying Conceptual Density in Text".

@@ -157,7 +157,22 @@ The main contributions of the work in this pilot study are:
 (i) the exploration of the notion of conceptual density (Sections \ref{sec:background} and \ref{sec:conceptual_density_in_text});
 (ii) a graph-based model for quantifying conceptual density (Sections \ref{sec:conceptual_density_in_text}, \ref{sec:building_a_graph_of_concepts} and \ref{sec:implementation_of_the_conceptual_density_model});
 (iii) a framework for quantitatively evaluating the quality of the model (Section \ref{sec:evaluation});
-and (iv) a discussion of open problems and direction for future work related to conceptual density (Section \ref{sec:future_work}).
+and (iv) a discussion of open problems and direction for future work related to conceptual density
+% (Sections
+% % \ref{sec:open_problems},
+% \ref{sec:related_work}
+% and \ref{sec:future_work}).
+(Section \ref{sec:future_work}).
+
+% The rest of this report is structured as follows.
+% Section \ref{sec:background} covers the theoretical background of conceptual density;
+% Section \ref{sec:conceptual_density_in_text} defines what is considered as a concept in text and other text features that relate to conceptual density;
+% Section \ref{sec:building_a_graph_of_concepts} describes the parsing algorithm used for building a mind-map like graph structure and how a numerical score of conceptual density can be derived from a graph structure;
+% Section \ref{sec:implementation_of_the_conceptual_density_model} describes the implementation of the conceptual density model used in the experiments;
+% Section \ref{sec:evaluation} describes methods used for evaluating the quality of the text parsing algorithm and the graph-based model of conceptual density;
+% Section \ref{sec:open_problems} discusses open problems relating to conceptual density;
+% Section \ref{sec:related_work} discusses related work and what distinguishes the work in this pilot study from the related work;
+% and Section \ref{sec:future_work} discusses the work-to-date and future work.
 
 \section{Background} \label{sec:background}
 \subsection{Learning Edge Momentum}
@@ -315,6 +330,13 @@ By definition, a complex noun phrase is made up of multiple noun phrases (Gramma
 \subsection{Edges and Relating Concepts} \label{sec:edges_and_relating_concepts}
 In the graph structure we are building, a relation between concepts is represented as a directed edge between nodes. Edges are used to represent a type of relation where one concept refers to, or depends on, another concept. There are three criteria for which I choose to create an edge between two concepts: one concept is the subject of a sentence and the other concept appears in the same sentence; one concept is a complex noun phrase (Grammar \ref{gr:cnp_pattern}) and the other is a noun phrase (Grammar \ref{gr:np_pattern}) that is part of the complex noun phrase; or one concept is a noun phrase and the other is a noun or an adjective that is part of that noun phrase. The subject of a sentence can be identified through a dependency parse, which marks the relationships between words in a sentence (see Figure \ref{fig:dependency_parse_example} for an example).
 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=\linewidth]{reports/technical_report/latex/figures/bread_graph-sections_only-implicit_references.png}
+%     \caption{An example of a dependency-based graph created using the XML document from Figure \ref{fig:sample_xml_document}. Nodes represent the concepts that are referenced in the document. Edges in the graph represent the relationship `A references B'. Blue edges represent forward references and red edges represent backward references.}
+%     \label{fig:graph_example}
+% \end{figure}
+
 \subsection{Identifying A Priori and Emerging Concepts} \label{sec:classifying_concepts}
 To identify a priori and emerging concepts we can look at how the concepts are mentioned.
 In particular, we could look for sentences that contain definitions.
@@ -325,6 +347,7 @@ We can look for other patterns in the structure of sentences that suggest that a
 The exact patterns that are used are described later in Section \ref{sec:rule-based_classifier}.
 A priori concepts are then defined as any concept that does not fulfil the definition of an emerging concept.
 
+%  It should be noted that this kind of approach would require knowledge of what kind of relations exist between concepts, a feature which has not been implemented yet in the current code. The current implementation works on the (incorrect) assumptions that: a concept that is only referenced from within a single section is an a priori concept; and concepts that are referenced from within multiple sections are emerging concepts. Implementing the method described in the previous paragraph is something to be looked at in future work.
 
 % Placed here so the footer text appears on the same page
 \begin{figure}
@@ -431,7 +454,7 @@ The different types of concepts and references can be identified by analysing th
 
 \section{Implementation of the Conceptual Density Model} \label{sec:implementation_of_the_conceptual_density_model}
 In this section, I will describe the implementation of the model discussed across Sections \ref{sec:conceptual_density_in_text} and \ref{sec:building_a_graph_of_concepts} that is used in the experiments. The current implementation takes in a XML formatted document, parses the document and extracts concepts and relations between concepts, builds up a graph representation of these extracted entities and generates a score. The way the score is generated is the same as it was described in Section \ref{sec:quantifying_conceptual_density}, so I will only describe the other aspects below.
-Also, since the motivation and rationale for the different aspects of the model are explained in the previous sections, I will focus on describing the steps involved in processing a document in more detail. The source code for the model is made publicly available \cite{anthony_dickson_2019_3458623}.
+Also, since the motivation and rationale for the different aspects of the model are explained in the previous sections, I will focus on describing the steps involved in processing a document in more detail. The source code for the model is made publicly available \cite{anthony_dickson_2019_3474469}.
 
 \subsection{Input Format}
 One limitation of the current implementation is that documents must be marked up in XML. The reason why this semi-structured text format was chosen is that identifying sections and where start and end in plain text is not always reliable (this is discussed briefly in Section \ref{sec:future_work}, Future Work) and it is of interest to see how the model performs assuming sections can be identified correctly. The format as is follows: the root element is a \texttt{document} element; each section is enclosed within a \texttt{section} element and nested sections are lifted up to be a child of the root node, rather than the parent section in the text (this is not by design, but rather a limitation of the current implementation); the title of each section is enclosed within a \texttt{title} element inside the corresponding \texttt{section} element; and the text of each section is enclosed within a \texttt{text} element inside the corresponding \texttt{section} element.
