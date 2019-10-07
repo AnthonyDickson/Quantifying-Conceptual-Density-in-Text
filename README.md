@@ -1,11 +1,17 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3458621.svg)](https://doi.org/10.5281/zenodo.3458621)
 
 # COSC480 Project - Quantifying Conceptual Density in Text
-A project looking at quantifying the complexity of the underlying knowledge domain for a given text document. 
-A document is placed on a spectrum ranging from sparse (concepts are mostly independent) to dense (concepts are tightly integrated).
+This repository contains the source code for my COSC480 project, "Quantifying Conceptual Density in Text".
 
-This repo contains code that attempts to perform the quantification of this idea of conceptual density.
-The main approach is to build up a mind-map like graph structure and derive a score from the graph structure.
+Copied from the abstract of the report, a description of the project:
+> "Conceptual density" is a term that describes the degree to which concepts in 
+> a domain are integrated, or interdependent.  There is a hypothesis that text 
+> documents with high conceptual density are harder to process.  At present, 
+> the concept of “conceptual density” has been informally defined.  In this 
+> pilot study, I investigate the idea of conceptual density in the context of 
+> expository text documents, a graph-based model for quantifying conceptual 
+> density and ways to evaluate this model.  Finally, I discuss open problems 
+> and direction for future work related to conceptual density.
 
 The original aims and objectives can be found [here](https://github.com/eight0153/cosc480/blob/master/reports/aims/aims.pdf).
 The main report can be found [here](https://github.com/eight0153/cosc480/blob/master/reports/technical_report/latex/report.pdf).

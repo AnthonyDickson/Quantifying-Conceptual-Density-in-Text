@@ -1,24 +1,17 @@
 <document>
-    <title>
-        Bread
-    </title>
-
     <section>
         <title>Bread</title>
-        <concept>Bread</concept>
-        is a <concept>staple food</concept> typically prepared from a
-        <concept>dough</concept>
-        of <concept>wheat flour</concept> and <concept>water</concept>, usually by baking.
+        <text>
+            Bread a staple food typically prepared from a dough of wheat flour and water, usually by baking.
+        </text>
     </section>
 
     <section>
         <title>Wheat Flour</title>
-        <concept>Wheat flour</concept>
-        is made from ground up <concept>wheat</concept>.
-        <concept>Wheat</concept>
-        is a type of <concept>grain</concept>.
-        <concept>Wheat</concept>
-        is commonly used for making <concept>wheat flour</concept>,
-        the main ingredient of <concept>bread dough</concept>.
+        <text>
+            Wheat flour is made from ground up wheat.
+            Wheat is a type of grain.
+            Wheat is commonly used for making wheat flour, a typical ingredient of bread dough.
+        </text>
     </section>
 </document>
